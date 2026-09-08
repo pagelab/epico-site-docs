@@ -36,11 +36,25 @@
   prova empírica com artigo real em rascunho falhando lint e build. Artefato:
   15 entradas em 1:1 com as rotas de docs, 3.726 bytes. Narrativa no
   `TASKS.md` §"Checkpoint de 2026-09-08: DOCS-04A".
+- `DOCS-04B` concluído em 2026-09-08 (commit `3e9ddc5`, enviado por push):
+  página `/busca/` estática via `StarlightPage` suportado, com
+  navegação manual pelas seis áreas sempre no HTML (degradação sem
+  JavaScript), busca no browser por `src/lib/search-client.mjs` (fetch com
+  timeout de 5 s, teto de bytes, URL interna obrigatória, filtro literal com
+  normalização de acento e teto de 30 resultados) e validação do payload por
+  `validateSearchIndexPayload` no mesmo módulo puro do gerador, agora com teto
+  simétrico de 500 caracteres por campo. Schema da coleção passou a tipar
+  `topic`/`draft`/`lastReviewed` como opcionais: a exigência editorial segue
+  no lint e no gerador do índice, e páginas utilitárias como `/busca/` e o
+  futuro 404 não carregam área fictícia. Link "Busca" na sidebar via config,
+  fora de `topics.mjs`. 55 testes novos (109 no total) e dez provas por
+  mutação. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-08: DOCS-04B".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
-- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 54 testes
-  em 5 arquivos, build de 16 páginas + `/search-index.json`, zero
-  vulnerabilidades e política de install scripts PASS.
+- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 109 testes
+  em 6 arquivos, build de 17 páginas (acervo + `/busca/` + 404 nativo) +
+  `/search-index.json`, zero vulnerabilidades e política de install scripts
+  PASS.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
   `DOCS-06`. Não foram silenciados.
 - Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
@@ -48,11 +62,13 @@
 
 ## ▶ Próxima ação
 
-Executar `DOCS-04B`: página `/busca/` estática e cliente de busca defensivo
-reusando o gerador puro do índice (`src/lib/search-index.mjs`), com filtro no
-browser, degradação para navegação manual e testes de payload malformado, URL
-hostil, timeout e caracteres especiais. `npm run verify` verde fecha a fatia.
-Não abrir `G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`.
+Executar `DOCS-04C`: bateria adversarial e limites do índice, sobre as fatias
+04A/04B já entregues, com `npm run verify` verde fechando a fatia. Ângulos
+ainda não esgotados: sondas contra o endpoint servido (truncagem de rede,
+resposta parcial, content-type), limites em tempo real do consumidor,
+mutações adicionais das barreiras do validador e conferência de que nenhuma
+entrada do índice expõe corpo de artigo ou PII. Não abrir `G-CONTENT`,
+`G-VISUAL` nem `G-CLOUDFLARE`.
 
 ## Gates vivos
 
@@ -71,6 +87,10 @@ Não abrir `G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`.
 - Fontes Cal Sans e Outfit sob SIL Open Font License.
 - Markdown no Git, sem WordPress como CMS.
 - Nenhuma escrita em `Site-kits`, `Kits`, `Brain` ou na landing `epico.site`.
+- Commit e push ao fim de cada sessão deste repositório dispensam ordem
+  específica, desde que o gate `npm run verify` tenha terminado com exit code
+  zero na sessão (owner, 2026-09-08). A regra vale para o ciclo do Docs e não
+  abre deploy, preview, DNS ou qualquer gate humano.
 
 ## Ambiente
 
@@ -81,4 +101,6 @@ Não abrir `G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`.
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-08.
+- Última sessão: 2026-09-08 (`DOCS-04B` commitado em `3e9ddc5` e enviado).
+- Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
+  2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

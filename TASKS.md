@@ -17,7 +17,7 @@
 | 7 | `DOCS-03D` | P0 | M | Escrever tutoriais de licenças e downloads | concluído | `DOCS-03C` |
 | 8 | `DOCS-03E` | P0 | M | Escrever tutoriais de domínio e publicação | concluído | `DOCS-03C` |
 | 9 | `DOCS-04A` | P0 | M | Gerador puro e endpoint do índice JSON | concluído | `DOCS-02` |
-| 10 | `DOCS-04B` | P0 | G | Página `/busca/` e cliente de busca defensivo | aberto | `DOCS-04A` |
+| 10 | `DOCS-04B` | P0 | G | Página `/busca/` e cliente de busca defensivo | concluído | `DOCS-04A` |
 | 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | aberto | `DOCS-04B` |
 | 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | aberto | `DOCS-01` |
 | 13 | `DOCS-06` | P0 | M | Sitemap, llms, robots, headers, CSP e configuração estática do Worker | aberto | `DOCS-04C`, `DOCS-05` |
@@ -380,3 +380,81 @@
   coleção i18n vazia e 404 ausente continuam atribuídos a `DOCS-06`.
 - Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Commit da fatia
   `f127298`; bookmarks no commit imediatamente posterior.
+
+## Checkpoint de 2026-09-08: DOCS-04B
+
+- Página `/busca/` construída com o `StarlightPage` suportado (nenhum override
+  de componente do Starlight). Prova empírica antes de codar: o `StarlightPage`
+  valida o frontmatter com o schema estendido da coleção e exigia `topic`,
+  `draft` e `lastReviewed`. Em vez de dar um `topic` fictício a uma página
+  utilitária, o schema passou a TIpar os três campos como opcionais e a exigência
+  editorial continua nas duas barreiras independentes que já existiam: o lint de
+  conteúdo (presença, allowlist, `draft` booleano, data real) e o gerador do
+  índice (que rejeita ausência e valor inválido no build). O desbloqueio também
+  vale para o 404 custom de `DOCS-06`, que enfrentaria o mesmo conflito.
+- Consumidor validador no mesmo módulo puro do produtor:
+  `validateSearchIndexPayload` em `src/lib/search-index.mjs` aplica as barreiras
+  do contrato no payload recebido no browser (entrada remota não confiável).
+  Estrutura inválida (não objeto, chaves fora do contrato, version, entries não
+  lista, teto de 200) rejeita o payload inteiro e a busca degrada para navegação
+  manual. Entrada individualmente inválida (URL hostil ou não canônica, campo
+  vazio, PII, topic fora da allowlist, data impossível, chave extra ou faltando)
+  é descartada e contada. Payload não vazio onde nenhuma entrada sobra válida é
+  tratado como comprometido e rejeitado.
+- Teto por campo novo e simétrico: 500 caracteres para title e description,
+  cobrado no gerador (falha o build) e no validador (descarta a entrada), para
+  um campo gigante não estourar o layout de resultados mesmo dentro do teto
+  total de 256 KiB. O teste antigo do teto de bytes foi reescrito para estourar
+  os bytes com 200 entradas válidas no limite por campo, e não com um campo
+  gigante que agora o gerador recusa antes.
+- Cliente puro `src/lib/search-client.mjs`: fetch injetável (testável sem
+  browser) com timeout por `AbortController` de 5 s, teto de caracteres do
+  corpo recebido (conservador: bytes UTF-8 são sempre maiores ou iguais aos
+  caracteres UTF-16), URL obrigatoriamente caminho interno (rejeita `https://`,
+  protocolo-relativa e relativa antes de chamar fetch) e payload revalidado.
+  O filtro é literal (substring, sem regex), com normalização NFD sem acentos,
+  AND de tokens (teto de 12), pontuação por ocorrência (título 4, descrição 2,
+  área 1, bônus de título completo) e desempate alfabético por URL para ser
+  determinístico. Teto de 30 resultados por consulta.
+- `/busca/` estática e acessível: a navegação manual pelas seis áreas vem no
+  HTML estático e é a degradação garantida sem JavaScript (o bloco de busca
+  nasce `hidden` e só aparece com script). O input fica desabilitado até o
+  índice chegar. Deep-link `?q=` preenche a consulta, `history.replaceState`
+  mantém a URL sincronizada, o status usa `aria-live` e a contagem de
+  resultados é anunciada. Todo render usa `createElement`, `textContent` e
+  `setAttribute` com URLs já validadas: nenhum `innerHTML`.
+- Descoberta sem override: link "Busca" no fim da sidebar via config, fora de
+  `topics.mjs` (não é área editorial). A home usa `template: splash` e o 404
+  nativo não renderiza sidebar, então o link aparece nas 15 páginas internas e
+  na própria `/busca/`.
+- Quatro erros de tipo do `astro check` corrigidos: o narrowing de
+  `instanceof` não é preservado nas closures do script da página (wiring movido
+  para `setupBusca` com parâmetros tipados) e o endpoint escoa os campos agora
+  opcionais como valores inválidos para o gerador rejeitar com a mensagem
+  editorial (fail-loud preservado).
+- Suíte: 55 testes novos (109 em 6 arquivos). Payload malformado (não objeto,
+  chaves extras, version, entries, JSON quebrado), URL hostil (`javascript:`,
+  protocolo-relativa, `https`, travessia, contrabarra, segmentos vazios),
+  timeout (fake timers), caracteres especiais na consulta (metacaracteres de
+  regex são literais, emoji, aspas), falha de rede, resposta não ok, corpo
+  acima do teto, AND de tokens, normalização de acento, determinismo e tetos.
+- Dez provas por mutação com snapshot `cp`, `node --check` e restauração
+  conferida. Nove na bateria (chaves exatas, teto por campo, version, teto de
+  bytes do fetch, timeout, normalização, teto de resultados, AND de tokens e
+  validação canônica de URL, que derrubou 5 testes). A décima revelou que o
+  check de `:`/`..` em `entryUrlViolations` é redundante por construção com a
+  barreira canônica de segmentos (nenhum teste depende dele sozinho): a
+  redundância foi mantida como defesa em profundidade e registrada aqui.
+- Artefato conferido: build de 17 páginas com `/busca/`, `dist/search-index.json`
+  inalterado (15 entradas, 3.726 bytes, version 1), bundle da página com
+  validador, timeout e normalização embutidos e sem `innerHTML`.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos,
+  Content policy PASS, 109 testes, build de 17 páginas, zero vulnerabilidades e
+  política de install scripts PASS. Gates `G-CONTENT`, `G-VISUAL` e
+  `G-CLOUDFLARE` não abertos. QA interativo no browser (debounce, `?q=`,
+  leitor de tela) pertence ao `DOCS-07` e ao `G-VISUAL`.
+- Após a sessão, o owner ordenou commit e push e emitiu regra durável:
+  commit e push ao fim de cada sessão deste repositório dispensam ordem
+  específica (registrada em `STATE.md` §"Decisões confirmadas"). A fatia
+  virou o commit `3e9ddc5`, enviado ao remoto `pagelab/epico-site-docs`
+  (branch `main`) junto com os bookmarks.
