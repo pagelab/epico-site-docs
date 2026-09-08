@@ -50,6 +50,48 @@
   verde: 33 testes em 4 arquivos e build de 10 páginas.
 - Commit local e push das mudanças do `DOCS-03A` para
   `pagelab/epico-site-docs` executados a pedido do owner em 2026-09-08.
+- `DOCS-03B` concluído em 2026-09-08: `precos-e-hospedagem` (de
+  `02-precos-e-hospedagem.md`) e `suporte-e-propriedade` (de
+  `04-suporte-e-propriedade.md`) publicados na área `servicos-e-suporte` com ajustes
+  editoriais mínimos exigidos pelas regras (pontos e vírgula, um travessão longo e
+  "setup" como nome do serviço). As linhas de `docs/provenance.md` ganharam o commit
+  de referência de cada fonte. `npm run verify` verde: 33 testes em 4 arquivos e
+  build de 12 páginas.
+- `DOCS-03C` concluído em 2026-09-08: os dois FAQs viraram o artigo único
+  `perguntas-frequentes/index.md` (o índice da área é o artigo, sem slug redundante
+  nem landing vazio). O artigo responde o que só as fontes de FAQ cobriam e linka os
+  quatro artigos migrados para o restante, sem repeti-los. `docs/provenance.md`
+  registrou as duas fontes com commit de referência e estados distintos (`migrado`
+  no consolidado, `fundido` no FAQ curto) e `tests/provenance.test.ts` passou a
+  exigir que linhas `fundido` também apontem para artigo canônico, provado por
+  mutação. Nesta mesma sessão, `npm audit` passou a reportar 3 vulnerabilidades high
+  em `sharp <0.35.4` via `wrangler → miniflare` com o lockfile inalterado (atualização
+  do banco de advisories); remediado com `overrides` de `"sharp": "^0.35.4"` no
+  `package.json`, que unificou a árvore na versão corrigida, e lockfile regenerado.
+  `npm run verify` verde: 33 testes em 4 arquivos, build de 12 páginas, zero
+  vulnerabilidades.
+- `DOCS-03D` concluído em 2026-09-08: `licencas-e-downloads/licencas-e-prazos.md`
+  ("Consulte suas licenças e prazos") e `licencas-e-downloads/baixar-arquivos.md`
+  ("Baixe os arquivos do seu produto") publicados como conteúdo novo, sem fonte
+  semente. Os fatos vêm da ADR 0003 do workspace Área de Clientes e dos rótulos
+  reais do painel em produção, conferidos no código do plugin e no catálogo
+  pt_BR. `docs/provenance.md` registrou as duas linhas com destino canônico e
+  estado "conteúdo novo", com parágrafo de origem factual para a revisão de
+  `G-CONTENT`. `npm run verify` verde: 33 testes em 4 arquivos, build de 14
+  páginas, zero vulnerabilidades.
+- `DOCS-03E` concluído em 2026-09-08: `dominio-e-publicacao/publique-seu-site-pela-primeira-vez.md`
+  ("Publique seu site pela primeira vez") e
+  `dominio-e-publicacao/conecte-seu-dominio.md` ("Conecte seu domínio com
+  segurança") publicados como conteúdo novo, sem fonte semente, com os títulos
+  e descrições dos cards de tutorial do painel. Os fatos vêm da ADR 0007 do
+  workspace Área de Clientes e dos rótulos reais do painel em produção,
+  conferidos no código do plugin e no catálogo pt_BR. Nada sobre a mecânica do
+  DNS além do que o painel declara foi inventado. `docs/provenance.md`
+  registrou as duas linhas com destino canônico e estado "conteúdo novo", com
+  parágrafo de origem factual para a revisão de `G-CONTENT`. `npm run verify`
+  verde: 33 testes em 4 arquivos, build de 16 páginas, zero vulnerabilidades.
+- As mudanças de `DOCS-03B` a `DOCS-03E` estão no working tree, não
+  commitadas. Nenhum commit ou push executado: aguardam ordem do owner.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
   `DOCS-06`. Não foram silenciados.
 - Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
@@ -57,11 +99,11 @@
 
 ## ▶ Próxima ação
 
-Executar `DOCS-03B`: migrar `02-precos-e-hospedagem.md` e
-`04-suporte-e-propriedade.md` para a área `servicos-e-suporte` com slugs
-canônicos, atualizar as linhas correspondentes em `docs/provenance.md` (commit
-de referência incluído) e concluir com `npm run verify`. Não abrir o gate de
-aceite de conteúdo nessa sessão.
+Executar `DOCS-04A`: gerador puro e endpoint do índice JSON, conforme os
+critérios de `TASKS.md` (drafts, slugs duplicados, URL externa e campos vazios
+falham no build, índice sem corpo de artigo nem PII). Não abrir o gate de
+aceite de conteúdo nem mexer nas mudanças não commitadas de `DOCS-03B` a
+`DOCS-03E`, que aguardam ordem do owner.
 
 ## Gates vivos
 

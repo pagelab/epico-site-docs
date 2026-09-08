@@ -12,10 +12,10 @@
 | 2 | `DOCS-01` | P0 | M | Repo e scaffold Starlight reproduzíveis | concluído | `DOCS-00` |
 | 3 | `DOCS-02` | P0 | M | Modelo de conteúdo, slugs, lint editorial e estrutura das seis áreas | concluído | `DOCS-01` |
 | 4 | `DOCS-03A` | P0 | M | Migrar fundamentos e edição, com mapa de proveniência | concluído | `DOCS-02` |
-| 5 | `DOCS-03B` | P0 | M | Migrar preços, hospedagem, suporte e propriedade | aberto | `DOCS-03A` |
-| 6 | `DOCS-03C` | P0 | M | Fundir os dois FAQs sem duplicação | aberto | `DOCS-03B` |
-| 7 | `DOCS-03D` | P0 | M | Escrever tutoriais de licenças e downloads | aberto | `DOCS-03C` |
-| 8 | `DOCS-03E` | P0 | M | Escrever tutoriais de domínio e publicação | aberto | `DOCS-03C` |
+| 5 | `DOCS-03B` | P0 | M | Migrar preços, hospedagem, suporte e propriedade | concluído | `DOCS-03A` |
+| 6 | `DOCS-03C` | P0 | M | Fundir os dois FAQs sem duplicação | concluído | `DOCS-03B` |
+| 7 | `DOCS-03D` | P0 | M | Escrever tutoriais de licenças e downloads | concluído | `DOCS-03C` |
+| 8 | `DOCS-03E` | P0 | M | Escrever tutoriais de domínio e publicação | concluído | `DOCS-03C` |
 | 9 | `DOCS-04A` | P0 | M | Gerador puro e endpoint do índice JSON | aberto | `DOCS-02` |
 | 10 | `DOCS-04B` | P0 | G | Página `/busca/` e cliente de busca defensivo | aberto | `DOCS-04A` |
 | 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | aberto | `DOCS-04B` |
@@ -185,3 +185,145 @@
   de install scripts PASS.
 - Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Commit local e push
   para `pagelab/epico-site-docs` executados a pedido do owner em 2026-09-08.
+
+## Checkpoint de 2026-09-08: DOCS-03B
+
+- `02-precos-e-hospedagem.md` migrado para
+  `servicos-e-suporte/precos-e-hospedagem.md` e `04-suporte-e-propriedade.md` para
+  `servicos-e-suporte/suporte-e-propriedade.md`, sem os prefixos numéricos das fontes.
+- Ajustes editoriais aplicados apenas onde as regras exigem: pontos e vírgula
+  removidos (três frases da fonte 02, dois itens da lista de serviços e três frases
+  da fonte 04), travessão longo do parágrafo de operação gerenciada trocado por
+  oração entre vírgulas e "setup" como referência ao serviço trocado por
+  `Setup Headless` ("depois do setup", "preço do setup", "pertencem ao setup" e o
+  título "O setup técnico já coloca meu novo site no ar imediatamente?"). A expressão
+  "o setup existente" da fonte 02 foi mantida por se referir à configuração atual do
+  WordPress do cliente, não ao serviço.
+- `docs/provenance.md` atualizado com o commit de referência de cada fonte
+  (`e32bc9c9d1bebd1c9c90cbe74838a1c6ed7c19fc` para `02-precos-e-hospedagem.md` e
+  `eec17af7d3984c45cf82be8c9fd8a925b3888ab5` para `04-suporte-e-propriedade.md`),
+  guardado por `tests/provenance.test.ts`.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos, lint limpo, 33
+  testes em 4 arquivos, build de 12 páginas com as duas novas
+  (/servicos-e-suporte/precos-e-hospedagem/ e
+  /servicos-e-suporte/suporte-e-propriedade/), zero vulnerabilidades e política de
+  install scripts PASS.
+- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Nenhum commit ou push foi
+  executado nesta sessão: aguardam ordem do owner.
+
+## Checkpoint de 2026-09-08: DOCS-03C
+
+- `FAQ.md` e `FAQ-consolidado.md` foram fundidos num artigo único, que é o
+  `index` da área `perguntas-frequentes`. A área existe para o FAQ, então o
+  índice da área vira o artigo, em vez de criar um slug redundante abaixo de um
+  landing vazio. As duas fontes deixam de existir como artigos separados e não
+  há duplicação entre elas.
+- O artigo fundido responde apenas o que só as duas fontes de FAQ cobriam:
+  o que acontece com o site durante o trabalho, preservação de posts,
+  e-commerce, acessos e controle de contas e a Área de Clientes. As perguntas
+  já respondidas pelos artigos de `DOCS-03A` e `DOCS-03B` não foram repetidas:
+  o artigo linka os quatro artigos migrados numa seção final de encaminhamento.
+- Ajustes editoriais limitados às regras: o ponto e vírgula da fonte
+  (`contas devem permanecer em nome do cliente; a equipe Épico recebe`) virou
+  oração coordenada, "No headless" virou "No modelo headless" e o prefixo
+  numérico e o preâmbulo interno do consolidado ("o escopo aprovado na proposta
+  prevalece sobre exemplos gerais deste arquivo") não são conteúdo público e
+  ficaram de fora.
+- `docs/provenance.md`: as duas linhas de FAQ saíram de "a definir" e ganharam
+  commit de referência (`e32bc9c9d1bebd1c9c90cbe74838a1c6ed7c19fc` para
+  `FAQ.md` e `3b1b075a1ce3c22fd8c62cac4e9bd4212e3a18d9` para
+  `FAQ-consolidado.md`), destino `perguntas-frequentes/index` e estados
+  distintos: `migrado` no consolidado (corpo principal) e `fundido` no FAQ
+  curto, porque fusão é a exceção declarada à regra de destino único.
+- `tests/provenance.test.ts` estendido: linhas `fundido` também precisam
+  apontar para artigo canônico existente, com topic do diretório. Prova por
+  mutação: trocar o destino da linha `fundido` por "a definir" derruba o teste,
+  e a restauração ficou idêntica ao snapshot.
+- Incidente externo ao recorte, remediado na mesma sessão: `npm audit` passou a
+  reportar 3 vulnerabilidades high (`sharp <0.35.4`, GHSAs de libheif) na cadeia
+  `wrangler 4.129.1 → miniflare 5.20260907.0-alpha → sharp 0.35.2`, com o mesmo
+  lockfile que passou verde na sessão do `DOCS-03B` horas antes, o que indica
+  atualização do banco de advisories e não mudança local. O wrangler 4.130.0
+  existe, mas o miniflare mais novo continua exigindo `sharp 0.35.2`, então bump
+  não resolve. Remediação: `overrides` de `"sharp": "^0.35.4"` no
+  `package.json`, que unifica a árvore em `0.35.4` (a versão que o Astro já
+  usava), com lockfile regenerado. O `wrangler` continua em `4.129.1`.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos, lint
+  limpo, 33 testes em 4 arquivos, build de 12 páginas, zero vulnerabilidades e
+  política de install scripts PASS. Os avisos de coleção i18n vazia e 404
+  ausente continuam atribuídos a `DOCS-06`.
+- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Nenhum commit ou
+  push foi executado nesta sessão: seguem aguardando ordem do owner, junto com
+  as mudanças não commitadas do `DOCS-03B`.
+
+## Checkpoint de 2026-09-08: DOCS-03D
+
+- Dois artigos novos na área `licencas-e-downloads`:
+  `licencas-e-downloads/licencas-e-prazos.md` ("Consulte suas licenças e
+  prazos") e `licencas-e-downloads/baixar-arquivos.md` ("Baixe os arquivos do
+  seu produto"), ambos conteúdo novo, sem fonte semente.
+- Os fatos foram derivados da decisão de produto
+  [ADR 0003](../Area-de-clientes/docs/decisions/0003-suporte-atualizacoes-e-ultima-versao-elegivel.md)
+  do workspace Área de Clientes (uso permanente, suporte de 100 dias,
+  atualizações por 12 meses, re-download da última versão elegível e renovação
+  sem cobrança retroativa) e do comportamento atual do painel em produção. Os
+  rótulos citados nos artigos foram conferidos no código do plugin e no
+  catálogo pt_BR: `Suporte até`, `Atualizações até`, `Sites conectados`,
+  `Conectado`, `Remover domínio`, `Atualizações encerradas` e a caixa
+  `Renove seu acesso ao suporte` com o botão `Renovar agora`, que leva ao card
+  `Suporte adicional` da seção Serviços.
+- Escopo deliberado: os artigos não repetem o que as áreas de Serviços e
+  Suporte já respondem e linkam esses artigos. Não descrevem passos de
+  instalação do produto nem prometem caminho de compra além do que a
+  interface oferece (a renovação de atualizações é encaminhada à página
+  Suporte, que é o canal real do painel).
+- `docs/provenance.md`: a linha "a escrever" de `DOCS-03D` virou duas linhas
+  com destino canônico e estado `conteúdo novo em 2026-09-08`, e um parágrafo
+  novo registra a origem factual (ADR 0003 e painel em produção) para a
+  revisão factual de `G-CONTENT`.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos, lint
+  limpo, 33 testes em 4 arquivos, build de 14 páginas com as duas novas
+  (/licencas-e-downloads/licencas-e-prazos/ e
+  /licencas-e-downloads/baixar-arquivos/), zero vulnerabilidades e política
+  de install scripts PASS.
+- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Nenhum commit ou
+  push foi executado nesta sessão: as mudanças de `DOCS-03B`, `DOCS-03C` e
+  `DOCS-03D` seguem no working tree, aguardando ordem do owner.
+
+## Checkpoint de 2026-09-08: DOCS-03E
+
+- Dois artigos novos na área `dominio-e-publicacao`:
+  `dominio-e-publicacao/publique-seu-site-pela-primeira-vez.md` ("Publique seu
+  site pela primeira vez") e `dominio-e-publicacao/conecte-seu-dominio.md`
+  ("Conecte seu domínio com segurança"), ambos conteúdo novo, sem fonte
+  semente. Os títulos e descrições são os mesmos dos cards de tutorial do
+  painel ("Da revisão final ao site no ar, com a checklist de publicação" e
+  "Passo a passo para apontar o domínio sem tirar o site do ar").
+- Os fatos vêm da ADR 0007 do workspace Área de Clientes (cinco etapas, gate de
+  lançamento por serviço, itens da etapa de publicação) e dos rótulos reais do
+  painel em produção, conferidos no código do plugin e no catálogo pt_BR:
+  telas de revisão (`Prepare seu site` com `Meu conteúdo está pronto`,
+  `Revise e aprove` com `Aprovo o conteúdo`), tarefa `Aponte o seu domínio`
+  com `Já apontei o domínio` e `Conferindo o site publicado`, caixa
+  `Itens desta etapa` por serviço, formulário `Envie o acesso ao seu
+  registrador` (dados criptografados, nunca por e-mail) e propagação de até
+  48 horas com formulário de suporte como escape. Nada sobre a mecânica do
+  DNS além do que o painel declara foi inventado: o valor do registro CNAME e
+  as telas de cada registrador não são prometidos.
+- Escopo deliberado: os artigos não repetem o que as áreas de Serviços,
+  Suporte e Perguntas frequentes já respondem e linkam esses artigos. O artigo
+  de domínio desambigua o domínio público do site dos **Sites conectados** da
+  licença, que seguem na área de Licenças. O índice da área não mudou.
+- `docs/provenance.md`: a linha "a escrever" de `DOCS-03E` virou duas linhas
+  com destino canônico e estado `conteúdo novo em 2026-09-08`, e um parágrafo
+  novo registra a origem factual (ADR 0007 e painel em produção) para a
+  revisão factual de `G-CONTENT`.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos, lint
+  limpo, 33 testes em 4 arquivos, build de 16 páginas com as duas novas
+  (/dominio-e-publicacao/publique-seu-site-pela-primeira-vez/ e
+  /dominio-e-publicacao/conecte-seu-dominio/), zero vulnerabilidades e
+  política de install scripts PASS. Os avisos de coleção i18n vazia e 404
+  ausente continuam atribuídos a `DOCS-06`.
+- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Nenhum commit ou
+  push foi executado nesta sessão: as mudanças de `DOCS-03B` a `DOCS-03E`
+  seguem no working tree, aguardando ordem do owner.

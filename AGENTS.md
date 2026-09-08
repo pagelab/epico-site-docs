@@ -8,6 +8,13 @@
 3. Atualize `TASKS.md` quando o estado de um task mudar.
 4. Atualize `STATE.md` por último, com uma próxima ação concreta e verificável.
 
+## AI model routing
+
+Referência global: [`../../Brain/AI/MODEL-ROUTING.md`](../../Brain/AI/MODEL-ROUTING.md).
+
+As recomendações são somente advisory, nunca enforcement. Consulte a recomendação
+transitória no `STATE.md` quando existir.
+
 ## Autoridades e fronteiras
 
 - Este repositório é a autoridade do conteúdo público de `docs.epico.site`.

@@ -37,8 +37,10 @@ describe('provenance map', () => {
     expect(new Set(namedSources).size).toBe(namedSources.length);
   });
 
-  it('points every migrated row at an existing canonical article', async () => {
-    const rows = parseRows(await readProvenance()).filter((row) => row[5].startsWith('migrado'));
+  it('points every migrated or fused row at an existing canonical article', async () => {
+    const rows = parseRows(await readProvenance()).filter((row) =>
+      /^(?:migrado|fundido)/u.test(row[5]),
+    );
 
     expect(rows.length).toBeGreaterThan(0);
 
