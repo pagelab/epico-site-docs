@@ -16,17 +16,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "audit": "npm audit --audit-level=high",
-    "verify": "npm run check && npm run lint && npm test && npm run build && npm run audit"
+    "verify": "npm run check && npm run lint && npm test && npm run build && npm run audit && node scripts/check-install-scripts.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "0.42.0",
     "astro": "7.3.1",
     "starlight-llms-txt": "0.11.0"
-  },
-  "allowScripts": {
-    "esbuild": true,
-    "workerd@1.20260907.1": true,
-    "fsevents": false
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
@@ -35,5 +30,11 @@
     "typescript": "6.0.3",
     "vitest": "5.0.0",
     "wrangler": "4.129.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.28.1": true,
+    "workerd@1.20260907.1": true,
+    "fsevents": false
   }
 }

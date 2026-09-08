@@ -12,9 +12,11 @@
 ## Estado corrente
 
 - Repositório local criado em 2026-09-07 com o template oficial Starlight.
-- Dois commits locais: o inicial do gerador (`create-astro`, `e6244f5`) e o commit
+  Dois commits locais: o inicial do gerador (`create-astro`, `e6244f5`) e o commit
   do scaffold auditado (fatias `DOCS-00` a `DOCS-02` + ajustes da auditoria).
-  Nenhum remoto Git, projeto Cloudflare, domínio ou deploy foi configurado.
+  Em 2026-09-08, ordem direta do owner criou o remoto privado
+  `EpicoStudio/epico-site-docs` e fez push do branch `main`. Nenhum projeto
+  Cloudflare, domínio ou deploy foi configurado.
 - Node `24.20.0` e npm `11.19.0` estão fixados.
 - `DOCS-00`, `DOCS-01` e `DOCS-02` concluídos localmente. O scaffold tem locale
   raiz `pt-BR`, seis grupos, schema estrito e lint de conteúdo público.
@@ -26,10 +28,21 @@
   de `src/lib/topics.mjs` (fonte única das seis áreas) e barreiras anti-XSS no
   lint de conteúdo, provadas por sonda. `npm ci` e `npm run verify` verdes após
   os ajustes.
+- A segunda auditoria (2026-09-08) manteve o gate verde e aplicou três melhorias:
+  `allowScripts` reescrito no formato canônico do npm 11.19 com esbuild pinado
+  por versão e novo passo de gate `scripts/check-install-scripts.mjs` no
+  `verify` (falha com pacote sem cobertura, provado por sonda), lint de
+  conteúdo refatorado em módulo testável com cercas CommonMark, violação de
+  cerca não fechada e barreiras anti-XSS ampliadas (`javascript:` e
+  `data:text/html` em `href`/`src`, tags brutas `<iframe>`, `<object>`,
+  `<embed>`, `<form>`), e as sondas viraram regressão permanente em
+  `tests/lint-policy.test.ts` (30 testes em 3 arquivos no total). Commit local
+  e push para o remoto executados a pedido do owner em 2026-09-08.
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são gerados.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
   `DOCS-06`. Não foram silenciados.
-- Nenhum remoto Git, projeto Cloudflare, domínio ou deploy foi configurado.
+- Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
+  pública do remoto e a branch de produção aguardam as decisões de `DOCS-08`.
 
 ## ▶ Próxima ação
 
@@ -64,4 +77,5 @@ aceite de conteúdo nessa sessão.
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
-- Última sessão: 2026-09-07.
+- Remoto: `EpicoStudio/epico-site-docs` no GitHub, privado, branch `main`.
+- Última sessão: 2026-09-08.

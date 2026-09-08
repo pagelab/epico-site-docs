@@ -123,3 +123,35 @@
   pertencem a `DOCS-06` e não foram silenciados.
 - Commit local do scaffold executado (a pedido do owner); nenhum remoto, push
   ou deploy foi executado.
+
+## Checkpoint de 2026-09-08
+
+- Segunda auditoria completa do scaffold a pedido do owner, sem abrir `DOCS-03A`.
+- `allowScripts` do `package.json` reescrito no formato canônico do npm 11.19
+  via `npm install-scripts approve`/`deny`: esbuild agora pinado por versão
+  (`0.28.1` e `0.28.2`), workerd pinado e `fsevents` negado. A auditoria
+  confirmou que o campo é o mecanismo real do npm: dependências sem cobertura
+  têm scripts de instalação bloqueados por padrão.
+- Novo passo de gate `scripts/check-install-scripts.mjs` no `npm run verify`:
+  como `npm install-scripts ls` é apenas informativo (sempre exit 0), o script
+  falha o gate quando existe pacote com script de instalação sem cobertura
+  explícita. Prova por sonda: campo vazio lista os pacotes e sai com exit 1.
+- `scripts/lint-content.mjs` refatorado em módulo testável com execução direta
+  preservada: cercas de código seguem o CommonMark (fechamento exige mesmo
+  caractere, comprimento igual ou maior e linha limpa), cerca não fechada até o
+  fim do arquivo virou violação e as barreiras anti-XSS passam a cobrir
+  `href`/`src` com `javascript:` e `data:text/html` e tags brutas `<iframe>`,
+  `<object>`, `<embed>` e `<form>` fora de cerca.
+- As sondas de segurança viraram regressão permanente em
+  `tests/lint-policy.test.ts` (25 testes, com contraparte limpa por barreira) e
+  o scaffold ganhou teste que exige `allowScripts` presente e bem formado.
+- `npm ci` reproduz o lockfile sem avisos de install-scripts. `npm run verify`:
+  Astro Check sem diagnósticos, lint limpo, 30 testes em 3 arquivos, build de 8
+  páginas, zero vulnerabilidades e política de scripts PASS.
+- Nenhuma versão de dependência mudou: `@types/node` segue a major do runtime e
+  TypeScript 7 é major nova sem ganho para o gate.
+- Mudanças commitadas e enviadas por push, a pedido do owner, para o remoto
+  privado `EpicoStudio/epico-site-docs` (branch `main`). `DOCS-08` segue
+  bloqueado: preview, produção, DNS, rollback, least privilege e a política de
+  visibilidade do remoto não foram definidos. Os avisos de coleção i18n vazia e
+  404 ausente continuam atribuídos a `DOCS-06`.

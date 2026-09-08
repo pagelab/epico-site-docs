@@ -1,10 +1,15 @@
+// Política editorial e de segurança do acervo público.
+// Executável por `node scripts/lint-content.mjs` e importável pelos testes de
+// regressão em `tests/lint-policy.test.ts`. As barreiras deste arquivo são o
+// controle primário contra conteúdo perigoso: mudanças de comportamento exigem
+// sonda correspondente atualizada.
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, relative, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { topics } from '../src/lib/topics.mjs';
 
 const contentRoot = fileURLToPath(new URL('../src/content/docs/', import.meta.url));
-const allowedSegment = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const allowedSegment = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const contentExtensions = new Set(['.md', '.mdx']);
 const allowedTopics = new Set(topics);
 const requiredFrontmatter = ['title', 'description', 'topic', 'draft', 'lastReviewed'];
@@ -16,6 +21,10 @@ const forbiddenSecrets = [
   [/\/Users\/[A-Za-z0-9._-]+\//u, 'caminho local'],
   [/\b(?:localhost|127\.0\.0\.1)(?::\d+)?\b/iu, 'endereço local'],
 ];
+// Cerca de código segundo o CommonMark: até 3 espaços de recuo, 3 ou mais
+// crases ou tils, e fechamento apenas com o mesmo caractere em comprimento
+// igual ou maior, sem texto na linha de fechamento.
+const fencePattern = /^ {0,3}(`{3,}|~{3,})(.*)$/u;
 
 async function walk(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -34,36 +43,12 @@ async function walk(directory) {
   return files;
 }
 
-function bodyLines(source) {
-  const lines = source.split(/\r?\n/u);
-  let inFrontmatter = lines[0] === '---';
-  let inFence = false;
-
-  return lines.flatMap((line, index) => {
-    if (index > 0 && inFrontmatter && line === '---') {
-      inFrontmatter = false;
-      return [];
-    }
-
-    if (inFrontmatter) {
-      return [];
-    }
-
-    if (/^\s*(```|~~~)/u.test(line)) {
-      inFence = !inFence;
-      return [];
-    }
-
-    return inFence ? [] : [{ line, number: index + 1 }];
-  });
-}
-
-function frontmatterOf(source) {
+export function frontmatterOf(source) {
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u);
   return match?.[1] ?? null;
 }
 
-function scalar(frontmatter, key) {
+export function scalar(frontmatter, key) {
   const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
   const match = frontmatter.match(new RegExp(`^${escapedKey}:\\s*(.+?)\\s*$`, 'mu'));
 
@@ -74,7 +59,7 @@ function scalar(frontmatter, key) {
   return match[1].replace(/^(?:"([\s\S]*)"|'([\s\S]*)')$/u, '$1$2').trim();
 }
 
-function isRealDate(value) {
+export function isRealDate(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/u.test(value)) {
     return false;
   }
@@ -83,7 +68,7 @@ function isRealDate(value) {
   return !Number.isNaN(date.valueOf()) && date.toISOString().startsWith(value);
 }
 
-function unapprovedEmails(source) {
+export function unapprovedEmails(source) {
   const matches = source.match(/[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})/giu) ?? [];
   return matches.filter((email) => {
     const domain = email.slice(email.lastIndexOf('@') + 1).toLowerCase();
@@ -91,10 +76,49 @@ function unapprovedEmails(source) {
   });
 }
 
-const violations = [];
+export function scanBody(source) {
+  const lines = source.split(/\r?\n/u);
+  let inFrontmatter = lines[0] === '---';
+  let openFence = null;
+  const body = [];
 
-for (const path of await walk(contentRoot)) {
-  const relativePath = relative(contentRoot, path);
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+
+    if (index > 0 && inFrontmatter && line === '---') {
+      inFrontmatter = false;
+      continue;
+    }
+
+    if (inFrontmatter) {
+      continue;
+    }
+
+    const fence = line.match(fencePattern);
+
+    if (fence) {
+      if (openFence === null) {
+        openFence = { marker: fence[1][0], length: fence[1].length };
+      } else if (
+        fence[1][0] === openFence.marker &&
+        fence[1].length >= openFence.length &&
+        fence[2].trim() === ''
+      ) {
+        openFence = null;
+      }
+      continue;
+    }
+
+    if (openFence === null) {
+      body.push({ line, number: index + 1 });
+    }
+  }
+
+  return { lines: body, unclosedFence: openFence !== null };
+}
+
+export function lintSource(relativePath, source) {
+  const violations = [];
   const pathSegments = relativePath.split(sep);
   const filename = pathSegments.pop();
   const stem = filename.slice(0, -extname(filename).length);
@@ -105,12 +129,11 @@ for (const path of await walk(contentRoot)) {
     }
   }
 
-  const source = await readFile(path, 'utf8');
   const frontmatter = frontmatterOf(source);
 
   if (frontmatter === null) {
     violations.push(`${relativePath}: frontmatter ausente ou inválido`);
-    continue;
+    return violations;
   }
 
   for (const key of requiredFrontmatter) {
@@ -161,7 +184,13 @@ for (const path of await walk(contentRoot)) {
     violations.push(`${relativePath}: e-mail público não aprovado: ${email}`);
   }
 
-  for (const { line, number } of bodyLines(source)) {
+  const { lines, unclosedFence } = scanBody(source);
+
+  if (unclosedFence) {
+    violations.push(`${relativePath}: cerca de código não fechada até o fim do arquivo`);
+  }
+
+  for (const { line, number } of lines) {
     if (line.includes('—')) {
       violations.push(`${relativePath}:${number}: travessão longo não permitido`);
     }
@@ -174,19 +203,48 @@ for (const path of await walk(contentRoot)) {
       violations.push(`${relativePath}:${number}: tag <script> não permitida no corpo`);
     }
 
-    if (/\son[a-z]+\s*=/iu.test(line)) {
+    const rawTag = line.match(/<(iframe|object|embed|form)\b/iu);
+
+    if (rawTag) {
+      violations.push(`${relativePath}:${number}: tag HTML bruta <${rawTag[1]}> não permitida no corpo`);
+    }
+
+    if (/\bon[a-z]+\s*=/iu.test(line)) {
       violations.push(`${relativePath}:${number}: manipulador de evento inline não permitido no corpo`);
     }
 
-    if (/\]\(\s*javascript:/iu.test(line)) {
+    if (/\]\(\s*(?:javascript:|data:text\/html)/iu.test(line)) {
       violations.push(`${relativePath}:${number}: link com esquema javascript: não permitido`);
     }
+
+    if (/\b(?:href|src)\s*=\s*["']\s*(?:javascript:|data:text\/html)/iu.test(line)) {
+      violations.push(`${relativePath}:${number}: atributo href ou src com esquema perigoso não permitido`);
+    }
   }
+
+  return violations;
 }
 
-if (violations.length > 0) {
-  console.error(violations.join('\n'));
-  process.exitCode = 1;
-} else {
-  console.log('Content policy: PASS');
+export async function lintContent(root = contentRoot) {
+  const violations = [];
+
+  for (const path of await walk(root)) {
+    violations.push(...lintSource(relative(root, path), await readFile(path, 'utf8')));
+  }
+
+  return violations;
+}
+
+const invokedDirectly = process.argv[1] !== undefined
+  && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (invokedDirectly) {
+  const violations = await lintContent();
+
+  if (violations.length > 0) {
+    console.error(violations.join('\n'));
+    process.exitCode = 1;
+  } else {
+    console.log('Content policy: PASS');
+  }
 }
