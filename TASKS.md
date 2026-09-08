@@ -16,7 +16,7 @@
 | 6 | `DOCS-03C` | P0 | M | Fundir os dois FAQs sem duplicação | concluído | `DOCS-03B` |
 | 7 | `DOCS-03D` | P0 | M | Escrever tutoriais de licenças e downloads | concluído | `DOCS-03C` |
 | 8 | `DOCS-03E` | P0 | M | Escrever tutoriais de domínio e publicação | concluído | `DOCS-03C` |
-| 9 | `DOCS-04A` | P0 | M | Gerador puro e endpoint do índice JSON | aberto | `DOCS-02` |
+| 9 | `DOCS-04A` | P0 | M | Gerador puro e endpoint do índice JSON | concluído | `DOCS-02` |
 | 10 | `DOCS-04B` | P0 | G | Página `/busca/` e cliente de busca defensivo | aberto | `DOCS-04A` |
 | 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | aberto | `DOCS-04B` |
 | 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | aberto | `DOCS-01` |
@@ -328,3 +328,55 @@
   owner ordenou commit e push: o corpus `DOCS-03B` a `DOCS-03E` inteiro
   (artigos, proveniência, override de `sharp` e bookmarks) virou o commit
   `52020ad`, enviado ao remoto `pagelab/epico-site-docs` (branch `main`).
+
+## Checkpoint de 2026-09-08: DOCS-04A
+
+- Gerador puro `src/lib/search-index.mjs`: não importa nada de Astro, então o
+  mesmo módulo alimenta o endpoint e a futura `/busca/` (`DOCS-04B`) e é
+  testável sem build. Payload versão 1, determinístico (mesma entrada produz
+  os mesmos bytes, sem carimbo de tempo), ordenado por URL, com chaves exatas
+  `url`, `title`, `description`, `topic` e `lastReviewed`. Nenhum campo carrega
+  corpo de artigo.
+- Mapeamento slug → URL segue o acordo do `slugToParam` do Starlight (confirmado
+  no fonte do vendor antes de codar): `''`/`index` → `/`, sufixo `/index`
+  desaparece, `foo` → `/foo/`. Barreiras do gerador, todas falhando o build com
+  mensagem própria: rascunho (`draft !== false`), URL hostil (dois-pontos,
+  contrabarra ou protocolo-relativa), segmento fora do canônico ASCII, campos
+  vazios ou de tipo errado, topic fora da allowlist de `topics.mjs`,
+  `lastReviewed` fora do ISO real, slugs distintos resolvendo a MESMA URL
+  (duplicado), PII (e-mail, caminho local, endereço local) em texto livre, teto
+  de 200 entradas e teto de 256 KiB cobrado no serializador.
+- Endpoint `src/pages/search-index.json.ts` com `prerender = true`: lê
+  `getCollection('docs')`, converte `entry.id` → slug e `lastReviewed` → ISO e
+  serve os bytes do `serializeSearchIndex`. Qualquer violação do gerador derruba
+  o `astro build` (provado empíricamente: o erro estoura no prerender de
+  `/search-index.json`).
+- Lint de conteúdo: `draft: true` virou violação (`draft: true não pode entrar
+  no acervo público`). O acervo não tem estado de rascunho publicado, e a
+  barreira no gate é independente da barreira no build.
+- Prova empírica com artigo real em rascunho: `lint-content.mjs` sai com exit 1
+  E `astro build` sozinho também sai com exit 1, o que provou que drafts chegam
+  à coleção em produção (não há filtro silencioso do Starlight na coleção).
+  Duas camadas independentes, nenhuma deixa passar em silêncio. A primeira
+  tentativa da mutação não alterou o arquivo (quoting do `sed`), foi flagrada
+  pelo diff antes de qualquer conclusão e refeita com Node.
+- Provas por mutação: 9 mutações (draft, duplicado, URL hostil, canônico,
+  campo em branco, PII, teto de entradas, teto de bytes no gerador/serializador
+  e rascunho no lint), cada uma com diff impresso, `node --check` antes de rodar
+  e restauração por snapshot `cp` (nunca `git checkout`, arquivos ainda não
+  commitados na hora da prova). Todas as 9 derrubaram os testes esperados.
+- Suíte: 20 testes novos em `tests/search-index.test.ts` e 1 novo no
+  `tests/lint-policy.test.ts` (54 testes em 5 arquivos). O primeiro rodou pegou
+  um erro da expectativa do próprio teste (`primeiros-passos/index` resolve
+  `/primeiros-passos/`, não `/primeiros-passos/index/`), não do gerador.
+- Artefato real conferido: `dist/search-index.json` com 3.726 bytes, 15
+  entradas em correspondência 1:1 com as 15 rotas HTML de docs (a 16ª página
+  construída é o `404.html` do Starlight, corretamente fora do índice), sem
+  corpo, sem chave extra.
+- `npm run verify` verde com exit code 0 (Node `24.20.0` via nvm; a shell
+  default traz Node 20, que o Astro 7 recusa): Astro Check sem diagnósticos,
+  Content policy PASS, 54 testes, build de 16 páginas + `/search-index.json`,
+  zero vulnerabilidades e política de install scripts PASS. Os avisos de
+  coleção i18n vazia e 404 ausente continuam atribuídos a `DOCS-06`.
+- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Commit da fatia
+  `f127298`; bookmarks no commit imediatamente posterior.

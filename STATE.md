@@ -11,89 +11,36 @@
 
 ## Estado corrente
 
-- Repositório local criado em 2026-09-07 com o template oficial Starlight.
-  Dois commits locais: o inicial do gerador (`create-astro`, `e6244f5`) e o commit
-  do scaffold auditado (fatias `DOCS-00` a `DOCS-02` + ajustes da auditoria).
-  Em 2026-09-08, ordem direta do owner criou o remoto privado
-  `pagelab/epico-site-docs` e fez push do branch `main`. O remoto provisório na
-  organização `EpicoStudio` foi criado e removido no mesmo dia por ordem do
-  owner, que concentra na conta `pagelab` os repositórios conectados ao
-  Cloudflare. Nenhum projeto Cloudflare, domínio ou deploy foi configurado.
-- Node `24.20.0` e npm `11.19.0` estão fixados.
-- `DOCS-00`, `DOCS-01` e `DOCS-02` concluídos localmente. O scaffold tem locale
-  raiz `pt-BR`, seis grupos, schema estrito e lint de conteúdo público.
-- `npm ci` reproduziu o lockfile. `npm run verify` passou com Astro Check sem
-  diagnósticos, lint limpo, 4 testes, build de 8 páginas e zero vulnerabilidades.
-- A auditoria completa de 2026-09-07 sobre o scaffold aplicou quatro ajustes:
-  `sharp` direto removido (pin não unificava com o range do Astro e criava cópia
-  órfã), `@types/node` alinhado à major do runtime (`24.13.3`), sidebar derivada
-  de `src/lib/topics.mjs` (fonte única das seis áreas) e barreiras anti-XSS no
-  lint de conteúdo, provadas por sonda. `npm ci` e `npm run verify` verdes após
-  os ajustes.
-- A segunda auditoria (2026-09-08) manteve o gate verde e aplicou três melhorias:
-  `allowScripts` reescrito no formato canônico do npm 11.19 com esbuild pinado
-  por versão e novo passo de gate `scripts/check-install-scripts.mjs` no
-  `verify` (falha com pacote sem cobertura, provado por sonda), lint de
-  conteúdo refatorado em módulo testável com cercas CommonMark, violação de
-  cerca não fechada e barreiras anti-XSS ampliadas (`javascript:` e
-  `data:text/html` em `href`/`src`, tags brutas `<iframe>`, `<object>`,
-  `<embed>`, `<form>`), e as sondas viraram regressão permanente em
-  `tests/lint-policy.test.ts` (30 testes em 3 arquivos no total). Commit local
-  e push para o remoto executados a pedido do owner em 2026-09-08.
-- Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são gerados.
-- `DOCS-03A` concluído em 2026-09-08: `formatos-de-publicacao` (de
-  `01-entenda-o-novo-formato.md`) e `edicao-e-personalizacao` (de
-  `03-edicao-e-personalizacao.md`) publicados no acervo com ajustes editoriais
-  mínimos exigidos pelas regras. O mapa de proveniência do corpus vive em
-  `docs/provenance.md`, com commit de referência de cada fonte para o diff da
-  revisão factual, e é guardado por `tests/provenance.test.ts`. `npm run verify`
-  verde: 33 testes em 4 arquivos e build de 10 páginas.
-- Commit local e push das mudanças do `DOCS-03A` para
-  `pagelab/epico-site-docs` executados a pedido do owner em 2026-09-08.
-- `DOCS-03B` concluído em 2026-09-08: `precos-e-hospedagem` (de
-  `02-precos-e-hospedagem.md`) e `suporte-e-propriedade` (de
-  `04-suporte-e-propriedade.md`) publicados na área `servicos-e-suporte` com ajustes
-  editoriais mínimos exigidos pelas regras (pontos e vírgula, um travessão longo e
-  "setup" como nome do serviço). As linhas de `docs/provenance.md` ganharam o commit
-  de referência de cada fonte. `npm run verify` verde: 33 testes em 4 arquivos e
-  build de 12 páginas.
-- `DOCS-03C` concluído em 2026-09-08: os dois FAQs viraram o artigo único
-  `perguntas-frequentes/index.md` (o índice da área é o artigo, sem slug redundante
-  nem landing vazio). O artigo responde o que só as fontes de FAQ cobriam e linka os
-  quatro artigos migrados para o restante, sem repeti-los. `docs/provenance.md`
-  registrou as duas fontes com commit de referência e estados distintos (`migrado`
-  no consolidado, `fundido` no FAQ curto) e `tests/provenance.test.ts` passou a
-  exigir que linhas `fundido` também apontem para artigo canônico, provado por
-  mutação. Nesta mesma sessão, `npm audit` passou a reportar 3 vulnerabilidades high
-  em `sharp <0.35.4` via `wrangler → miniflare` com o lockfile inalterado (atualização
-  do banco de advisories); remediado com `overrides` de `"sharp": "^0.35.4"` no
-  `package.json`, que unificou a árvore na versão corrigida, e lockfile regenerado.
-  `npm run verify` verde: 33 testes em 4 arquivos, build de 12 páginas, zero
-  vulnerabilidades.
-- `DOCS-03D` concluído em 2026-09-08: `licencas-e-downloads/licencas-e-prazos.md`
-  ("Consulte suas licenças e prazos") e `licencas-e-downloads/baixar-arquivos.md`
-  ("Baixe os arquivos do seu produto") publicados como conteúdo novo, sem fonte
-  semente. Os fatos vêm da ADR 0003 do workspace Área de Clientes e dos rótulos
-  reais do painel em produção, conferidos no código do plugin e no catálogo
-  pt_BR. `docs/provenance.md` registrou as duas linhas com destino canônico e
-  estado "conteúdo novo", com parágrafo de origem factual para a revisão de
-  `G-CONTENT`. `npm run verify` verde: 33 testes em 4 arquivos, build de 14
-  páginas, zero vulnerabilidades.
-- `DOCS-03E` concluído em 2026-09-08: `dominio-e-publicacao/publique-seu-site-pela-primeira-vez.md`
-  ("Publique seu site pela primeira vez") e
-  `dominio-e-publicacao/conecte-seu-dominio.md` ("Conecte seu domínio com
-  segurança") publicados como conteúdo novo, sem fonte semente, com os títulos
-  e descrições dos cards de tutorial do painel. Os fatos vêm da ADR 0007 do
-  workspace Área de Clientes e dos rótulos reais do painel em produção,
-  conferidos no código do plugin e no catálogo pt_BR. Nada sobre a mecânica do
-  DNS além do que o painel declara foi inventado. `docs/provenance.md`
-  registrou as duas linhas com destino canônico e estado "conteúdo novo", com
-  parágrafo de origem factual para a revisão de `G-CONTENT`. `npm run verify`
-  verde: 33 testes em 4 arquivos, build de 16 páginas, zero vulnerabilidades.
-- O corpus `DOCS-03B` a `DOCS-03E` foi commitado (`52020ad`) e enviado por
-  push ao remoto `pagelab/epico-site-docs` (branch `main`) por ordem do owner
-  em 2026-09-08, incluindo as bookmarks, o mapa de proveniência e o override
-  de `sharp`. Nenhuma outra mudança pendente no working tree.
+- Scaffold Starlight (`DOCS-00` a `DOCS-02`) criado em 2026-09-07, auditado
+  duas vezes (2026-09-07 e 2026-09-08) e com remoto privado
+  `pagelab/epico-site-docs` (branch `main`) criado e enviado por ordem do
+  owner. Node `24.20.0` e npm `11.19.0` fixados; Astro `7.3.1`, Starlight
+  `0.42.0`. Mecanismos duráveis do gate: sidebar derivada de
+  `src/lib/topics.mjs` (fonte única das seis áreas), lint de conteúdo com
+  cercas CommonMark e barreiras anti-XSS guardadas por
+  `tests/lint-policy.test.ts`, e `scripts/check-install-scripts.mjs` no
+  `verify`, que falha com pacote de install script sem cobertura explícita no
+  `allowScripts` canônico do npm 11.19.
+- Corpus da fila `DOCS-03` completo (`03A` a `03E`, 2026-09-08): dez artigos
+  nas seis áreas, com proveniência em `docs/provenance.md` (commit de
+  referência por fonte, estados `migrado`/`fundido`/`conteúdo novo`, guardado
+  por `tests/provenance.test.ts`). Override `"sharp": "^0.35.4"` no
+  `package.json` remedia os advisories da cadeia `wrangler → miniflare`, com
+  lockfile regenerado. Commit `52020ad` enviado por push por ordem do owner.
+- `DOCS-04A` concluído em 2026-09-08 (commit `f127298`): gerador puro
+  `src/lib/search-index.mjs` (payload versão 1, determinístico, teto de 200
+  entradas e 256 KiB) e endpoint estático `src/pages/search-index.json.ts`.
+  Rascunho, slug duplicado, URL hostil, slug não canônico, campo vazio, topic
+  fora da allowlist, data inválida e PII falham o build com mensagem própria;
+  lint trata `draft: true` como violação. Nove provas por mutação derrubadas e
+  prova empírica com artigo real em rascunho falhando lint e build. Artefato:
+  15 entradas em 1:1 com as rotas de docs, 3.726 bytes. Narrativa no
+  `TASKS.md` §"Checkpoint de 2026-09-08: DOCS-04A".
+- Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
+  gerados.
+- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 54 testes
+  em 5 arquivos, build de 16 páginas + `/search-index.json`, zero
+  vulnerabilidades e política de install scripts PASS.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
   `DOCS-06`. Não foram silenciados.
 - Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
@@ -101,10 +48,11 @@
 
 ## ▶ Próxima ação
 
-Executar `DOCS-04A`: gerador puro e endpoint do índice JSON, conforme os
-critérios de `TASKS.md` (drafts, slugs duplicados, URL externa e campos vazios
-falham no build, índice limitado e sem corpo de artigo nem PII). Não abrir o
-gate de aceite de conteúdo (`G-CONTENT` segue fechado).
+Executar `DOCS-04B`: página `/busca/` estática e cliente de busca defensivo
+reusando o gerador puro do índice (`src/lib/search-index.mjs`), com filtro no
+browser, degradação para navegação manual e testes de payload malformado, URL
+hostil, timeout e caracteres especiais. `npm run verify` verde fecha a fatia.
+Não abrir `G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`.
 
 ## Gates vivos
 
