@@ -151,7 +151,9 @@
 - Nenhuma versão de dependência mudou: `@types/node` segue a major do runtime e
   TypeScript 7 é major nova sem ganho para o gate.
 - Mudanças commitadas e enviadas por push, a pedido do owner, para o remoto
-  privado `EpicoStudio/epico-site-docs` (branch `main`). `DOCS-08` segue
+  privado `pagelab/epico-site-docs` (branch `main`, conta conectada ao
+  Cloudflare). O remoto provisório `EpicoStudio/epico-site-docs` foi removido
+  por ordem do owner no mesmo dia. `DOCS-08` segue
   bloqueado: preview, produção, DNS, rollback, least privilege e a política de
   visibilidade do remoto não foram definidos. Os avisos de coleção i18n vazia e
   404 ausente continuam atribuídos a `DOCS-06`.

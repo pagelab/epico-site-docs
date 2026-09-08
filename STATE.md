@@ -15,8 +15,10 @@
   Dois commits locais: o inicial do gerador (`create-astro`, `e6244f5`) e o commit
   do scaffold auditado (fatias `DOCS-00` a `DOCS-02` + ajustes da auditoria).
   Em 2026-09-08, ordem direta do owner criou o remoto privado
-  `EpicoStudio/epico-site-docs` e fez push do branch `main`. Nenhum projeto
-  Cloudflare, domínio ou deploy foi configurado.
+  `pagelab/epico-site-docs` e fez push do branch `main`. O remoto provisório na
+  organização `EpicoStudio` foi criado e removido no mesmo dia por ordem do
+  owner, que concentra na conta `pagelab` os repositórios conectados ao
+  Cloudflare. Nenhum projeto Cloudflare, domínio ou deploy foi configurado.
 - Node `24.20.0` e npm `11.19.0` estão fixados.
 - `DOCS-00`, `DOCS-01` e `DOCS-02` concluídos localmente. O scaffold tem locale
   raiz `pt-BR`, seis grupos, schema estrito e lint de conteúdo público.
@@ -77,5 +79,5 @@ aceite de conteúdo nessa sessão.
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
-- Remoto: `EpicoStudio/epico-site-docs` no GitHub, privado, branch `main`.
+- Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
 - Última sessão: 2026-09-08.
