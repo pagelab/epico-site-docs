@@ -1,0 +1,205 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { topicGroups } from '../lib/topics.mjs';
+
+// Degradação para navegação manual: renderizada no HTML estático, sem depender
+// de script, fetch ou índice. É o que fica visível sem JavaScript e quando o
+// índice não chega íntegro.
+const areas = Object.entries(topicGroups).map(([directory, label]) => ({
+	url: `/${directory}/`,
+	label,
+}));
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'Busca',
+		description: 'Busque nos tutoriais públicos do Épico Site por palavra-chave, tema ou área.',
+	}}
+>
+	<search class="busca" data-busca hidden>
+		<form data-busca-form>
+			<label for="busca-consulta">Buscar nos tutoriais</label>
+			<input
+				id="busca-consulta"
+				name="q"
+				type="search"
+				placeholder="Palavra, tema ou área"
+				autocomplete="off"
+				aria-controls="busca-resultados"
+				disabled
+			/>
+			<p data-busca-status role="status" aria-live="polite">Preparando a busca.</p>
+		</form>
+		<ul id="busca-resultados" data-busca-resultados></ul>
+	</search>
+
+	<section aria-labelledby="busca-areas">
+		<h2 id="busca-areas">Navegue pelas áreas</h2>
+		<p>Cada área reúne os tutoriais de um tema, do primeiro acesso à publicação do site.</p>
+		<ul>
+			{areas.map((area) => (
+				<li><a href={area.url}>{area.label}</a></li>
+			))}
+		</ul>
+	</section>
+
+	<script>
+		import { fetchSearchIndex, filterSearchEntries } from '../lib/search-client.mjs';
+
+		const status = document.querySelector('[data-busca-status]');
+
+		function announce(message: string) {
+			if (status instanceof HTMLElement) status.textContent = message;
+		}
+
+		function syncUrl(query: string) {
+			const params = new URLSearchParams(window.location.search);
+			if (query === '') params.delete('q');
+			else params.set('q', query);
+			const search = params.toString();
+			window.history.replaceState(
+				null,
+				'',
+				search === '' ? window.location.pathname : `${window.location.pathname}?${search}`,
+			);
+		}
+
+		function setupBusca(
+			root: HTMLElement,
+			form: HTMLFormElement,
+			input: HTMLInputElement,
+			results: HTMLElement,
+		) {
+			// Sem JavaScript o bloco de busca permanece escondido: só a navegação
+			// manual acima é garantida. Com script, a busca aparece.
+			root.removeAttribute('hidden');
+
+			const initialQuery = (new URLSearchParams(window.location.search).get('q') ?? '').trim();
+			let entries: Awaited<ReturnType<typeof fetchSearchIndex>> = [];
+			let debounce = 0;
+
+			function render(query: string) {
+				const found = filterSearchEntries(entries, query);
+				results.replaceChildren();
+
+				for (const result of found) {
+					const item = document.createElement('li');
+					const link = document.createElement('a');
+					link.setAttribute('href', result.url);
+					link.textContent = result.title;
+					const description = document.createElement('p');
+					description.textContent = result.description;
+					const area = document.createElement('p');
+					area.className = 'busca-area';
+					area.textContent = result.topicLabel;
+					item.append(link, description, area);
+					results.append(item);
+				}
+
+				if (query === '') {
+					announce(`Digite para buscar entre ${entries.length} tutoriais.`);
+				} else if (found.length === 0) {
+					announce(`Nenhum resultado para “${query}”. Veja as áreas abaixo.`);
+				} else {
+					announce(
+						`${found.length} ${found.length === 1 ? 'resultado' : 'resultados'} para “${query}”.`,
+					);
+				}
+
+				syncUrl(query);
+			}
+
+			input.addEventListener('input', () => {
+				window.clearTimeout(debounce);
+				debounce = window.setTimeout(() => render(input.value.trim()), 150);
+			});
+
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+				window.clearTimeout(debounce);
+				render(input.value.trim());
+			});
+
+			const basePath = import.meta.env.BASE_URL;
+			fetchSearchIndex({ url: `${basePath}search-index.json` })
+				.then((validated) => {
+					entries = validated;
+					input.disabled = false;
+					if (initialQuery !== '') input.value = initialQuery;
+					render(input.value.trim());
+				})
+				.catch(() => {
+					announce('A busca não está disponível agora. Use a navegação pelas áreas abaixo.');
+				});
+		}
+
+		const root = document.querySelector('[data-busca]');
+		const form = document.querySelector('[data-busca-form]');
+		const input = document.getElementById('busca-consulta');
+		const results = document.getElementById('busca-resultados');
+
+		if (
+			root instanceof HTMLElement
+			&& form instanceof HTMLFormElement
+			&& input instanceof HTMLInputElement
+			&& results instanceof HTMLElement
+		) {
+			setupBusca(root, form, input, results);
+		}
+	</script>
+</StarlightPage>
+
+<style>
+	.busca form {
+		display: grid;
+		gap: 0.5rem;
+		margin-block-end: 0.5rem;
+	}
+
+	.busca input[type='search'] {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 0.65rem 0.9rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.25rem;
+		background: var(--sl-color-bg);
+		color: var(--sl-color-text);
+		font: inherit;
+	}
+
+	.busca [data-busca-status] {
+		margin: 0;
+		color: var(--sl-color-gray-2);
+		font-size: 0.9rem;
+	}
+
+	.busca [data-busca-resultados] {
+		list-style: none;
+		display: grid;
+		gap: 1rem;
+		margin: 1.5rem 0 0;
+		padding: 0;
+	}
+
+	.busca [data-busca-resultados] li {
+		display: grid;
+		gap: 0.25rem;
+		padding-block-end: 1rem;
+		border-bottom: 1px solid var(--sl-color-hairline);
+	}
+
+	.busca [data-busca-resultados] a {
+		color: var(--sl-color-text-accent);
+		font-weight: 600;
+	}
+
+	.busca [data-busca-resultados] p {
+		margin: 0;
+	}
+
+	.busca .busca-area {
+		color: var(--sl-color-gray-2);
+		font-size: 0.85rem;
+	}
+</style>

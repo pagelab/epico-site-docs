@@ -25,8 +25,10 @@ function toIndexEntry(entry: CollectionEntry<'docs'>) {
 		slug: entry.id,
 		title: entry.data.title,
 		description: entry.data.description,
-		topic: entry.data.topic,
+		// Campos opcionais no schema escoam como inválidos para o gerador, que
+		// falha o build com a mensagem editorial específica de cada um.
+		topic: entry.data.topic ?? '',
 		draft: entry.data.draft === true,
-		lastReviewed: entry.data.lastReviewed.toISOString().slice(0, 10),
+		lastReviewed: entry.data.lastReviewed?.toISOString().slice(0, 10) ?? '',
 	};
 }

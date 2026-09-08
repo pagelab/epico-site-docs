@@ -4,20 +4,24 @@
  * e a página `/busca/` (DOCS-04B). Não importa nada de Astro: toda validação é
  * função pura, testável por `tests/search-index.test.ts` sem contexto de build.
  *
- * Barreiras (falham o build, nunca degradam em silêncio):
+ * Barreiras do produtor (falham o build, nunca degradam em silêncio):
  * - rascunho (`draft: true`) não entra no índice público;
  * - slug precisa resolver para URL interna canônica (nada de URL externa,
  *   protocolo-relativa, travessia de caminho ou segmento não canônico);
  * - slugs distintos que resolvem para a MESMA URL são duplicados;
  * - campos obrigatórios vazios, topic fora da allowlist e data inválida;
- * - quantidade e bytes do payload serializado têm teto;
+ * - quantidade, bytes do payload serializado e caracteres por campo têm teto;
  * - nenhum campo carrega corpo de artigo e texto livre é varrido por PII.
+ *
+ * `validateSearchIndexPayload` aplica as mesmas barreiras no CONSUMIDOR do
+ * payload, que é entrada remota não confiável no browser.
  */
 import { topics } from './topics.mjs';
 
 export const SEARCH_INDEX_VERSION = 1;
 export const SEARCH_INDEX_MAX_ENTRIES = 200;
 export const SEARCH_INDEX_MAX_BYTES = 256 * 1024;
+export const SEARCH_INDEX_MAX_FIELD_CHARS = 500;
 
 /**
  * @typedef {Object} SearchIndexEntryInput
@@ -117,6 +121,10 @@ function textViolations(input, field) {
     return [`${field} obrigatório ausente ou vazio`];
   }
 
+  if (input.length > SEARCH_INDEX_MAX_FIELD_CHARS) {
+    return [`${field} excede o teto de ${SEARCH_INDEX_MAX_FIELD_CHARS} caracteres: ${input.length}`];
+  }
+
   for (const [pattern, label] of piiPatterns) {
     if (pattern.test(input)) {
       return [`${field} contém possível PII (${label})`];
@@ -124,6 +132,128 @@ function textViolations(input, field) {
   }
 
   return [];
+}
+
+/**
+ * Barreiras da URL já resolvida (forma `/area/artigo/`), aplicadas no consumidor
+ * do índice. O produtor valida o slug; quem recebe o payload valida a URL final,
+ * porque é ela que vira `href` no browser.
+ *
+ * @param {string} url
+ * @returns {string[]}
+ */
+function entryUrlViolations(url) {
+  if (typeof url !== 'string' || !url.startsWith('/') || !url.endsWith('/')) {
+    return [`url precisa ser um caminho interno com barra final: ${String(url)}`];
+  }
+
+  if (/[:\\]/u.test(url) || url.includes('..')) {
+    return [`url externa, com travessia ou esquema não é permitida: ${url}`];
+  }
+
+  if (url.length > SEARCH_INDEX_MAX_FIELD_CHARS) {
+    return [`url excede o teto de ${SEARCH_INDEX_MAX_FIELD_CHARS} caracteres: ${url.length}`];
+  }
+
+  const segments = url.slice(1, -1).split('/');
+
+  if (url !== '/' && segments.some((segment) => !canonicalSegment.test(segment))) {
+    return [`url não canônica (segmentos minúsculos a-z, 0-9 e hífen): ${url}`];
+  }
+
+  return [];
+}
+
+/** Chaves exatas de uma entrada, em ordem alfabética para comparação com Object.keys. */
+const entryKeySignature = ['description', 'lastReviewed', 'title', 'topic', 'url'].join(',');
+
+/**
+ * Diz se uma entrada candidata satisfaz integralmente o contrato do índice.
+ * Usado pelo consumidor (`/busca/` e, depois, o painel): payload é entrada não
+ * confiável e cada entrada é aceita apenas inteiramente válida, sem degradação
+ * parcial de campos.
+ *
+ * @param {unknown} candidate
+ * @returns {boolean}
+ */
+function isSearchIndexEntry(candidate) {
+  if (typeof candidate !== 'object' || candidate === null || Array.isArray(candidate)) {
+    return false;
+  }
+
+  const keys = Object.keys(candidate).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+  if (keys.join(',') !== entryKeySignature) {
+    return false;
+  }
+
+  const entry = /** @type {Record<string, unknown>} */ (candidate);
+
+  return entryUrlViolations(String(entry.url)).length === 0
+    && textViolations(entry.title, 'title').length === 0
+    && textViolations(entry.description, 'description').length === 0
+    && typeof entry.topic === 'string' && allowedTopics.has(entry.topic)
+    && typeof entry.lastReviewed === 'string' && isRealDate(entry.lastReviewed);
+}
+
+/**
+ * Valida um payload de `search-index.json` já recebido no consumidor.
+ * Estrutura inválida (tipo, versão, tetos) rejeita o payload inteiro e a busca
+ * degrada para navegação manual. Entradas individuais inválidas são descartadas
+ * e contadas em `discarded`; se sobrar zero entradas válidas de um payload não
+ * vazio, o payload é considerado comprometido e também rejeitado.
+ *
+ * @param {unknown} payload
+ * @returns {{ ok: true, entries: SearchIndexEntry[], discarded: number } | { ok: false, reason: string }}
+ */
+export function validateSearchIndexPayload(payload) {
+  if (typeof payload !== 'object' || payload === null || Array.isArray(payload)) {
+    return { ok: false, reason: 'payload não é um objeto' };
+  }
+
+  const keys = Object.keys(payload).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+  if (keys.join(',') !== 'entries,version') {
+    return { ok: false, reason: 'payload com chaves fora do contrato' };
+  }
+
+  const record = /** @type {Record<string, unknown>} */ (payload);
+
+  if (record.version !== SEARCH_INDEX_VERSION) {
+    return {
+      ok: false,
+      reason: `version ${String(record.version)} não suportada (esperada ${SEARCH_INDEX_VERSION})`,
+    };
+  }
+
+  if (!Array.isArray(record.entries)) {
+    return { ok: false, reason: 'entries não é uma lista' };
+  }
+
+  if (record.entries.length > SEARCH_INDEX_MAX_ENTRIES) {
+    return {
+      ok: false,
+      reason: `índice excede o teto de ${SEARCH_INDEX_MAX_ENTRIES} entradas: ${record.entries.length}`,
+    };
+  }
+
+  /** @type {SearchIndexEntry[]} */
+  const entries = [];
+  let discarded = 0;
+
+  for (const candidate of record.entries) {
+    if (isSearchIndexEntry(candidate)) {
+      entries.push(/** @type {SearchIndexEntry} */ (candidate));
+    } else {
+      discarded += 1;
+    }
+  }
+
+  if (record.entries.length > 0 && entries.length === 0) {
+    return { ok: false, reason: `todas as ${discarded} entradas do índice são inválidas` };
+  }
+
+  return { ok: true, entries, discarded };
 }
 
 /**

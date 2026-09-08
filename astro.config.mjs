@@ -29,10 +29,15 @@ export default defineConfig({
 					description: 'Tutoriais públicos para configurar, editar e publicar sites Épico Site.',
 				}),
 			],
-			sidebar: Object.entries(topicGroups).map(([directory, label]) => ({
-				label,
-				items: [{ autogenerate: { directory } }],
-			})),
+			sidebar: [
+				// Os seis grupos vêm de topics.mjs, fonte única das áreas editoriais.
+				// O link da /busca/ é utilitário, não é área do acervo.
+				...Object.entries(topicGroups).map(([directory, label]) => ({
+					label,
+					items: [{ autogenerate: { directory } }],
+				})),
+				{ label: 'Busca', link: '/busca/' },
+			],
 		}),
 	],
 });
