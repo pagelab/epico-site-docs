@@ -11,7 +11,7 @@
 | 1 | `DOCS-00` | P0 | P | Autoridades, fronteiras, gates e fila persistente | concluído | ordem do owner de 2026-09-07 |
 | 2 | `DOCS-01` | P0 | M | Repo e scaffold Starlight reproduzíveis | concluído | `DOCS-00` |
 | 3 | `DOCS-02` | P0 | M | Modelo de conteúdo, slugs, lint editorial e estrutura das seis áreas | concluído | `DOCS-01` |
-| 4 | `DOCS-03A` | P0 | M | Migrar fundamentos e edição, com mapa de proveniência | aberto | `DOCS-02` |
+| 4 | `DOCS-03A` | P0 | M | Migrar fundamentos e edição, com mapa de proveniência | concluído | `DOCS-02` |
 | 5 | `DOCS-03B` | P0 | M | Migrar preços, hospedagem, suporte e propriedade | aberto | `DOCS-03A` |
 | 6 | `DOCS-03C` | P0 | M | Fundir os dois FAQs sem duplicação | aberto | `DOCS-03B` |
 | 7 | `DOCS-03D` | P0 | M | Escrever tutoriais de licenças e downloads | aberto | `DOCS-03C` |
@@ -157,3 +157,31 @@
   bloqueado: preview, produção, DNS, rollback, least privilege e a política de
   visibilidade do remoto não foram definidos. Os avisos de coleção i18n vazia e
   404 ausente continuam atribuídos a `DOCS-06`.
+
+## Checkpoint de 2026-09-08: DOCS-03A
+
+- `01-entenda-o-novo-formato.md` migrado para
+  `primeiros-passos/formatos-de-publicacao.md` e `03-edicao-e-personalizacao.md`
+  para `editar-seu-site/edicao-e-personalizacao.md`. O slug do primeiro perdeu
+  "novo" por ser referência temporal em slug permanente, e os prefixos
+  numéricos das fontes não foram levados.
+- Ajustes editoriais aplicados apenas onde as regras do acervo exigem: pontos e
+  vírgula removidos (lista de serviços e duas frases da fonte 03) e "setup"
+  como referência ao serviço trocado por `Setup Headless` (título de seção,
+  "depois do setup", "setup básico", "ativação do setup"). O restante do corpo
+  é fiel à fonte.
+- `docs/provenance.md` criado como mapa de proveniência do corpus: registra as
+  seis fontes em `Produto/Area-de-clientes/docs/knowledge-base/`, o commit de
+  referência de cada migração (para o diff da revisão factual em `G-CONTENT`),
+  destino canônico, task e estado, incluindo as linhas de conteúdo novo de
+  `DOCS-03D` e `DOCS-03E`.
+- `tests/provenance.test.ts` guarda o mapa: as seis fontes nomeadas aparecem
+  uma única vez, toda linha "migrado" aponta para artigo existente com topic
+  correspondente ao diretório e nenhum destino canônico é compartilhado.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos, lint
+  limpo, 33 testes em 4 arquivos, build de 10 páginas com as duas novas
+  (/primeiros-passos/formatos-de-publicacao/ e
+  /editar-seu-site/edicao-e-personalizacao/), zero vulnerabilidades e política
+  de install scripts PASS.
+- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Commit local e push
+  para `pagelab/epico-site-docs` executados a pedido do owner em 2026-09-08.

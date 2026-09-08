@@ -41,6 +41,15 @@
   `tests/lint-policy.test.ts` (30 testes em 3 arquivos no total). Commit local
   e push para o remoto executados a pedido do owner em 2026-09-08.
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são gerados.
+- `DOCS-03A` concluído em 2026-09-08: `formatos-de-publicacao` (de
+  `01-entenda-o-novo-formato.md`) e `edicao-e-personalizacao` (de
+  `03-edicao-e-personalizacao.md`) publicados no acervo com ajustes editoriais
+  mínimos exigidos pelas regras. O mapa de proveniência do corpus vive em
+  `docs/provenance.md`, com commit de referência de cada fonte para o diff da
+  revisão factual, e é guardado por `tests/provenance.test.ts`. `npm run verify`
+  verde: 33 testes em 4 arquivos e build de 10 páginas.
+- Commit local e push das mudanças do `DOCS-03A` para
+  `pagelab/epico-site-docs` executados a pedido do owner em 2026-09-08.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
   `DOCS-06`. Não foram silenciados.
 - Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
@@ -48,9 +57,10 @@
 
 ## ▶ Próxima ação
 
-Executar `DOCS-03A`: migrar `01-entenda-o-novo-formato.md` e
-`03-edicao-e-personalizacao.md` para os slugs canônicos, registrar o mapa de
-proveniência do corpus e concluir com `npm run verify`. Não abrir o gate de
+Executar `DOCS-03B`: migrar `02-precos-e-hospedagem.md` e
+`04-suporte-e-propriedade.md` para a área `servicos-e-suporte` com slugs
+canônicos, atualizar as linhas correspondentes em `docs/provenance.md` (commit
+de referência incluído) e concluir com `npm run verify`. Não abrir o gate de
 aceite de conteúdo nessa sessão.
 
 ## Gates vivos
