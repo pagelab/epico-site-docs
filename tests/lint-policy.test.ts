@@ -134,6 +134,16 @@ describe('modelo de conteúdo', () => {
 		expect(violations).toEqual([expect.stringContaining('draft deve ser true ou false')]);
 	});
 
+	it('proíbe rascunho no acervo público, mas aceita draft false', () => {
+		const violations = violationsFor('Texto', frontmatterWith({ draft: 'true' }));
+
+		expect(violations).toEqual([
+			expect.stringContaining('draft: true não pode entrar no acervo público'),
+		]);
+
+		expect(violationsFor('Texto')).toEqual([]);
+	});
+
 	it('rejeita data impossível em lastReviewed', () => {
 		const violations = violationsFor('Texto', frontmatterWith({ lastReviewed: '2026-02-30' }));
 

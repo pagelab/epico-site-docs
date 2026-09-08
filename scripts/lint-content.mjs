@@ -158,6 +158,11 @@ export function lintSource(relativePath, source) {
 
   if (!['true', 'false'].includes(draft)) {
     violations.push(`${relativePath}: draft deve ser true ou false`);
+  } else if (draft === 'true') {
+    // O acervo é público e não tem estado de rascunho publicado: rascunho falha
+    // o gate de build (o filtro de drafts do Starlight esconde o arquivo em
+    // produção, então a barreira aqui é a que impede o silêncio).
+    violations.push(`${relativePath}: draft: true não pode entrar no acervo público (publique o artigo ou remova o arquivo)`);
   }
 
   if (!isRealDate(lastReviewed)) {
