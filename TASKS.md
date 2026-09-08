@@ -324,6 +324,7 @@
   /dominio-e-publicacao/conecte-seu-dominio/), zero vulnerabilidades e
   política de install scripts PASS. Os avisos de coleção i18n vazia e 404
   ausente continuam atribuídos a `DOCS-06`.
-- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Nenhum commit ou
-  push foi executado nesta sessão: as mudanças de `DOCS-03B` a `DOCS-03E`
-  seguem no working tree, aguardando ordem do owner.
+- Gate de aceite de conteúdo (`G-CONTENT`) não foi aberto. Após a sessão, o
+  owner ordenou commit e push: o corpus `DOCS-03B` a `DOCS-03E` inteiro
+  (artigos, proveniência, override de `sharp` e bookmarks) virou o commit
+  `52020ad`, enviado ao remoto `pagelab/epico-site-docs` (branch `main`).

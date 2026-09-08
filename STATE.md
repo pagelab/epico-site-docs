@@ -90,8 +90,10 @@
   registrou as duas linhas com destino canônico e estado "conteúdo novo", com
   parágrafo de origem factual para a revisão de `G-CONTENT`. `npm run verify`
   verde: 33 testes em 4 arquivos, build de 16 páginas, zero vulnerabilidades.
-- As mudanças de `DOCS-03B` a `DOCS-03E` estão no working tree, não
-  commitadas. Nenhum commit ou push executado: aguardam ordem do owner.
+- O corpus `DOCS-03B` a `DOCS-03E` foi commitado (`52020ad`) e enviado por
+  push ao remoto `pagelab/epico-site-docs` (branch `main`) por ordem do owner
+  em 2026-09-08, incluindo as bookmarks, o mapa de proveniência e o override
+  de `sharp`. Nenhuma outra mudança pendente no working tree.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
   `DOCS-06`. Não foram silenciados.
 - Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
@@ -101,9 +103,8 @@
 
 Executar `DOCS-04A`: gerador puro e endpoint do índice JSON, conforme os
 critérios de `TASKS.md` (drafts, slugs duplicados, URL externa e campos vazios
-falham no build, índice sem corpo de artigo nem PII). Não abrir o gate de
-aceite de conteúdo nem mexer nas mudanças não commitadas de `DOCS-03B` a
-`DOCS-03E`, que aguardam ordem do owner.
+falham no build, índice limitado e sem corpo de artigo nem PII). Não abrir o
+gate de aceite de conteúdo (`G-CONTENT` segue fechado).
 
 ## Gates vivos
 
