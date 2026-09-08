@@ -1,49 +1,40 @@
-# Starlight Starter Kit: Basics
+# Tutoriais Épico Site
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Acervo público e canônico de tutoriais do Épico Site, construído com Astro e
+Starlight para publicação em `https://docs.epico.site/`.
 
-```
-npm create astro@latest -- --template starlight
-```
+O conteúdo vive neste repositório em Markdown. O WordPress da Área de Clientes
+apenas aponta para as páginas públicas e consulta um índice JSON derivado deste
+mesmo acervo. Ele não mantém uma segunda cópia dos artigos.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Ambiente local
 
-## 🚀 Project Structure
+Use exatamente as versões registradas em `.nvmrc`, `package.json` e
+`package-lock.json`:
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+```sh
+nvm use
+npm ci
+npm run verify
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+Para desenvolvimento:
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+```sh
+npm run dev
+```
 
-Static assets, like favicons, can be placed in the `public/` directory.
+Para conferir a build estática:
 
-## 🧞 Commands
+```sh
+npm run build
+npm run preview
+```
 
-All commands are run from the root of the project, from a terminal:
+## Estado e fila
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+- [`STATE.md`](STATE.md) guarda o ponto exato de retomada entre sessões.
+- [`TASKS.md`](TASKS.md) é a fila priorizada e registra dependências, gates e
+  critérios de conclusão.
+- [`docs/decisions/0001-public-docs-architecture.md`](docs/decisions/0001-public-docs-architecture.md)
+  fixa a fronteira entre o acervo, o painel e a infraestrutura de publicação.

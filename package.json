@@ -1,20 +1,39 @@
 {
-  "name": "docs",
+  "name": "@epico-site/docs",
+  "private": true,
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "npm@11.19.0",
+  "engines": {
+    "node": "24.20.0",
+    "npm": "11.19.0"
+  },
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "check": "astro check",
+    "lint": "markdownlint-cli2 \"**/*.{md,mdx}\" \"#node_modules\" \"#dist\" \"#.astro\" && node scripts/lint-content.mjs",
+    "test": "vitest run",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "audit": "npm audit --audit-level=high",
+    "verify": "npm run check && npm run lint && npm test && npm run build && npm run audit"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.42.0",
-    "astro": "^7.2.10",
-    "sharp": "^0.35.3"
+    "@astrojs/starlight": "0.42.0",
+    "astro": "7.3.1",
+    "starlight-llms-txt": "0.11.0"
   },
   "allowScripts": {
-    "esbuild": true
+    "esbuild": true,
+    "workerd@1.20260907.1": true,
+    "fsevents": false
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/node": "24.13.3",
+    "markdownlint-cli2": "0.23.2",
+    "typescript": "6.0.3",
+    "vitest": "5.0.0",
+    "wrangler": "4.129.1"
   }
 }
