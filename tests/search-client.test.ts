@@ -20,8 +20,13 @@ function indexEntry(overrides: Record<string, unknown> = {}) {
 	};
 }
 
-function responseOf(body: string, ok = true, status = 200) {
-	return { ok, status, text: async () => body } as unknown as Response;
+function responseOf(body: string, ok = true, status = 200, headers?: Record<string, string>) {
+	return {
+		ok,
+		status,
+		headers: headers === undefined ? undefined : { get: (name: string) => headers[name.toLowerCase()] ?? null },
+		text: async () => body,
+	} as unknown as Response;
 }
 
 const corpus = [
@@ -156,6 +161,14 @@ describe('fetch defensivo do índice', () => {
 		).rejects.toThrow('search-client: resposta não ok para o índice: 503');
 	});
 
+	it.each([404, 500])('rejeita resposta de erro %s', async (status) => {
+		await expect(
+			fetchSearchIndex({
+				fetchImpl: (async () => responseOf('', false, status)) as unknown as typeof fetch,
+			}),
+		).rejects.toThrow(/search-client: resposta não ok para o índice/);
+	});
+
 	it('rejeita corpo que não é JSON', async () => {
 		await expect(
 			fetchSearchIndex({
@@ -235,6 +248,64 @@ describe('fetch defensivo do índice', () => {
 			expect(vi.getTimerCount()).toBe(0);
 		} finally {
 			vi.useRealTimers();
+		}
+	});
+
+	it('aborta quando o corpo trava depois dos headers (timeout cobre a leitura)', async () => {
+		vi.useFakeTimers();
+
+		try {
+			// Fiel ao browser: headers chegam, o corpo nunca termina e o abort do
+			// sinal faz a leitura pendente rejeitar.
+			const fetchImpl = ((_url: unknown, init?: { signal?: AbortSignal }) =>
+				Promise.resolve({
+					ok: true,
+					status: 200,
+					text: () =>
+						new Promise<string>((_resolve, reject) => {
+							init?.signal?.addEventListener('abort', () => reject(new Error('AbortError')));
+						}),
+				})) as unknown as typeof fetch;
+
+			const pending = expect(
+				fetchSearchIndex({ fetchImpl, timeoutMs: 300 }),
+			).rejects.toThrow('search-client: índice não respondeu em 300 ms');
+
+			await vi.advanceTimersByTimeAsync(300);
+			await pending;
+		} finally {
+			vi.useRealTimers();
+		}
+	});
+
+	it('rejeita Content-Length declarado acima do teto sem ler o corpo', async () => {
+		let read = false;
+		const fetchImpl = (async () => ({
+			ok: true,
+			status: 200,
+			headers: { get: (name: string) => (name === 'Content-Length' ? String(SEARCH_INDEX_MAX_BYTES + 1) : null) },
+			text: async () => {
+				read = true;
+				return '{}';
+			},
+		})) as unknown as typeof fetch;
+
+		await expect(fetchSearchIndex({ fetchImpl })).rejects.toThrow(
+			'search-client: índice recebido acima do teto',
+		);
+		expect(read).toBe(false);
+	});
+
+	it('aceita Content-Length dentro do teto e ignora valor não numérico', async () => {
+		const body = JSON.stringify({ version: 1, entries: [corpus[0]] });
+
+		for (const declared of [String(body.length), 'banana', null]) {
+			const entries = await fetchSearchIndex({
+				fetchImpl: (async () =>
+					responseOf(body, true, 200, { 'Content-Length': String(declared) })) as unknown as typeof fetch,
+			});
+
+			expect(entries).toHaveLength(1);
 		}
 	});
 });

@@ -13,8 +13,13 @@
  * - quantidade, bytes do payload serializado e caracteres por campo têm teto;
  * - nenhum campo carrega corpo de artigo e texto livre é varrido por PII.
  *
+ * O produtor também valida a URL já RESOLVIDA com a barreira do consumidor
+ * (`entryUrlViolations`), então nenhum índice gerado aqui pode ser rejeitado
+ * lá: a simetria produtor → consumidor é estrutural, não apenas empírica.
+ *
  * `validateSearchIndexPayload` aplica as mesmas barreiras no CONSUMIDOR do
- * payload, que é entrada remota não confiável no browser.
+ * payload, que é entrada remota não confiável no browser, e descarta URLs
+ * repetidas (a primeira ocorrência vence), porque o gerador nunca as produz.
  */
 import { topics } from './topics.mjs';
 
@@ -56,6 +61,28 @@ const piiPatterns = [
   [/\/Users\/[A-Za-z0-9._-]+\//u, 'caminho local'],
   [/\b(?:localhost|127\.0\.0\.1)(?::\d+)?\b/iu, 'endereço local'],
 ];
+
+/**
+ * Varre texto livre pelos padrões de PII do contrato do índice.
+ * Exportado para a suíte adversarial escanear os bytes reais do artefato com
+ * os mesmos padrões que barram campos no gerador e no validador.
+ *
+ * @param {unknown} text
+ * @returns {string | null} Label do padrão encontrado, ou `null` se limpo.
+ */
+export function findPii(text) {
+  if (typeof text !== 'string') {
+    return null;
+  }
+
+  for (const [pattern, label] of piiPatterns) {
+    if (pattern.test(text)) {
+      return label;
+    }
+  }
+
+  return null;
+}
 
 /**
  * Converte o slug do Starlight na URL canônica servida pelo site.
@@ -125,10 +152,10 @@ function textViolations(input, field) {
     return [`${field} excede o teto de ${SEARCH_INDEX_MAX_FIELD_CHARS} caracteres: ${input.length}`];
   }
 
-  for (const [pattern, label] of piiPatterns) {
-    if (pattern.test(input)) {
-      return [`${field} contém possível PII (${label})`];
-    }
+  const pii = findPii(input);
+
+  if (pii !== null) {
+    return [`${field} contém possível PII (${pii})`];
   }
 
   return [];
@@ -159,6 +186,13 @@ function entryUrlViolations(url) {
 
   if (url !== '/' && segments.some((segment) => !canonicalSegment.test(segment))) {
     return [`url não canônica (segmentos minúsculos a-z, 0-9 e hífen): ${url}`];
+  }
+
+  // O slug `area/index` resolve para `/area/`: um segmento FINAL `index` nunca
+  // é rota canônica e o gerador não o produz. Rejeitar aqui mantém o consumidor
+  // simétrico com o produtor.
+  if (url !== '/' && segments[segments.length - 1] === 'index') {
+    return [`url com segmento final "index" não é canônica: ${url}`];
   }
 
   return [];
@@ -199,9 +233,11 @@ function isSearchIndexEntry(candidate) {
 /**
  * Valida um payload de `search-index.json` já recebido no consumidor.
  * Estrutura inválida (tipo, versão, tetos) rejeita o payload inteiro e a busca
- * degrada para navegação manual. Entradas individuais inválidas são descartadas
- * e contadas em `discarded`; se sobrar zero entradas válidas de um payload não
- * vazio, o payload é considerado comprometido e também rejeitado.
+ * degrada para navegação manual. Entradas individualmente inválidas são
+ * descartadas e contadas em `discarded`; URL repetida também é descartada (a
+ * primeira ocorrência vence), porque o gerador nunca produz URL duplicada; se
+ * sobrar zero entradas válidas de um payload não vazio, o payload é
+ * considerado comprometido e também rejeitado.
  *
  * @param {unknown} payload
  * @returns {{ ok: true, entries: SearchIndexEntry[], discarded: number } | { ok: false, reason: string }}
@@ -239,14 +275,24 @@ export function validateSearchIndexPayload(payload) {
 
   /** @type {SearchIndexEntry[]} */
   const entries = [];
+  const seenUrls = new Set();
   let discarded = 0;
 
   for (const candidate of record.entries) {
-    if (isSearchIndexEntry(candidate)) {
-      entries.push(/** @type {SearchIndexEntry} */ (candidate));
-    } else {
+    if (!isSearchIndexEntry(candidate)) {
       discarded += 1;
+      continue;
     }
+
+    const entry = /** @type {SearchIndexEntry} */ (candidate);
+
+    if (seenUrls.has(entry.url)) {
+      discarded += 1;
+      continue;
+    }
+
+    seenUrls.add(entry.url);
+    entries.push(entry);
   }
 
   if (record.entries.length > 0 && entries.length === 0) {
@@ -281,6 +327,9 @@ export function generateSearchIndex(inputs) {
     const url = typeof slug === 'string' ? slugToUrl(slug) : '(slug inválido)';
     const entryViolations = [
       ...slugViolations(slug, url),
+      // A URL resolvida passa pela MESMA barreira do consumidor: nenhum índice
+      // gerado aqui pode ser descartado lá (simetria estrutural).
+      ...entryUrlViolations(url),
       ...textViolations(input?.title, 'title'),
       ...textViolations(input?.description, 'description'),
     ];

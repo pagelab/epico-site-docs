@@ -4,8 +4,10 @@
  * módulo é testável sem browser por `tests/search-client.test.ts`.
  *
  * Defesa em três camadas, na ordem em que o dado chega:
- * 1. transporte: fetch same-origin com timeout por AbortController e teto de
- *    bytes no texto recebido (caracteres são limite conservador de bytes UTF-8);
+ * 1. transporte: fetch same-origin com timeout por AbortController (cobrindo o
+ *    handshake E a leitura do corpo), rejeição antecipada por Content-Length
+ *    declarado acima do teto e teto de caracteres no texto recebido (caracteres
+ *    são limite conservador de bytes UTF-8);
  * 2. payload: `validateSearchIndexPayload` (do gerador do índice) rejeita
  *    estrutura inválida e descarta entradas individualmente inválidas;
  * 3. render: quem monta o DOM recebe só entradas válidas e usa APIs de texto,
@@ -126,6 +128,32 @@ export function filterSearchEntries(entries, query, options = {}) {
 }
 
 /**
+ * Content-Length declarado, quando presente e numérico. Resposta sem header
+ * (ou com valor não numérico) retorna null e o teto continua cobrado depois
+ * da leitura do corpo.
+ *
+ * @param {Response} response
+ * @returns {number | null}
+ */
+function declaredContentLength(response) {
+	const headers = response?.headers;
+
+	if (typeof headers?.get !== 'function') {
+		return null;
+	}
+
+	const value = headers.get('Content-Length');
+
+	if (typeof value !== 'string' || !/^\d+$/u.test(value)) {
+		return null;
+	}
+
+	const parsed = Number(value);
+
+	return Number.isSafeInteger(parsed) ? parsed : null;
+}
+
+/**
  * Busca, baixa e valida o índice público de busca.
  * A URL precisa ser um caminho do próprio site (nunca absoluto de outro host).
  * Qualquer falha (timeout, resposta ruim, teto de bytes, JSON malformado,
@@ -151,46 +179,59 @@ export async function fetchSearchIndex(options = {}) {
 	}
 
 	const controller = new AbortController();
+	// O cronômetro cobre o handshake E a leitura do corpo: um servidor que
+	// responde os headers e trava a transferência também cai no timeout, porque
+	// abortar o sinal faz a leitura pendente rejeitar no browser.
 	const timer = setTimeout(() => controller.abort(), timeoutMs);
-	/** @type {Response} */
-	let response;
 
 	try {
-		response = await fetchImpl(url, { signal: controller.signal });
+		const response = await fetchImpl(url, { signal: controller.signal });
+
+		if (!response.ok) {
+			throw new Error(`search-client: resposta não ok para o índice: ${String(response.status)}`);
+		}
+
+		const declaredBytes = declaredContentLength(response);
+
+		if (declaredBytes !== null && declaredBytes > SEARCH_INDEX_MAX_BYTES) {
+			throw new Error(
+				`search-client: índice recebido acima do teto de ${SEARCH_INDEX_MAX_BYTES} caracteres (Content-Length: ${declaredBytes})`,
+			);
+		}
+
+		const text = await response.text();
+
+		if (text.length > SEARCH_INDEX_MAX_BYTES) {
+			throw new Error(`search-client: índice recebido acima do teto de ${SEARCH_INDEX_MAX_BYTES} caracteres`);
+		}
+
+		/** @type {unknown} */
+		let payload;
+
+		try {
+			payload = JSON.parse(text);
+		} catch {
+			throw new Error('search-client: índice recebido não é JSON válido');
+		}
+
+		const validated = validateSearchIndexPayload(payload);
+
+		if (!validated.ok) {
+			throw new Error(`search-client: índice fora do contrato: ${validated.reason}`);
+		}
+
+		return validated.entries;
 	} catch (error) {
 		if (controller.signal.aborted) {
 			throw new Error(`search-client: índice não respondeu em ${timeoutMs} ms`);
+		}
+
+		if (error instanceof Error && error.message.startsWith('search-client:')) {
+			throw error;
 		}
 
 		throw new Error(`search-client: falha ao buscar o índice: ${error instanceof Error ? error.message : String(error)}`);
 	} finally {
 		clearTimeout(timer);
 	}
-
-	if (!response.ok) {
-		throw new Error(`search-client: resposta não ok para o índice: ${String(response.status)}`);
-	}
-
-	const text = await response.text();
-
-	if (text.length > SEARCH_INDEX_MAX_BYTES) {
-		throw new Error(`search-client: índice recebido acima do teto de ${SEARCH_INDEX_MAX_BYTES} caracteres`);
-	}
-
-	/** @type {unknown} */
-	let payload;
-
-	try {
-		payload = JSON.parse(text);
-	} catch {
-		throw new Error('search-client: índice recebido não é JSON válido');
-	}
-
-	const validated = validateSearchIndexPayload(payload);
-
-	if (!validated.ok) {
-		throw new Error(`search-client: índice fora do contrato: ${validated.reason}`);
-	}
-
-	return validated.entries;
 }
