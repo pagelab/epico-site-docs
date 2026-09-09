@@ -70,12 +70,29 @@
   cliente com todas as barreiras e sem `innerHTML` (nota: o preview binda em
   `::1`). 129 testes em 7 arquivos. Narrativa no `TASKS.md` §"Checkpoint de
   2026-09-08: DOCS-04C".
+- `DOCS-05` concluído em 2026-09-08: tema próprio em `src/styles/theme.css`
+  usando apenas variáveis públicas `--sl-*` (paletas dark e light completas,
+  seletores espelhados do vendor), nenhum override de componente, sem
+  importar o `tokens.css` do painel. Cal Sans 600 nos headings via regra em
+  elemento nativo e Outfit variável no corpo, as duas únicas WOFF2, copiadas
+  de `Design/Fontes/` com checksums idênticos aos do painel, preload via
+  hook público `head`, licenças OFL acompanhando os arquivos e
+  proveniência/SHA-256 registrados em `docs/fonts.md`. Gate permanente de
+  contraste `scripts/check-theme-contrast.mjs` no `verify`: 18 pares medidos
+  nas duas paletas, todos AA (pior caso 5.12:1). Medições antes do gate
+  visual com `scripts/measure-theme.mjs` (Chrome headless via CDP,
+  ferramenta de sessão): LCP desktop até 1.488 ms a frio e mobile 4x/Fast 3G
+  abaixo de 0.6 s, CLS 0.0000 em tudo (a `/busca/` media 0.07 e ganhou
+  revelação inline síncrona antes da primeira pintura, contrato sem
+  JavaScript preservado), foco visível em seis Tabs, reduced motion sem
+  animações e mobile sem overflow. Doze provas por mutação. Narrativa no
+  `TASKS.md` §"Checkpoint de 2026-09-08: DOCS-05".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
-- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 129 testes
-  em 7 arquivos, build de 17 páginas (acervo + `/busca/` + 404 nativo) +
-  `/search-index.json`, zero vulnerabilidades e política de install scripts
-  PASS.
+- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 138
+  testes em 8 arquivos, contraste do tema PASS, build de 17 páginas (acervo +
+  `/busca/` + 404 nativo) + `/search-index.json`, zero vulnerabilidades e
+  política de install scripts PASS.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
   `DOCS-06`. Não foram silenciados.
 - Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
@@ -83,12 +100,13 @@
 
 ## ▶ Próxima ação
 
-Executar `DOCS-05`: tema próprio com apenas variáveis públicas do Starlight
-(nenhum component override), fontes locais Cal Sans e Outfit em WOFF2 com
-proveniência, licença e SHA-256 registrados, e contraste claro/escuro, foco,
-teclado, reduced motion, mobile, LCP e CLS medidos antes de qualquer gate
-visual. Não abrir `G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`; o design system
-é próprio do acervo e proíbe importar `tokens.css` do painel.
+Executar `DOCS-06`: publicação estática segura. `_headers`, `robots.txt`,
+sitemap, 404 e os três arquivos llms constando na build, `wrangler.jsonc`
+com static assets, compatibility date fixa e 404 real sem SPA fallback,
+`noindex` na origem `workers.dev` e custom domain permanecendo indexável,
+com CSP que acomode os scripts inline do Starlight e da `/busca/`. Não abrir
+`G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`: nenhum deploy é executado nesta
+fatia, só a configuração estática e sua verificação local.
 
 ## Gates vivos
 
@@ -121,7 +139,7 @@ visual. Não abrir `G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`; o design system
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-08 (`DOCS-04C` concluído; commit e push cobertos pela
+- Última sessão: 2026-09-08 (`DOCS-05` concluído; commit e push cobertos pela
   autorização durável de fim de sessão).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

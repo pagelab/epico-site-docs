@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-	SEARCH_INDEX_MAX_BYTES,
 	SEARCH_INDEX_MAX_ENTRIES,
 	SEARCH_INDEX_MAX_FIELD_CHARS,
 	generateSearchIndex,

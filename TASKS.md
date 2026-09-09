@@ -19,7 +19,7 @@
 | 9 | `DOCS-04A` | P0 | M | Gerador puro e endpoint do índice JSON | concluído | `DOCS-02` |
 | 10 | `DOCS-04B` | P0 | G | Página `/busca/` e cliente de busca defensivo | concluído | `DOCS-04A` |
 | 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | concluído | `DOCS-04B` |
-| 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | aberto | `DOCS-01` |
+| 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | concluído | `DOCS-01` |
 | 13 | `DOCS-06` | P0 | M | Sitemap, llms, robots, headers, CSP e configuração estática do Worker | aberto | `DOCS-04C`, `DOCS-05` |
 | 14 | `DOCS-07` | P0 | M | QA local completo e preview pronto para aceite | aberto | `DOCS-03A` a `DOCS-06` |
 | 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | bloqueado | `DOCS-07` |
@@ -541,4 +541,80 @@
   política de install scripts PASS. Gates `G-CONTENT`, `G-VISUAL` e
   `G-CLOUDFLARE` não abertos; QA interativo no browser permanece em
   `DOCS-07`/`G-VISUAL`. Commit e push ao fim da sessão cobertos pela
+  autorização durável do owner.
+
+## Checkpoint de 2026-09-08: DOCS-05
+
+- Tema próprio em `src/styles/theme.css`, servido por `customCss`: apenas
+  variáveis públicas `--sl-*`, nenhum override de componente e nenhum import
+  do `tokens.css` do painel. Os seletores espelham a estrutura do tema do
+  Starlight 0.42 lida no vendor (`props.css`): dark é o bloco padrão em
+  `:root, ::backdrop` e o claro sobrescreve em
+  `:root[data-theme='light'], [data-theme='light'] ::backdrop`, então as duas
+  paletas ficam completas por construção. Neutros derivados no hue 229 (do
+  navy de marca `#0a1552`, hue 230), acentos com valores exatos da escala
+  azul de marca (blue-300 `#a9b9f9` e blue-400 `#8098f6` no dark, blue-700
+  `#2844c6` no claro). A única regra em elemento nativo aplica Cal Sans peso
+  600 em `h1` a `h6`: o Starlight 0.42 não expõe variável pública de fonte de
+  título (conferido no `props.css` do vendor) e o CSS do usuário entra sem
+  camada e importado primeiro, ordem documentada no próprio `Page.astro`.
+- Duas fontes locais e só elas: `CalSans-SemiBold.woff2` e
+  `Outfit-Variable.woff2` copiados da origem canônica `Design/Fontes/`, com
+  SHA-256 idêntico byte a byte às cópias do painel (confirmação de que as
+  superfícies servem a mesma fonte). Os textos OFL 1.1 acompanham os WOFF2
+  em `public/fonts/` porque o site público redistribui os arquivos.
+  Proveniência, upstream, licença e SHA-256 dos quatro arquivos registrados
+  em `docs/fonts.md`, guardados por teste. `@font-face` com
+  `font-display: swap` e preload das duas fontes via hook público `head`
+  (forma de array do 0.42; a primeira tentativa com função foi recusada pelo
+  schema do plugin, prova empírica da superfície suportada).
+- Gate de contraste permanente `scripts/check-theme-contrast.mjs` dentro do
+  `verify`: lê o `theme.css`, resolve as cadeias de `var()` com a herança
+  real (bloco claro herda o dark, defaults públicos do vendor completam o
+  que o tema não repete, como `--sl-color-bg` apontando para o black) e
+  mede WCAG 2.1 para 9 pares essenciais nas duas paletas: corpo, títulos,
+  links, botão, navegação, sidebar, secundário da sidebar, código inline
+  (mínimo 4.5) e anel de foco (mínimo 3). Os 18 valores medidos passam com
+  folga, pior caso 5.12:1.
+- Medições exigidas antes do gate visual, com `scripts/measure-theme.mjs`
+  (Chrome 153 headless via CDP sobre WebSocket nativo do Node, zero
+  dependências novas; ferramenta de sessão documentada, fora do `verify`):
+  LCP desktop 1280x800 de 1.488 ms na home (primeira navegação a frio,
+  título H1 como elemento LCP) e 0,6 s ou menos nas demais; LCP mobile
+  390x844 @3x com CPU 4x e Fast 3G entre 0,36 e 0,58 s; foco e teclado com
+  seis Tabs reais pelo CDP, todos os elementos focados com contorno visível;
+  reduced motion com zero elementos animados e `scroll-behavior: auto` (a
+  única animação do vendor já nasce guardada por `no-preference`); mobile
+  sem scroll horizontal; e as duas paletas pintadas de verdade no browser
+  (dark fundo `rgb(19, 22, 32)`, light fundo branco, `h1` com Cal Sans em
+  ambas, fontes carregadas com iniciador `link` do preload).
+- Achado real das medições, corrigido na mesma sessão: a `/busca/` desktop
+  media CLS 0.0701 porque o script bundled revelava o bloco de busca depois
+  da primeira pintura e empurrava a seção de áreas para baixo (no mobile o
+  conteúdo empurrado ficava abaixo da dobra, por isso CLS 0). Correção sem
+  quebrar o contrato sem JavaScript: script inline síncrono imediatamente
+  após o bloco remove o `hidden` antes de a seção seguinte ser parseada, o
+  bloco continua nascendo `hidden` no HTML servido (conferido no dist) e a
+  revelação no script bundled ficou como defesa em profundidade. Teste de
+  regressão guarda a ordem revelação antes da seção de áreas. CLS medido
+  0.0000 em todas as páginas, nos dois cenários, após a correção.
+- Doze provas por mutação com snapshot, `node --check` quando sintaxe
+  aplicável e restauração por checksum: byte extra no WOFF2 (derruba o
+  teste de hash), terceiro WOFF2, propriedade fora de `--sl-*`, seletor de
+  classe, URL de fonte externa, `components:` no config, preload removido,
+  corpo claro sem AA, alias do vendor removido (a primeira tentativa gerou
+  erro de sintaxe e foi refeita de forma válida: dez pares caem como
+  variável ausente), secundário da sidebar claro, accent-high do dark e
+  revelação movida para depois da seção. Todas derrubaram a barreira alvo.
+- Limpeza dos três diagnósticos ts(6133) que o `astro check` passou a
+  listar: dois nos scripts novos e um import órfão em
+  `tests/search-index.test.ts` remanescente da reescrita do teste de bytes
+  no DOCS-04C.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos,
+  Content policy PASS, contraste do tema PASS com os 18 pares, 138 testes
+  em 8 arquivos (9 novos em `tests/theme.test.ts`), build de 17 páginas,
+  zero vulnerabilidades e política de install scripts PASS. Gates
+  `G-CONTENT`, `G-VISUAL` e `G-CLOUDFLARE` não abertos: QA interativo no
+  browser (leitor de tela, ToC, sidebar, dark mode percebido) permanece em
+  `DOCS-07` e no `G-VISUAL`. Commit e push ao fim da sessão cobertos pela
   autorização durável do owner.

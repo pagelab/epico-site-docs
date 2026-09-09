@@ -1,0 +1,25 @@
+/**
+ * Épico Site Docs — fontes locais
+ *
+ * Apenas os dois WOFF2 necessários ao acervo (docs/fonts.md registra
+ * proveniência, licença e SHA-256). Nenhum provedor externo: os arquivos
+ * são servidos por este mesmo domínio a partir de public/fonts/.
+ * `font-display: swap` mantém o texto legível enquanto a fonte chega e o
+ * preload em astro.config.mjs antecipa a descoberta pelo browser.
+ */
+
+@font-face {
+	font-family: 'Cal Sans';
+	src: url('/fonts/CalSans-SemiBold.woff2') format('woff2');
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Outfit';
+	src: url('/fonts/Outfit-Variable.woff2') format('woff2');
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+}

@@ -23,6 +23,31 @@ export default defineConfig({
 					href: 'https://app.epico.site/painel',
 				},
 			],
+			customCss: ['/src/styles/fonts.css', '/src/styles/theme.css'],
+			// Preload das duas fontes locais: o LCP é texto e o antecipamento
+			// cobre o atraso de descoberta entre CSS e a primeira pintura.
+			head: [
+				{
+					tag: 'link',
+					attrs: {
+						rel: 'preload',
+						href: '/fonts/Outfit-Variable.woff2',
+						as: 'font',
+						type: 'font/woff2',
+						crossorigin: 'anonymous',
+					},
+				},
+				{
+					tag: 'link',
+					attrs: {
+						rel: 'preload',
+						href: '/fonts/CalSans-SemiBold.woff2',
+						as: 'font',
+						type: 'font/woff2',
+						crossorigin: 'anonymous',
+					},
+				},
+			],
 			plugins: [
 				starlightLlmsTxt({
 					projectName: 'Épico Site',

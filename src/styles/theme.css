@@ -1,0 +1,104 @@
+/**
+ * Tema Épico Site Docs — apenas variáveis públicas do Starlight.
+ *
+ * Este arquivo não sobrescreve componentes, classes internas nem camadas
+ * do Starlight: define as variáveis documentadas (--sl-*) nas duas paletas
+ * e nada mais. O dark é o bloco padrão em :root e o claro sobrescreve via
+ * [data-theme='light'], espelhando a estrutura do próprio tema do Starlight
+ * (incluindo ::backdrop para diálogos e popovers).
+ *
+ * Cor do acervo: o hue 229 vem do navy de marca #0a1552 (hue 230). Neutros
+ * são derivados nesse hue com saturação baixa, no mesmo formato em que o
+ * Starlight constrói a rampa padrão dele. Acentos usam valores exatos da
+ * escala azul de marca (blue-300, blue-400, blue-700). Valores derivados
+ * carregam "derivado" no comentário; os demais são valores de marca ou a
+ * re-mapeamento padrão do tema.
+ *
+ * Contraste claro e escuro é medido por scripts/check-theme-contrast.mjs,
+ * que falha o verify se qualquer par essencial cair abaixo de WCAG AA.
+ */
+
+/* ---------- Dark (padrão) ---------- */
+
+:root,
+::backdrop {
+	/* Neutros derivados do hue 229. */
+	--sl-color-white: hsl(229, 100%, 98%);
+	--sl-color-gray-1: hsl(229, 24%, 93%);
+	--sl-color-gray-2: hsl(229, 18%, 78%);
+	--sl-color-gray-3: hsl(229, 12%, 60%);
+	--sl-color-gray-4: hsl(229, 11%, 42%);
+	--sl-color-gray-5: hsl(229, 18%, 24%);
+	--sl-color-gray-6: hsl(229, 22%, 15%);
+	--sl-color-black: hsl(229, 24%, 10%);
+
+	/* Acento: azul de marca. Links no dark usam blue-300, como o painel. */
+	--sl-color-accent-low: hsl(230, 55%, 20%); /* derivado do navy #0a1552 */
+	--sl-color-accent: #8098f6; /* marca blue-400 */
+	--sl-color-accent-high: #a9b9f9; /* marca blue-300 */
+
+	/* Mapeamento semântico padrão do tema, re-apontado após a rampa nova. */
+	--sl-color-text: var(--sl-color-gray-2);
+	--sl-color-text-accent: var(--sl-color-accent-high);
+	--sl-color-text-invert: var(--sl-color-accent-low);
+	--sl-color-bg-nav: var(--sl-color-gray-6);
+	--sl-color-bg-sidebar: var(--sl-color-gray-6);
+	--sl-color-bg-inline-code: var(--sl-color-gray-5);
+	--sl-color-bg-accent: var(--sl-color-accent-high);
+	--sl-color-hairline-light: var(--sl-color-gray-5);
+	--sl-color-hairline: var(--sl-color-gray-6);
+	--sl-color-hairline-shade: var(--sl-color-black);
+	--sl-color-backdrop-overlay: hsla(229, 26%, 10%, 0.66); /* derivado */
+
+	/* Tipografia: Outfit para tudo que herda o corpo do documento. */
+	--sl-font: 'Outfit', 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+/* ---------- Claro ---------- */
+
+:root[data-theme='light'],
+[data-theme='light'] ::backdrop {
+	/* Neutros derivados do hue 229. */
+	--sl-color-white: hsl(230, 32%, 13%);
+	--sl-color-gray-1: hsl(229, 22%, 20%);
+	--sl-color-gray-2: hsl(229, 16%, 28%);
+	--sl-color-gray-3: hsl(229, 10%, 42%);
+	--sl-color-gray-4: hsl(229, 8%, 54%);
+	--sl-color-gray-5: hsl(229, 12%, 76%);
+	--sl-color-gray-6: hsl(229, 26%, 93%);
+	--sl-color-gray-7: hsl(229, 33%, 96%);
+	--sl-color-black: hsl(0, 0%, 100%);
+
+	/* Acento: blue-700 de marca para link e ação com AA sobre branco. */
+	--sl-color-accent-low: hsl(229, 88%, 92%); /* derivado do blue-50/100 */
+	--sl-color-accent: #2844c6; /* marca blue-700 */
+	--sl-color-accent-high: #2844c6; /* marca blue-700 */
+
+	--sl-color-text-accent: var(--sl-color-accent);
+	--sl-color-text-invert: var(--sl-color-black);
+	--sl-color-bg-nav: var(--sl-color-gray-7);
+	--sl-color-bg-sidebar: var(--sl-color-bg);
+	--sl-color-bg-inline-code: var(--sl-color-gray-6);
+	--sl-color-bg-accent: var(--sl-color-accent);
+	--sl-color-hairline-light: var(--sl-color-gray-6);
+	--sl-color-hairline-shade: var(--sl-color-gray-6);
+	--sl-color-backdrop-overlay: hsla(228, 20%, 37%, 0.66); /* derivado */
+}
+
+/*
+ * Cal Sans é a fonte de display da marca e existe apenas no peso 600
+ * (docs/fonts.md). O Starlight 0.42 não expõe variável pública para fonte
+ * de título — o corpo inteiro herda --sl-font — então a família de display
+ * é aplicada nos headings nativos, sem tocar em classe ou componente do
+ * Starlight. O CSS do usuário entra sem camada e antes do tema embutido,
+ * ordem documentada no próprio Page.astro do vendor.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: 'Cal Sans', var(--sl-font);
+	font-weight: 600;
+}

@@ -33,6 +33,10 @@ const areas = Object.entries(topicGroups).map(([directory, label]) => ({
 		</form>
 		<ul id="busca-resultados" data-busca-resultados></ul>
 	</search>
+	<!-- Revela o bloco antes da primeira pintura: o script bundled chega depois
+	     e a revelação tardia empurrava as áreas para baixo (CLS medido em
+	     DOCS-05). Sem JavaScript o atributo hidden permanece no HTML. -->
+	<script is:inline>document.querySelector('[data-busca]')?.removeAttribute('hidden');</script>
 
 	<section aria-labelledby="busca-areas">
 		<h2 id="busca-areas">Navegue pelas áreas</h2>
@@ -72,7 +76,9 @@ const areas = Object.entries(topicGroups).map(([directory, label]) => ({
 			results: HTMLElement,
 		) {
 			// Sem JavaScript o bloco de busca permanece escondido: só a navegação
-			// manual acima é garantida. Com script, a busca aparece.
+			// manual abaixo é garantida. A revelação primária é o script inline
+			// no HTML, que roda antes da primeira pintura; esta linha repetida é
+			// defesa em profundidade caso o inline seja removido.
 			root.removeAttribute('hidden');
 
 			const initialQuery = (new URLSearchParams(window.location.search).get('q') ?? '').trim();
