@@ -109,10 +109,30 @@
   `scripts/probe-csp.mjs` (ferramenta de sessão) com zero violações de CSP,
   funcionalidade íntegra e script inline hostil bloqueado. Narrativa no
   `TASKS.md` §"Checkpoint de 2026-09-09: DOCS-06".
+- `DOCS-07` concluído em 2026-09-09: QA local completo e preview de plantão.
+  `npm ci` em árvore limpa (`node_modules`/`dist`/`.astro` removidos) com
+  zero vulnerabilidades e `npm run verify` exit 0. Artefatos inspecionados
+  (Pagefind 1.5.2 pt-br com 16 páginas, `/busca/` estática, 404 custom,
+  `_headers`, robots, sitemap, llms, fontes). QA interativo via
+  `scripts/qa-interactive.mjs` (Chrome CDP com teclado/mouse reais,
+  ferramenta de sessão): deep-link `?q=`, debounce de 150 ms com digitação
+  real (uma única leva de render), submit imediato, tema percebido com
+  persistência, ToC 7/7, sidebar seis áreas + Busca, a11y estrutural limpa
+  (landmarks, h1 único, `aria-live` anunciando contagem), mobile sem
+  overflow e onze screenshots inspecionados. Achado real corrigido: a CSP
+  do DOCS-06 quebrava o modal do Pagefind (WASM sem
+  `'wasm-unsafe-eval'` em `script-src`, `WebAssembly.instantiate`
+  rejeitado, modal preso em "Searching"); o token estrito entrou no
+  `_headers`, o gate passou a exigir e a suíte ganhou o teste (168
+  testes), com prova por mutação e re-sonda empírica do modal funcionando.
+  Ressalvas para o owner: mensagens do Pagefind em inglês (decisão do
+  `G-VISUAL`), troca de tema via evento `change` no headless e VoiceOver
+  real é verificação humana. Narrativa no `TASKS.md` §"Checkpoint de
+  2026-09-09: DOCS-07".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
 - `npm run verify` verde: Astro Check sem diagnósticos e sem avisos, lint
-  limpo, 167 testes em 9 arquivos, contraste do tema PASS, Static publishing
+  limpo, 168 testes em 9 arquivos, contraste do tema PASS, Static publishing
   PASS, build de 17 páginas (acervo + `/busca/` + 404 custom) +
   `/search-index.json`, zero vulnerabilidades e política de install scripts
   PASS.
@@ -123,14 +143,15 @@
 
 ## ▶ Próxima ação
 
-Executar `DOCS-07`: QA local completo e preview pronto para aceite.
-`npm ci` em árvore limpa e `npm run verify` com exit code zero, inspeção
-dos artefatos construídos (Pagefind, `/busca/`, 404 custom, `_headers`,
-robots, sitemap, llms), QA interativo no browser (debounce da busca,
-deep-link `?q=`, leitor de tela, ToC, sidebar, dark mode percebido) e
-preview de plantão para o owner revisar, sem chamar o resultado de aceito.
-Gates `G-CONTENT`, `G-VISUAL` e `G-CLOUDFLARE` continuam fechados até o
-QA existir.
+Revisão do owner no preview de plantão para os gates humanos `G-CONTENT`
+(revisão factual, comercial, editorial, acessível e de segurança) e
+`G-VISUAL` (desktop, mobile, teclado, leitor de tela, dark mode, ToC,
+sidebar, Pagefind, `/busca/`, 404 e fontes), usando o `wrangler dev` em
+`http://localhost:8787/` (`npx wrangler dev --port 8787`, que aplica os
+`_headers`; o `astro preview` não aplica). QA técnico do `DOCS-07` não é
+aceite. Depois dos dois gates, abrir `DOCS-08` com as decisões de
+`G-CLOUDFLARE` (repo/branch, least privilege, checks, preview, rollback,
+DNS) antes de qualquer publicação.
 
 ## Gates vivos
 
@@ -163,7 +184,8 @@ QA existir.
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-09 (`DOCS-06` concluído; commit e push cobertos pela
-  autorização durável de fim de sessão).
+- Última sessão: 2026-09-09 (`DOCS-07` concluído, incluindo a correção da
+  CSP que quebrava o Pagefind; commit e push cobertos pela autorização
+  durável de fim de sessão).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

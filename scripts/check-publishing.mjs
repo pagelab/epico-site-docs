@@ -257,6 +257,14 @@ export async function checkPublishing(root = repoRoot) {
 				violations.push("_headers: CSP script-src sem 'self'");
 			}
 
+			// O Pagefind (busca do Starlight) compila WASM no browser: sem o
+			// token estrito `wasm-unsafe-eval`, o índice do modal falha com
+			// CompileError (achado do QA interativo do DOCS-07). O token
+			// autoriza SÓ WebAssembly, não eval de JavaScript.
+			if (!scriptSources.includes("'wasm-unsafe-eval'")) {
+				violations.push("_headers: CSP script-src sem 'wasm-unsafe-eval' (a busca do Pagefind não carrega o WASM sem ele)");
+			}
+
 			for (const forbidden of ["'unsafe-inline'", "'unsafe-eval'"]) {
 				if (scriptSources.includes(forbidden)) {
 					violations.push(`_headers: CSP script-src não pode conter ${forbidden}`);

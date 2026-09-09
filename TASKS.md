@@ -21,7 +21,7 @@
 | 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | concluído | `DOCS-04B` |
 | 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | concluído | `DOCS-01` |
 | 13 | `DOCS-06` | P0 | M | Sitemap, llms, robots, headers, CSP e configuração estática do Worker | concluído | `DOCS-04C`, `DOCS-05` |
-| 14 | `DOCS-07` | P0 | M | QA local completo e preview pronto para aceite | aberto | `DOCS-03A` a `DOCS-06` |
+| 14 | `DOCS-07` | P0 | M | QA local completo e preview pronto para aceite | concluído | `DOCS-03A` a `DOCS-06` |
 | 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | bloqueado | `DOCS-07` |
 | 16 | `G-VISUAL` | P0 | Humano | Aceite visual e acessível do owner | bloqueado | `DOCS-07` |
 | 17 | `DOCS-08` | P1 | M | Repo remoto, Workers Builds, preview, produção, DNS e rollback | bloqueado | `G-CONTENT`, `G-VISUAL`, `G-CLOUDFLARE` |
@@ -729,3 +729,72 @@
   PASS. Gates `G-CONTENT`, `G-VISUAL` e `G-CLOUDFLARE` não abertos:
   nenhum deploy, preview, DNS ou mudança de conta foi executado. Commit e
   push ao fim da sessão cobertos pela autorização durável do owner.
+
+## Checkpoint de 2026-09-09: DOCS-07
+
+- `npm ci` em árvore de verdade limpa (`node_modules`, `dist` e `.astro`
+  removidos antes): 519 pacotes, zero vulnerabilidades, sem avisos de
+  install scripts. `npm run verify` com exit code 0 antes e depois da
+  correção da sessão: Astro Check sem diagnósticos nem avisos, Content
+  policy PASS, contraste do tema PASS, build de 17 páginas +
+  `/search-index.json`, Static publishing PASS, `npm audit` limpo e política
+  de install scripts PASS.
+- Inspeção dos artefatos construídos: Pagefind 1.5.2 com idioma `pt-br`,
+  16 páginas indexadas (o 404 fora) e 16 fragments; `/busca/` com o bloco
+  de busca nascendo `hidden` e as seis áreas no HTML estático; `404.html`
+  com título e caminhos de saída; `_headers` com CSP de 10 hashes, headers
+  de segurança só na global, `immutable` em `/_astro/*` e `noindex` apenas
+  nas duas formas `workers.dev`; `robots.txt` com Allow e Sitemap;
+  `sitemap-0.xml` com as 16 URLs canônicas; `llms.txt`/`-full`/`-small`
+  com a política das quatro palavras; WOFF2 e OFL servidos.
+- QA interativo com a ferramenta de sessão `scripts/qa-interactive.mjs`
+  (Chrome headless via CDP com eventos de teclado e mouse reais, na mesma
+  família do `measure-theme.mjs`; fora do `verify`), contra o `wrangler dev`
+  local servindo o `dist/` com os headers reais: home dark com skip link
+  "Pular para o conteúdo"; sidebar com os seis grupos corretos e link
+  Busca; ToC desktop com as 7 âncoras (1 `#_top` + 6 seções) em
+  correspondência exata e ToC mobile como `details`; deep-link
+  `/busca/?q=dominio` com consulta preenchida, 4 resultados, URL preservada
+  e status anunciado; debounce provado com digitação real (7 teclas a
+  80 ms geram UMA única leva de render, 152 a 156 ms depois da última
+  tecla); submit por Enter renderiza imediatamente (delta 0 ms); tema
+  percebido trocando de verdade (fundo branco, `starlight-theme=light`,
+  sobrevivendo a reload); acessibilidade estrutural limpa (landmarks
+  header/nav/aside/main/footer, h1 único, zero botões sem nome, zero
+  imagens sem alt, zero links sem texto, label ligado ao input,
+  `role=status` com `aria-live=polite` anunciando a contagem); 404 custom
+  renderizado; mobile 390 px sem overflow horizontal com ToC colapsado.
+  Onze screenshots tirados e inspecionados visualmente (home dark, sidebar,
+  ToC, busca com deep-link, debounce, light, anúncio, modal, 404, mobile).
+- Achado real do QA, corrigido na sessão: o modal de busca do Starlight
+  (Pagefind) estava quebrado pela CSP. Sonda com coleta de console pegou
+  `WebAssembly.instantiate(): ... violates the following Content Security
+  policy directive because 'unsafe-eval'`: sem `wasm-unsafe-eval` em
+  `script-src`, o WASM do Pagefind não compila e o modal fica preso em
+  "Searching". A sonda Chrome do `DOCS-06` navegava páginas e testava a
+  `/busca/` (cliente próprio), mas nunca abriu o modal do Pagefind, por
+  isso a lacuna passou. Correção: `'wasm-unsafe-eval'` em `script-src` no
+  `public/_headers` (token estrito que autoriza só WebAssembly, não eval
+  de JavaScript; `unsafe-eval` continua proibido), gate
+  `check-publishing.mjs` passou a EXIGIR o token com mensagem própria
+  (remoção futura derruba o gate) e a suíte ganhou o teste da mutação
+  (168 testes em 9 arquivos). Prova por mutação: remover o token derruba o
+  gate com a violação alvo (e a barreira de divergência dist/fonte);
+  restauração por checksum; re-sonda empírica do modal com "8 results for
+  dominio", 5 resultados renderizados e zero erros de console.
+- Ressalvas honestas do QA: as mensagens da UI do Pagefind aparecem em
+  inglês ("8 results for dominio") e a decisão de localizar é do owner no
+  `G-VISUAL`; a troca de tema foi exercitada disparando o mesmo evento
+  `change` que o teclado dispararia, porque o Chrome headless não processa
+  popup de select nativo com eventos CDP sintéticos (provado em sonda: nem
+  o foco permanece no select) — as duas paletas, a persistência e o reload
+  foram verificados de verdade; leitor de tela real (VoiceOver) permanece
+  verificação humana do `G-VISUAL`, com o QA local cobrindo a base
+  estrutural que ele consome.
+- Preview de plantão para o owner revisar: `wrangler dev` servindo o
+  `dist/` com os headers reais em `http://localhost:8787/` (comando
+  `npx wrangler dev --port 8787`; o `astro preview` não aplica os
+  `_headers`). QA não é aceite: `G-CONTENT` e `G-VISUAL` seguem
+  bloqueados até a revisão do owner e `G-CLOUDFLARE` segue fechado.
+  Nenhum deploy, DNS ou mudança de conta foi executado. Commit e push ao
+  fim da sessão cobertos pela autorização durável do owner.
