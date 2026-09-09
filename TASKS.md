@@ -18,7 +18,7 @@
 | 8 | `DOCS-03E` | P0 | M | Escrever tutoriais de domínio e publicação | concluído | `DOCS-03C` |
 | 9 | `DOCS-04A` | P0 | M | Gerador puro e endpoint do índice JSON | concluído | `DOCS-02` |
 | 10 | `DOCS-04B` | P0 | G | Página `/busca/` e cliente de busca defensivo | concluído | `DOCS-04A` |
-| 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | aberto | `DOCS-04B` |
+| 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | concluído | `DOCS-04B` |
 | 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | aberto | `DOCS-01` |
 | 13 | `DOCS-06` | P0 | M | Sitemap, llms, robots, headers, CSP e configuração estática do Worker | aberto | `DOCS-04C`, `DOCS-05` |
 | 14 | `DOCS-07` | P0 | M | QA local completo e preview pronto para aceite | aberto | `DOCS-03A` a `DOCS-06` |
@@ -458,3 +458,87 @@
   específica (registrada em `STATE.md` §"Decisões confirmadas"). A fatia
   virou o commit `3e9ddc5`, enviado ao remoto `pagelab/epico-site-docs`
   (branch `main`) junto com os bookmarks.
+
+## Checkpoint de 2026-09-08: DOCS-04C
+
+- Bateria adversarial aberta com sondas empíricas contra o código entregue em
+  04A/04B, antes de qualquer mudança. Três lacunas reais confirmadas: o
+  validador aceitava URL duplicada no payload recebido (renderizava resultados
+  repetidos, quebrando a simetria com o gerador); o timeout de 5 s cobria só o
+  handshake do fetch, então um servidor que respondesse headers e travasse a
+  transferência deixava `response.text()` pendente para sempre (provado: a
+  promise não resolvia após 600 ms); e não havia rejeição antecipada por
+  `Content-Length` declarado acima do teto, lendo o corpo inteiro antes do
+  corte. Duas sondas já estavam cobertas pelo código e só não tinham teste
+  permanente: `version` como string `'1'` e url `'//'`.
+- Endurecimento do consumidor (`search-client.mjs`): o cronômetro do
+  `AbortController` agora cobre o handshake E a leitura do corpo, com o abort
+  durante a transferência mapeado para a mesma mensagem de timeout (no
+  browser, abortar o sinal rejeita a leitura pendente); `Content-Length`
+  numérico acima do teto rejeita a resposta antes de ler o corpo (header
+  ausente ou não numérico não bloqueia, e o teto pós-leitura permanece); as
+  mensagens de erro próprias da busca atravessam o mapeamento sem rewrapping.
+- Endurecimento do contrato (`search-index.mjs`): `findPii` exportado (a
+  suíte escaneia os bytes reais com os mesmos padrões que barram campos);
+  URL repetida no payload recebido é descartada com a primeira ocorrência
+  vencendo e contagem em `discarded`; url com segmento FINAL `index` é
+  rejeitada no consumidor (slug `area/index` sempre resolve `/area/`, então
+  `/area/index/` nunca é rota canônica); e o gerador passou a validar a URL
+  já RESOLVIDA com a mesma barreira do consumidor, tornando a simetria
+  produtor → consumidor estrutural: nenhum índice gerado pode ser descartado
+  pelo validador que o consome.
+- Suíte permanente nova `tests/search-adversarial.test.ts` (15 testes), sobre
+  o artefato real derivado da única autoridade editorial (`src/content/docs/`,
+  lido por parser mínimo do frontmatter plano que o acervo usa): 1:1 entre
+  arquivos e entradas dentro dos tetos, toda URL mapeia de volta a um arquivo
+  real, cada entrada reproduz exatamente o frontmatter (nenhum corpo de
+  artigo viaja, confirmado também pela ausência de toda linha de corpo com 40+
+  caracteres nos bytes servidos), round-trip 100% pelo contrato do consumidor
+  e varredura de PII nos bytes. Bateria exaustiva de truncagem: TODOS os
+  prefixos próprios do artefato real são rejeitados (JSON quebrado ou payload
+  fora do contrato), mais corte em byte no meio de caractere acentuado. O
+  subconjunto sintético válido é aceito e documentado como limite da defesa:
+  o contrato garante entrada individualmente segura, não completude do
+  acervo (completude exigiria assinatura, ausente no payload versão 1; a
+  integridade do transporte é dever de same-origin + HTTPS). Sondas
+  estruturais: `__proto__` e `constructor` como chaves próprias via
+  `JSON.parse` caem na assinatura de chaves, teto de entradas inclusivo no
+  consumidor e no produtor, duplicatas e segmento `index` nas duas pontas.
+  Tempo real no teto: pipeline completo com 200 entradas (corpus real +
+  preenchimento sintético dentro dos tetos) valida, filtra no teto de 30 e
+  digere consultas patológicas (token de 10 mil caracteres, 40 tokens,
+  apenas combining marks) em tempo interativo, com sonda de ausência de
+  retrocesso quadrático (< 1 s para a bateria inteira, registrada como sonda,
+  não como gate de performance).
+- `tests/search-client.test.ts` ganhou 5 testes: resposta não ok em 404/500,
+  abort quando o corpo trava depois dos headers (fake timers com fake fiel ao
+  browser, que rejeita a leitura no abort) e os três caminhos de
+  `Content-Length` (acima do teto sem ler o corpo, dentro do teto, não
+  numérico ignorado). 129 testes em 7 arquivos.
+- Doze provas por mutação, seis nas barreiras novas (dedupe de URL, timeout do
+  corpo, precheck de Content-Length, segmento `index` no consumidor, simetria
+  do produtor, `findPii`) e seis em barreiras de 04A/04B ainda não mutadas
+  (teto de entradas do validador, regra de todas-inválidas, allowlist de topic
+  no validador, `isRealDate`, `response.ok`, assinatura de chaves da entrada).
+  Cada mutação com snapshot `cp`, `node --check`, suíte alvo derrubada e
+  restauração conferida por checksum. As doze derrubaram testes.
+- Sondas HTTP contra o endpoint de verdade (`astro preview` sobre build novo;
+  o preview binda em IPv6 `::1`, `127.0.0.1` recusa conexão): `/search-index.json`
+  responde 200 com `Content-Type: application/json` e corpo idêntico byte a
+  byte ao `dist/search-index.json`; `Range: bytes=0-99` devolve 206 parcial e o
+  consumidor rejeita o fragmento; truncagem simulada da transferência em três
+  pontos rejeitada; `/busca/` servida com o bloco de busca nascendo `hidden`,
+  os seis links de área no HTML estático e nenhum `innerHTML`; o chunk do
+  cliente (`busca.astro_astro_type_script...js`) contém timeout, tetos,
+  contrato do payload, normalização e barreira de URL interna, sem
+  `innerHTML`. Duas ressalvas honestas do dia: a primeira rodada da sonda de
+  bundle inspecionou o chunk errado (`page.Dwipeu-R.js`, do Starlight) e foi
+  corrigida a SONDA, não o produto; `innerHTML` existe no `ui-core` do
+  Starlight (vendor, fora do cliente de busca).
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos,
+  Content policy PASS, 129 testes em 7 arquivos, build de 17 páginas +
+  `/search-index.json` (15 entradas, 3.726 bytes), zero vulnerabilidades e
+  política de install scripts PASS. Gates `G-CONTENT`, `G-VISUAL` e
+  `G-CLOUDFLARE` não abertos; QA interativo no browser permanece em
+  `DOCS-07`/`G-VISUAL`. Commit e push ao fim da sessão cobertos pela
+  autorização durável do owner.

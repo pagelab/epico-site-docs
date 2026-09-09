@@ -49,10 +49,31 @@
   futuro 404 não carregam área fictícia. Link "Busca" na sidebar via config,
   fora de `topics.mjs`. 55 testes novos (109 no total) e dez provas por
   mutação. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-08: DOCS-04B".
+- `DOCS-04C` concluído em 2026-09-08: bateria adversarial sobre as fatias
+  04A/04B. Sondas empíricas acharam três lacunas reais no consumidor (URL
+  duplicada aceita, timeout que não cobria a leitura do corpo, ausência de
+  rejeição por `Content-Length`), todas endurecidas: o cronômetro do abort
+  cobre handshake e corpo, `Content-Length` acima do teto rejeita antes de
+  ler, duplicatas são descartadas com contagem, url com segmento final
+  `index` é rejeitada nas duas pontas e o gerador passou a validar a URL
+  resolvida com a barreira do consumidor (simetria estrutural). Suíte
+  permanente `tests/search-adversarial.test.ts` sobre o artefato real:
+  1:1 com as rotas, round-trip 100%, sem PII nem corpo (linhas longas do
+  corpo ausentes dos bytes), TODOS os prefixos do artefato rejeitados
+  (truncagem de rede), subconjunto sintético válido documentado como limite
+  (completude não é alegável sem assinatura), sondas `__proto__`/`constructor`,
+  teto inclusivo nas duas pontas e pipeline completo no teto de 200 entradas
+  em tempo interativo. Doze provas por mutação (seis novas, seis de 04A/04B
+  não mutadas), todas derrubando testes, restauração por checksum. Sondas
+  HTTP contra o preview servido: 200 + `application/json`, bytes idênticos
+  ao dist, Range 206 parcial rejeitado, `/busca/` estática íntegra e chunk do
+  cliente com todas as barreiras e sem `innerHTML` (nota: o preview binda em
+  `::1`). 129 testes em 7 arquivos. Narrativa no `TASKS.md` §"Checkpoint de
+  2026-09-08: DOCS-04C".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
-- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 109 testes
-  em 6 arquivos, build de 17 páginas (acervo + `/busca/` + 404 nativo) +
+- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 129 testes
+  em 7 arquivos, build de 17 páginas (acervo + `/busca/` + 404 nativo) +
   `/search-index.json`, zero vulnerabilidades e política de install scripts
   PASS.
 - Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
@@ -62,13 +83,12 @@
 
 ## ▶ Próxima ação
 
-Executar `DOCS-04C`: bateria adversarial e limites do índice, sobre as fatias
-04A/04B já entregues, com `npm run verify` verde fechando a fatia. Ângulos
-ainda não esgotados: sondas contra o endpoint servido (truncagem de rede,
-resposta parcial, content-type), limites em tempo real do consumidor,
-mutações adicionais das barreiras do validador e conferência de que nenhuma
-entrada do índice expõe corpo de artigo ou PII. Não abrir `G-CONTENT`,
-`G-VISUAL` nem `G-CLOUDFLARE`.
+Executar `DOCS-05`: tema próprio com apenas variáveis públicas do Starlight
+(nenhum component override), fontes locais Cal Sans e Outfit em WOFF2 com
+proveniência, licença e SHA-256 registrados, e contraste claro/escuro, foco,
+teclado, reduced motion, mobile, LCP e CLS medidos antes de qualquer gate
+visual. Não abrir `G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`; o design system
+é próprio do acervo e proíbe importar `tokens.css` do painel.
 
 ## Gates vivos
 
@@ -101,6 +121,7 @@ entrada do índice expõe corpo de artigo ou PII. Não abrir `G-CONTENT`,
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-08 (`DOCS-04B` commitado em `3e9ddc5` e enviado).
+- Última sessão: 2026-09-08 (`DOCS-04C` concluído; commit e push cobertos pela
+  autorização durável de fim de sessão).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
