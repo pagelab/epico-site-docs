@@ -52,6 +52,13 @@ export default defineConfig({
 				starlightLlmsTxt({
 					projectName: 'Épico Site',
 					description: 'Tutoriais públicos para configurar, editar e publicar sites Épico Site.',
+					// Política pública de uso do acervo (decisão do owner em
+					// STATE.md §"Decisões confirmadas"): uso livre para busca,
+					// citação, grounding e treinamento.
+					details:
+						'Política de uso: o conteúdo deste acervo é público e de uso livre para busca, citação, grounding e treinamento de modelos de linguagem. Ao citar, aponte o endereço original da página em docs.epico.site.',
+					// O 404 é página utilitária, não documentação.
+					exclude: ['404'],
 				}),
 			],
 			sidebar: [

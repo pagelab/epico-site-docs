@@ -16,7 +16,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "audit": "npm audit --audit-level=high",
-    "verify": "npm run check && npm run lint && npm test && node scripts/check-theme-contrast.mjs && npm run build && npm run audit && node scripts/check-install-scripts.mjs"
+    "verify": "npm run check && npm run lint && npm test && node scripts/check-theme-contrast.mjs && npm run build && node scripts/check-publishing.mjs && npm run audit && node scripts/check-install-scripts.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "0.42.0",

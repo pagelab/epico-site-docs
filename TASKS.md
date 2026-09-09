@@ -20,7 +20,7 @@
 | 10 | `DOCS-04B` | P0 | G | Página `/busca/` e cliente de busca defensivo | concluído | `DOCS-04A` |
 | 11 | `DOCS-04C` | P0 | M | Testes adversariais e limites do índice | concluído | `DOCS-04B` |
 | 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | concluído | `DOCS-01` |
-| 13 | `DOCS-06` | P0 | M | Sitemap, llms, robots, headers, CSP e configuração estática do Worker | aberto | `DOCS-04C`, `DOCS-05` |
+| 13 | `DOCS-06` | P0 | M | Sitemap, llms, robots, headers, CSP e configuração estática do Worker | concluído | `DOCS-04C`, `DOCS-05` |
 | 14 | `DOCS-07` | P0 | M | QA local completo e preview pronto para aceite | aberto | `DOCS-03A` a `DOCS-06` |
 | 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | bloqueado | `DOCS-07` |
 | 16 | `G-VISUAL` | P0 | Humano | Aceite visual e acessível do owner | bloqueado | `DOCS-07` |
@@ -618,3 +618,114 @@
   browser (leitor de tela, ToC, sidebar, dark mode percebido) permanece em
   `DOCS-07` e no `G-VISUAL`. Commit e push ao fim da sessão cobertos pela
   autorização durável do owner.
+
+## Checkpoint de 2026-09-09: DOCS-06
+
+- `public/_headers` (copiado ao `dist/` pelo build, 4 regras parseadas pelo
+  wrangler): regra global `/*` com CSP `default-src 'self'` e `script-src`
+  cobrindo os DEZ scripts inline servidos (do Starlight e o revelador da
+  `/busca/`) por hash SHA-256 do conteúdo exato entre tags, sem
+  `unsafe-inline` nem `unsafe-eval`; `style-src 'self' 'unsafe-inline'`
+  pelos atributos `style=` do vendor e pelo estilo scoped da `/busca/`
+  (estilos não executam código); `img-src 'self' data:` porque o vendor
+  injeta ícones SVG como data URI em `<img>` em runtime (achado da sonda
+  Chrome, invisível ao grep do HTML estático; SVG em img é sanitizado pelo
+  browser); `font-src`, `connect-src` e `worker-src` exatamente `'self'`
+  (pagefind-worker e fetches do índice são same-origin); `object-src 'none'`,
+  `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`; mais
+  `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
+  `Referrer-Policy: strict-origin-when-cross-origin`,
+  `Permissions-Policy` e HSTS. Headers de segurança existem SÓ na regra
+  global: regra mais específica com o mesmo header teria os valores unidos
+  por vírgula pelo Cloudflare. `/_astro/*` recebe apenas
+  `Cache-Control: immutable` (assets com hash no nome). `noindex` da origem
+  `workers.dev` nas DUAS formas de URL (`https://:script.:account.workers.dev/*`
+  de produção e `https://:version.:script.:account.workers.dev/*` de preview
+  de versão, padrão da doc oficial de static assets): o custom domain não
+  casa regra com host e permanece indexável. O `_headers` não usa
+  comentários porque a doc de static assets só documenta comentários em
+  `_redirects`.
+- `public/robots.txt`: `User-agent: *`, `Allow: /` e
+  `Sitemap: https://docs.epico.site/sitemap-index.xml`. Política pública de
+  uso declarada no `llms.txt` via `details` do plugin (lugar canônico do
+  llmstxt.org): uso livre para busca, citação, grounding e treinamento, com
+  citação apontando o endereço original. O 404 utilitário ficou fora dos
+  `llms*.txt` (`exclude` do plugin).
+- `wrangler.jsonc` em JSON puro (sem comentários, parseável pelo gate):
+  `assets.directory ./dist`, `html_handling auto-trailing-slash` explícito
+  (canônico do acervo), `not_found_handling 404-page` (404 real, sem SPA
+  fallback), `compatibility_date` fixa em `2026-09-07` (a data do workerd
+  instalado, verificável localmente), sem `main` e sem `run_worker_first`:
+  respostas de Worker não recebem os `_headers`. Nome `epico-site-docs`.
+  Nenhum deploy, conta ou DNS foi tocado: o arquivo é só a configuração
+  estática exigida pelo task.
+- 404 custom em `src/content/docs/404.md` (título, descrição e três
+  caminhos: início, busca, sidebar), gerado como `dist/404.html`. Página
+  utilitária: o endpoint do índice exclui `entry.id === '404'` (não é
+  resultado de busca), o teste adversarial aplica a mesma exclusão no
+  corpus e o lint de conteúdo passou a tratar `404.md` com frontmatter
+  obrigatório reduzido (title e description), mantendo topic/lastReviewed
+  válidos quando presentes e proibindo `draft: true` (o Starlight filtraria
+  o 404 custom e o build cairia no nativo em silêncio). Os DOIS avisos de
+  build atribuídos a esta fatia foram resolvidos: `Entry docs → 404 was
+  not found` sumiu com o arquivo, e o da coleção i18n vazia sumiu com a
+  coleção `i18n` declarada no `content.config.ts` (loader/schema do
+  Starlight) mais `src/content/i18n/pt-br.json` materializando o ponto de
+  override documentado (a UI pt-BR já vem traduzida no pacote).
+- Gate permanente `scripts/check-publishing.mjs` no `verify`, depois do
+  build: confere `_headers` idêntico em `public/` e `dist/`, formato válido
+  (blocos, separador, teto de regras e de 2000 caracteres por linha), CSP
+  com o conjunto EXATO de hashes dos scripts inline de TODAS as páginas do
+  dist (nem faltando, nem órfão), diretivas obrigatórias com valores
+  exatos, headers de segurança só na global, noindex em workers.dev nas
+  duas formas e em nenhum outro lugar, `immutable` em `/_astro/*`,
+  robots com Allow/Sitemap e sem `Disallow: /`, sitemap-index apontando o
+  `sitemap-0.xml` do site canônico lido do `astro.config.mjs` e toda URL
+  do sitemap mapeando a um `index.html` real do dist, 404 servido igual ao
+  custom e ausente do `search-index.json`, `llms*.txt` presentes com as
+  quatro palavras da política (busca, citação, grounding, treinamento) e
+  `wrangler.jsonc` íntegro (404-page, sem SPA, sem `main`, data fixa).
+  Módulo importável como o lint de conteúdo.
+- Suíte: 29 testes novos (167 em 9 arquivos): 25 em
+  `tests/publishing.test.ts` (funções puras do parse/CSP/hash/host mais
+  fixture válida em tmpdir e 19 mutações de fixture, cada uma esperando a
+  violação específica) e 4 em `tests/lint-policy.test.ts` cobrindo o 404
+  utilitário (frontmatter reduzido, rascunho proibido, campos presentes
+  validados).
+- Sondas HTTP contra o `wrangler dev` local (nenhum deploy): as 4 regras
+  foram parseadas sem erro; a home serve CSP completa e os headers de
+  segurança sem `X-Robots-Tag`; `Host: epico-site-docs.pagelab.workers.dev`
+  e `Host: abc123.epico-site-docs.pagelab.workers.dev` recebem
+  `X-Robots-Tag: noindex`; `Host: docs.epico.site` não recebe (custom
+  domain indexável); rota inexistente responde 404 real com o corpo do 404
+  custom; `/_astro/*.js` serve `Cache-Control immutable`;
+  `robots.txt`, `sitemap-index.xml`, `sitemap-0.xml`, `llms*.txt`,
+  `search-index.json`, WOFF2 e `pagefind.js` respondem 200 com
+  content-type correto; `/busca` sem barra redireciona para `/busca/`.
+- Sonda Chrome headless via CDP (ferramenta de sessão
+  `scripts/probe-csp.mjs`, fora do `verify` como o `measure-theme.mjs`)
+  contra o wrangler dev com headers reais: zero violações de CSP nas
+  páginas navegadas, `StarlightThemeProvider` executando (script inline
+  autorizado por hash), ToC presente, `/busca/` com o bloco revelado pelo
+  script inline, índice buscado e input habilitado, e sonda negativa com
+  um script inline hostil injetado por DOM BLOQUEADO pela CSP (a política
+  está efetiva, não sendo ignorada). Duas ressavas honestas da sonda,
+  corrigidas nela e não no produto: o seletor do ToC estava errado
+  (`mobile-table-of-contents` em vez de `starlight-toc`/
+  `mobile-starlight-toc`) e o `Runtime.evaluate` da sonda negativa
+  precisou de `awaitPromise` para ler a Promise.
+- Quinze provas por mutação com snapshot `cp` e restauração por checksum:
+  hash removido, hash órfão, `unsafe-inline`, noindex global, regras
+  workers.dev removidas, SPA fallback, `main` no wrangler, `Disallow: /`,
+  robots sem Sitemap, 404 genérico, URL fantasma no sitemap, llms sem
+  política, 404 no índice, `dist/_headers` divergente e cache sem
+  immutable. Todas derrubaram o gate com a violação alvo.
+- `.wrangler/` (estado local do wrangler dev) adicionado ao `.gitignore`.
+- `npm run verify` verde com exit code 0: Astro Check sem diagnósticos nem
+  avisos (i18n e 404 resolvidos), Content policy PASS, contraste PASS,
+  167 testes em 9 arquivos, build de 17 páginas (acervo + `/busca/` + 404
+  custom) + `/search-index.json` (15 entradas, 404 fora), zero
+  vulnerabilidades, Static publishing PASS e política de install scripts
+  PASS. Gates `G-CONTENT`, `G-VISUAL` e `G-CLOUDFLARE` não abertos:
+  nenhum deploy, preview, DNS ou mudança de conta foi executado. Commit e
+  push ao fim da sessão cobertos pela autorização durável do owner.

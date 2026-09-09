@@ -12,7 +12,9 @@ export const prerender = true;
  * teto de quantidade ou bytes) falha o `astro build`.
  */
 export async function GET(): Promise<Response> {
-	const docs = await getCollection('docs');
+	// O 404 é página utilitária, não resultado de busca: não tem área
+	// editorial e não é rota navegável do acervo.
+	const docs = (await getCollection('docs')).filter((entry) => entry.id !== '404');
 	const payload = generateSearchIndex(docs.map(toIndexEntry));
 
 	return new Response(serializeSearchIndex(payload), {

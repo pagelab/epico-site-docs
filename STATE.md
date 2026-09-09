@@ -87,26 +87,50 @@
   JavaScript preservado), foco visível em seis Tabs, reduced motion sem
   animações e mobile sem overflow. Doze provas por mutação. Narrativa no
   `TASKS.md` §"Checkpoint de 2026-09-08: DOCS-05".
+- `DOCS-06` concluído em 2026-09-09: publicação estática segura sem deploy.
+  `public/_headers` com CSP por hash SHA-256 dos dez scripts inline servidos
+  (sem `unsafe-inline` em script-src, `img-src 'self' data:` para os ícones
+  SVG que o vendor injeta em runtime), headers de segurança só na regra
+  global, `Cache-Control immutable` para `/_astro/*` e
+  `X-Robots-Tag: noindex` apenas nas duas formas de URL `workers.dev`
+  (produção e preview de versão), deixando o custom domain indexável.
+  `public/robots.txt` com Allow e Sitemap canônico. Política pública de uso
+  (busca, citação, grounding e treinamento) declarada no `llms.txt` via
+  `details` do plugin. `wrangler.jsonc` com static assets, data fixa
+  `2026-09-07`, `not_found_handling: 404-page` sem SPA fallback e sem
+  `main`. 404 custom em `src/content/docs/404.md` (página utilitária: fora
+  do índice de busca e dos llms, frontmatter reduzido no lint) e coleção
+  `i18n` declarada com `pt-br.json`, resolvendo os dois avisos de build.
+  Gate permanente `scripts/check-publishing.mjs` no `verify` (fontes +
+  artefato: conjunto exato de hashes, sitemap 1:1 com o dist, 404 e política
+  conferidos), 29 testes novos, quinze provas por mutação, sondas HTTP
+  contra `wrangler dev` local (headers, noindex por Host, 404 real status
+  404, immutable, artefatos) e sonda Chrome via CDP
+  `scripts/probe-csp.mjs` (ferramenta de sessão) com zero violações de CSP,
+  funcionalidade íntegra e script inline hostil bloqueado. Narrativa no
+  `TASKS.md` §"Checkpoint de 2026-09-09: DOCS-06".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
-- `npm run verify` verde: Astro Check sem diagnósticos, lint limpo, 138
-  testes em 8 arquivos, contraste do tema PASS, build de 17 páginas (acervo +
-  `/busca/` + 404 nativo) + `/search-index.json`, zero vulnerabilidades e
-  política de install scripts PASS.
-- Os avisos de coleção i18n vazia e página 404 ainda não criada pertencem a
-  `DOCS-06`. Não foram silenciados.
-- Nenhum projeto Cloudflare, domínio ou deploy foi configurado. A visibilidade
-  pública do remoto e a branch de produção aguardam as decisões de `DOCS-08`.
+- `npm run verify` verde: Astro Check sem diagnósticos e sem avisos, lint
+  limpo, 167 testes em 9 arquivos, contraste do tema PASS, Static publishing
+  PASS, build de 17 páginas (acervo + `/busca/` + 404 custom) +
+  `/search-index.json`, zero vulnerabilidades e política de install scripts
+  PASS.
+- Nenhum projeto Cloudflare, domínio ou deploy foi configurado: o
+  `wrangler.jsonc` e o `_headers` são configuração estática verificada
+  localmente. A visibilidade pública do remoto e a branch de produção
+  aguardam as decisões de `DOCS-08`.
 
 ## ▶ Próxima ação
 
-Executar `DOCS-06`: publicação estática segura. `_headers`, `robots.txt`,
-sitemap, 404 e os três arquivos llms constando na build, `wrangler.jsonc`
-com static assets, compatibility date fixa e 404 real sem SPA fallback,
-`noindex` na origem `workers.dev` e custom domain permanecendo indexável,
-com CSP que acomode os scripts inline do Starlight e da `/busca/`. Não abrir
-`G-CONTENT`, `G-VISUAL` nem `G-CLOUDFLARE`: nenhum deploy é executado nesta
-fatia, só a configuração estática e sua verificação local.
+Executar `DOCS-07`: QA local completo e preview pronto para aceite.
+`npm ci` em árvore limpa e `npm run verify` com exit code zero, inspeção
+dos artefatos construídos (Pagefind, `/busca/`, 404 custom, `_headers`,
+robots, sitemap, llms), QA interativo no browser (debounce da busca,
+deep-link `?q=`, leitor de tela, ToC, sidebar, dark mode percebido) e
+preview de plantão para o owner revisar, sem chamar o resultado de aceito.
+Gates `G-CONTENT`, `G-VISUAL` e `G-CLOUDFLARE` continuam fechados até o
+QA existir.
 
 ## Gates vivos
 
@@ -139,7 +163,7 @@ fatia, só a configuração estática e sua verificação local.
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-08 (`DOCS-05` concluído; commit e push cobertos pela
+- Última sessão: 2026-09-09 (`DOCS-06` concluído; commit e push cobertos pela
   autorização durável de fim de sessão).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

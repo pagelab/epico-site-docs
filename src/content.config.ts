@@ -1,6 +1,6 @@
 import { defineCollection } from 'astro:content';
-import { docsLoader } from '@astrojs/starlight/loaders';
-import { docsSchema } from '@astrojs/starlight/schema';
+import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders';
+import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
 import { z } from 'astro/zod';
 import { topics } from './lib/topics.mjs';
 
@@ -21,5 +21,8 @@ export const collections = {
 					lastReviewed: z.coerce.date().optional(),
 				}),
 			}),
-	}),
+		}),
+	// A UI pt-BR já vem traduída no pacote Starlight. A coleção existe para
+	// materializar o ponto de override documentado (`src/content/i18n/`).
+	i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
 };

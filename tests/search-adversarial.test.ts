@@ -41,6 +41,9 @@ function corpusFiles(directory = CONTENT_ROOT): string[] {
 
 			return statSync(full).isDirectory() ? corpusFiles(full) : full.endsWith('.md') ? [full] : [];
 		})
+		// O 404 é página utilitária fora do índice de busca (excluída no
+		// endpoint pelo mesmo critério: sem área editorial, sem rota navegável).
+		.filter((full) => !full.endsWith('/404.md'))
 		.sort();
 }
 

@@ -12,6 +12,10 @@ const contentRoot = fileURLToPath(new URL('../src/content/docs/', import.meta.ur
 const allowedSegment = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const contentExtensions = new Set(['.md', '.mdx']);
 const allowedTopics = new Set(topics);
+// Páginas utilitárias da coleção: exigem título e descrição, mas não área,
+// rascunho ou data de revisão. O 404 é gerado pelo Starlight a partir daqui e
+// não entra no índice de busca (excluído no endpoint pelo mesmo critério).
+const utilityPages = new Set(['404.md']);
 const requiredFrontmatter = ['title', 'description', 'topic', 'draft', 'lastReviewed'];
 const forbiddenSecrets = [
   [/-----BEGIN [A-Z ]*PRIVATE KEY-----/u, 'chave privada'],
@@ -120,54 +124,72 @@ export function scanBody(source) {
 export function lintSource(relativePath, source) {
   const violations = [];
   const pathSegments = relativePath.split(sep);
-  const filename = pathSegments.pop();
-  const stem = filename.slice(0, -extname(filename).length);
+	const filename = pathSegments.pop();
+	const stem = filename.slice(0, -extname(filename).length);
+	const isUtilityPage = utilityPages.has(relativePath);
 
-  for (const segment of [...pathSegments, stem]) {
-    if (!allowedSegment.test(segment)) {
-      violations.push(`${relativePath}: slug não canônico: ${segment}`);
-    }
-  }
+	for (const segment of [...pathSegments, stem]) {
+		if (!allowedSegment.test(segment)) {
+			violations.push(`${relativePath}: slug não canônico: ${segment}`);
+		}
+	}
 
-  const frontmatter = frontmatterOf(source);
+	const frontmatter = frontmatterOf(source);
 
-  if (frontmatter === null) {
-    violations.push(`${relativePath}: frontmatter ausente ou inválido`);
-    return violations;
-  }
+	if (frontmatter === null) {
+		violations.push(`${relativePath}: frontmatter ausente ou inválido`);
+		return violations;
+	}
 
-  for (const key of requiredFrontmatter) {
-    if (scalar(frontmatter, key) === null) {
-      violations.push(`${relativePath}: frontmatter obrigatório ausente: ${key}`);
-    }
-  }
+	for (const key of isUtilityPage ? ['title', 'description'] : requiredFrontmatter) {
+		if (scalar(frontmatter, key) === null) {
+			violations.push(`${relativePath}: frontmatter obrigatório ausente: ${key}`);
+		}
+	}
 
-  const title = scalar(frontmatter, 'title') ?? '';
-  const description = scalar(frontmatter, 'description') ?? '';
-  const topic = scalar(frontmatter, 'topic') ?? '';
-  const draft = scalar(frontmatter, 'draft') ?? '';
-  const lastReviewed = scalar(frontmatter, 'lastReviewed') ?? '';
+	const title = scalar(frontmatter, 'title') ?? '';
+	const description = scalar(frontmatter, 'description') ?? '';
+	const topic = scalar(frontmatter, 'topic') ?? '';
+	const draft = scalar(frontmatter, 'draft') ?? '';
+	const lastReviewed = scalar(frontmatter, 'lastReviewed') ?? '';
 
-  if (!allowedTopics.has(topic)) {
-    violations.push(`${relativePath}: topic fora da allowlist: ${topic || '(vazio)'}`);
-  }
+	if (isUtilityPage) {
+		// Campos editoriais são opcionais aqui, mas válidos quando presentes.
+		// Rascunho em página utilitária é pior que ausência: o Starlight filtraria
+		// o 404 custom e o build cairia no 404 nativo em silêncio.
+		if (topic !== '' && !allowedTopics.has(topic)) {
+			violations.push(`${relativePath}: topic fora da allowlist: ${topic}`);
+		}
 
-  if (pathSegments.length > 0 && pathSegments[0] !== topic) {
-    violations.push(`${relativePath}: topic não corresponde ao diretório: ${topic}`);
-  }
+		if (draft !== '' && draft !== 'false') {
+			violations.push(`${relativePath}: página utilitária não pode ser rascunho`);
+		}
 
-  if (!['true', 'false'].includes(draft)) {
-    violations.push(`${relativePath}: draft deve ser true ou false`);
-  } else if (draft === 'true') {
-    // O acervo é público e não tem estado de rascunho publicado: rascunho falha
-    // o gate de build (o filtro de drafts do Starlight esconde o arquivo em
-    // produção, então a barreira aqui é a que impede o silêncio).
-    violations.push(`${relativePath}: draft: true não pode entrar no acervo público (publique o artigo ou remova o arquivo)`);
-  }
+		if (lastReviewed !== '' && !isRealDate(lastReviewed)) {
+			violations.push(`${relativePath}: lastReviewed deve ser uma data YYYY-MM-DD válida`);
+		}
+	} else {
+		if (!allowedTopics.has(topic)) {
+			violations.push(`${relativePath}: topic fora da allowlist: ${topic || '(vazio)'}`);
+		}
 
-  if (!isRealDate(lastReviewed)) {
-    violations.push(`${relativePath}: lastReviewed deve ser uma data YYYY-MM-DD válida`);
-  }
+		if (pathSegments.length > 0 && pathSegments[0] !== topic) {
+			violations.push(`${relativePath}: topic não corresponde ao diretório: ${topic}`);
+		}
+
+		if (!['true', 'false'].includes(draft)) {
+			violations.push(`${relativePath}: draft deve ser true ou false`);
+		} else if (draft === 'true') {
+			// O acervo é público e não tem estado de rascunho publicado: rascunho falha
+			// o gate de build (o filtro de drafts do Starlight esconde o arquivo em
+			// produção, então a barreira aqui é a que impede o silêncio).
+			violations.push(`${relativePath}: draft: true não pode entrar no acervo público (publique o artigo ou remova o arquivo)`);
+		}
+
+		if (!isRealDate(lastReviewed)) {
+			violations.push(`${relativePath}: lastReviewed deve ser uma data YYYY-MM-DD válida`);
+		}
+	}
 
   if (/^slug\s*:/mu.test(frontmatter)) {
     violations.push(`${relativePath}: slug em frontmatter é proibido, use o caminho do arquivo`);

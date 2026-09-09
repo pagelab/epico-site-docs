@@ -199,3 +199,30 @@ describe('modelo de conteúdo', () => {
 		expect(violationsFor(body)).toEqual([]);
 	});
 });
+
+describe('página utilitária 404', () => {
+	it('exige apenas título e descrição, sem os campos editoriais', () => {
+		const source = ['---', 'title: Página não encontrada', 'description: Descrição do 404.', '---', '', 'Corpo com [busca](/busca/).', ''].join('\n');
+
+		expect(lintSource('404.md', source)).toEqual([]);
+	});
+
+	it('não pode ser rascunho: o Starlight filtraria o 404 custom em silêncio', () => {
+		const source = ['---', 'title: Página não encontrada', 'description: Descrição do 404.', 'draft: true', '---', '', 'Corpo.', ''].join('\n');
+
+		expect(lintSource('404.md', source)).toContain('404.md: página utilitária não pode ser rascunho');
+	});
+
+	it('exige título e descrição como qualquer página', () => {
+		const source = ['---', 'title: Página não encontrada', '---', '', 'Corpo.', ''].join('\n');
+
+		expect(lintSource('404.md', source)).toContain('404.md: frontmatter obrigatório ausente: description');
+	});
+
+	it('valida campos editoriais quando presentes', () => {
+		const source = ['---', 'title: Página não encontrada', 'description: Descrição do 404.', 'topic: area-fantasma', 'lastReviewed: 2026-13-01', '---', '', 'Corpo.', ''].join('\n');
+
+		expect(lintSource('404.md', source)).toContain('404.md: topic fora da allowlist: area-fantasma');
+		expect(lintSource('404.md', source)).toContain('404.md: lastReviewed deve ser uma data YYYY-MM-DD válida');
+	});
+});
