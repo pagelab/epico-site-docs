@@ -286,7 +286,7 @@ substituível por API a partir desta sessão):
 2. Instalar o GitHub App da Cloudflare para `pagelab`: o app exato chama
    "Cloudflare Workers and Pages" (dono oficial `cloudflare`, verificado pela
    API do GitHub em 2026-09-10), em
-   https://github.com/apps/cloudflare-workers-and-pages. Ele não aparece em
+   <https://github.com/apps/cloudflare-workers-and-pages>. Ele não aparece em
    busca de marketplace e o caminho canônico é o dashboard: Workers & Pages →
    `epico-site-docs` → Settings → Builds → Connect → GitHub, autorizando
    `pagelab/epico-site-docs` (slug `cloudflare-workers-and-pages`; os antigos
