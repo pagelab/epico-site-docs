@@ -205,6 +205,22 @@
   contribuição do overlay.
   O primeiro parágrafo de cada `.sl-markdown-content` também passou a usar
   alinhamento central, conforme o ajuste literal do owner.
+- Aceites humanos e definição do `G-CLOUDFLARE` em 2026-09-10: o owner aceitou
+  `G-CONTENT` e `G-VISUAL` ("accepted/verdes") e autorizou abrir os demais
+  gates. A publicação foi decidida na
+  [`docs/decisions/0002-cloudflare-publication.md`](docs/decisions/0002-cloudflare-publication.md):
+  branch `main` de `pagelab/epico-site-docs`, Worker `epico-site-docs` sem
+  `main`, bindings ou segredos, deploy canônico por Workers Builds rodando
+  `npm ci && npm run verify` (deploy só com gate exit 0), `wrangler deploy`
+  local como bootstrap, previews fora de `main` só em `*.workers.dev` já
+  `noindex`, rollback por versions ou `git revert`, e `docs.epico.site` como
+  Workers Custom Domain. A sonda de verificação pós-deploy
+  `scripts/probe-production.mjs` foi escrita (DNS/TLS, HTTP, CORS, cache/ETag
+  com 304, sitemap 1:1 com o dist, robots, llms, search-index byte a byte,
+  CSP e canary workers.dev). O deploy em si não aconteceu: o token do MCP da
+  API Cloudflare é inválido, o OAuth do wrangler expirou e cinco tentativas
+  de `wrangler login` com aba aberta no navegador expiraram sem aprovação.
+  Narrativa no `TASKS.md` §"Checkpoint de 2026-09-10".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
 - Último baseline fechado (`DOCS-07`) tinha `npm run verify` verde com 168
@@ -215,27 +231,25 @@
   advisory `GHSA-7w5x-hrqm-74c2`, surgido durante a sessão na cópia
   `smol-toml@1.7.0` do markdownlint, foi removido por override exato para
   `1.8.0`, sem o downgrade destrutivo sugerido pelo npm.
-- Nenhum projeto Cloudflare, domínio ou deploy foi configurado: o
-  `wrangler.jsonc` e o `_headers` são configuração estática verificada
-  localmente. A visibilidade pública do remoto e a branch de produção
-  aguardam as decisões de `DOCS-08`.
+- Nenhum projeto Cloudflare, domínio ou deploy foi configurado: o `wrangler.jsonc` e o `_headers` são configuração estática verificada localmente, e as decisões de publicação estão fechadas na ADR 0002. A execução do `DOCS-08` espera credencial válida do owner (login do wrangler ou `CLOUDFLARE_API_TOKEN`). A visibilidade pública do remoto permanece decisão separada.
 
 ## ▶ Próxima ação
 
-Owner continuar as revisões humanas `G-CONTENT` e `G-VISUAL` no preview
-`http://localhost:8787/`, agora sobre a árvore já commitada e enviada. Aplicar
-os próximos ajustes literais como commit próprio, sem promover os gates até o
-aceite explícito. Não abrir `DOCS-08`, Cloudflare, DNS, deploy ou integração
-do painel antes dos dois aceites humanos e do gate `G-CLOUDFLARE`.
+Owner destravar a credencial Cloudflare: aprovar o login do wrangler na aba
+que a próxima sessão abrir no navegador, ou rodar `npx wrangler login` em
+terminal próprio, ou exportar `CLOUDFLARE_API_TOKEN`. Retomar `DOCS-08` na
+sequência: deploy de produção do Worker `epico-site-docs`, custom domain
+`docs.epico.site`, Workers Builds com `npm ci && npm run verify` e
+`scripts/probe-production.mjs` (mais `probe-csp.mjs`) em verde. Sem
+autenticação válida, nenhum recurso Cloudflare pode ser criado.
 
 ## Gates vivos
 
-- `G-CONTENT`: revisão factual, comercial, editorial, acessível e de segurança,
-  seguida de aceite humano do owner.
-- `G-VISUAL`: aceite humano em desktop, mobile, teclado, leitor de tela, dark
-  mode, ToC, sidebar, Pagefind, `/busca/`, 404 e fontes.
-- `G-CLOUDFLARE`: definir repositório remoto, conta/projeto, branch de produção,
-  política de preview, rollback e custom domain antes de qualquer publicação.
+- `G-CONTENT`: aceito pelo owner em 2026-09-10.
+- `G-VISUAL`: aceito pelo owner em 2026-09-10.
+- `G-CLOUDFLARE`: parâmetros decididos na ADR 0002 (repo `main`, projeto sem
+  runtime, Workers Builds com gate, preview `noindex`, rollback por versions,
+  custom domain `docs.epico.site`). Execução bloqueada em credencial do owner.
 - `G-PANEL`: só abrir integração no plugin depois do Docs publicado e conferido.
 
 ## Decisões confirmadas pelo owner
@@ -259,11 +273,10 @@ do painel antes dos dois aceites humanos e do gate `G-CLOUDFLARE`.
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-09 (primeira passagem de `G-VISUAL/G-CONTENT`
-  aplicada; hero preservado, cards e links de ecossistema adicionados, títulos
-  reduzidos, efeito espacial responsivo ao tema ajustado, escopo restrito à
-  homepage, pseudo superior removido e bordas dos cards ajustadas por tema;
-  gate verde; commit e push autorizados pelo owner ao fim da rodada e enviados
-  para `origin/main`).
+- Última sessão: 2026-09-10 (aceites de `G-CONTENT`/`G-VISUAL` registrados,
+  `G-CLOUDFLARE` decidido na ADR 0002, sonda de produção escrita, `DOCS-08`
+  aberto e bloqueado em credencial: token MCP inválido, OAuth do wrangler
+  expirado e login sem aprovação no navegador; verify verde duas vezes;
+  commit e push cobertos pela autorização durável).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

@@ -22,9 +22,9 @@
 | 12 | `DOCS-05` | P0 | M | Tema próprio, fontes locais, contraste e orçamento de desempenho | concluído | `DOCS-01` |
 | 13 | `DOCS-06` | P0 | M | Sitemap, llms, robots, headers, CSP e configuração estática do Worker | concluído | `DOCS-04C`, `DOCS-05` |
 | 14 | `DOCS-07` | P0 | M | QA local completo e preview pronto para aceite | concluído | `DOCS-03A` a `DOCS-06` |
-| 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | bloqueado | `DOCS-07` |
-| 16 | `G-VISUAL` | P0 | Humano | Aceite visual e acessível do owner | bloqueado | `DOCS-07` |
-| 17 | `DOCS-08` | P1 | M | Repo remoto, Workers Builds, preview, produção, DNS e rollback | bloqueado | `G-CONTENT`, `G-VISUAL`, `G-CLOUDFLARE` |
+| 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | aceito 2026-09-10 | `DOCS-07` |
+| 16 | `G-VISUAL` | P0 | Humano | Aceite visual e acessível do owner | aceito 2026-09-10 | `DOCS-07` |
+| 17 | `DOCS-08` | P1 | M | Repo remoto, Workers Builds, preview, produção, DNS e rollback | em andamento | `G-CONTENT` ✅, `G-VISUAL` ✅, `G-CLOUDFLARE` |
 | 18 | `PANEL-01A` | P1 | M | `DocsSite`, cards, categorias, CSP e i18n no plugin | bloqueado | Docs em produção |
 | 19 | `PANEL-01B` | P1 | G | Busca defensiva e acessível em `shell.js` | bloqueado | `PANEL-01A` |
 | 20 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
@@ -909,3 +909,46 @@
   `origin/main`. Os gates `G-CONTENT` e `G-VISUAL` seguem em aberto até os
   aceites explícitos do owner; correções adicionais apontadas na revisão
   entrarão como commit próprio.
+
+## Checkpoint de 2026-09-10: aceites humanos e definição do G-CLOUDFLARE
+
+- O owner aceitou `G-CONTENT` e `G-VISUAL` em 2026-09-10 ("accepted/verdes") e
+  autorizou abrir os demais gates. As duas linhas da ordem executiva passaram
+  a `aceito 2026-09-10` e `DOCS-08` passou a `em andamento`.
+- `G-CLOUDFLARE` definido pela
+  [ADR 0002](docs/decisions/0002-cloudflare-publication.md): produção é o
+  branch `main` de `pagelab/epico-site-docs`, Worker `epico-site-docs` em
+  Static Assets sem `main`, bindings ou segredos (least privilege
+  estrutural), deploy canônico por Workers Builds com
+  `npm ci && npm run verify` como comando de build e deploy somente com o
+  gate em exit 0, `wrangler deploy` local com verify verde como caminho
+  manual e bootstrap, previews fora de `main` apenas em `*.workers.dev` (já
+  `noindex` pelo `_headers` nas duas formas de URL), rollback por versions do
+  Worker sem rebuild ou por `git revert` reexecutando o pipeline, e
+  `docs.epico.site` como Workers Custom Domain da zona `epico.site`, com a
+  origem `workers.dev` pública apenas como canary `noindex`.
+- Sonda de produção `scripts/probe-production.mjs` escrita para a verificação
+  pós-deploy exigida pelo `DOCS-08`, cada critério em verificação própria:
+  DNS e TLS (SAN e validade do certificado), HTTP (redirect permanente para
+  https, home, `/busca/`, redirect com barra, 404 real com corpo custom),
+  CSP estrutural com hashes e `wasm-unsafe-eval` e sem `unsafe-inline`/eval,
+  headers de segurança, CORS sem `Access-Control-Allow-Origin` aberto,
+  cache/ETag com `immutable` e revalidação 304 real do asset, sitemap 1:1 com
+  o dist local com HEAD em cada URL, robots, `llms*.txt` com as quatro
+  palavras da política, `search-index.json` byte a byte com o dist e canary
+  `workers.dev` com noindex. Ferramenta de sessão como o `probe-csp.mjs`,
+  fora do `verify`. `node --check` e markdownlint da ADR verdes.
+- Baseline da sessão: `npm run verify` exit 0 duas vezes (antes e depois dos
+  arquivos novos), 173 testes, build de 17 páginas, publicação estática PASS,
+  zero vulnerabilidades.
+- Deploy NÃO executado por bloqueio de credencial: o token do servidor MCP da
+  API Cloudflare é inválido (`1000 Invalid API Token` no verify do token e
+  `9109` nos endpoints de conta), o OAuth local do wrangler expirou sem
+  conseguir renovar e cinco tentativas de `wrangler login` (janela de ~10
+  minutos com aba aberta no navegador e notificação do macOS) expiraram sem
+  o owner aprovar. Nenhum recurso Cloudflare foi criado ou alterado.
+- Próximo passo verificável: owner aprovar o login do wrangler na aba do
+  navegador na próxima tentativa, ou rodar `npx wrangler login` em terminal
+  próprio, ou exportar `CLOUDFLARE_API_TOKEN` na sessão. Com autenticação
+  válida, a sessão retoma `DOCS-08`: deploy de produção, custom domain
+  `docs.epico.site`, Workers Builds e `probe-production.mjs` em verde.
