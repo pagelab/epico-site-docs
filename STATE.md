@@ -294,10 +294,17 @@ substituível por API a partir desta sessão):
    `cloudflare` é de terceiro, TappNetwork). Pré-requisito de dashboard
    exigido pela doc oficial da API de Builds.
 3. Renovar o token da API em
-   `https://dash.cloudflare.com/profile/api-tokens` (com permissão de Workers
-   Builds Edit e, se quiser o redirect via API, Zone Rules/Settings Edit) e
-   informar o novo valor à sessão, que o aplica às quatro entradas
-   autenticadas do MCP (o `cfat_` atual segue inválido).
+   `https://dash.cloudflare.com/profile/api-tokens` e informar o novo valor à
+   sessão, que o aplica às quatro entradas autenticadas do MCP (o `cfat_`
+   atual segue inválido). Token Custom Token criado NO PERFIL DO USUÁRIO (a
+   API de Builds rejeita token com escopo de conta, documento oficial), com:
+   Account `Workers Builds Configuration: Edit`, `Workers Scripts: Read`,
+   `Account Settings: Read`, `Workers Tail: Read` e Zone `Single Redirect:
+   Edit` (redirect HTTP→HTTPS via API; chave interna `Dynamic URL Redirects
+   Write`) e `Zone: Read`, com Account Resources na conta específica e Zone
+   Resources na zona `epico.site`. Sem o Single Redirect, o redirect fica por
+   conta do owner no dashboard e o token precisa só das quatro permissões de
+   conta.
 
 Com isso, a sessão completa o `DOCS-08`: conexão e triggers do Workers Builds
 (org `pagelab` 1451087, repo 1361499499, build command `npm ci && npm run
