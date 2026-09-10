@@ -283,9 +283,15 @@ substituível por API a partir desta sessão):
    sido salvos (ADR 0003). Alternativa: incluir permissão de Zone
    Rules/Settings no token renovado no passo 3 e deixar a sessão aplicar via
    API.
-2. Instalar o GitHub App da Cloudflare para `pagelab`: dashboard Cloudflare →
-   Workers & Pages → `epico-site-docs` → Settings → Builds → Connect →
-   GitHub, autorizando `pagelab/epico-site-docs`. Pré-requisito de dashboard
+2. Instalar o GitHub App da Cloudflare para `pagelab`: o app exato chama
+   "Cloudflare Workers and Pages" (dono oficial `cloudflare`, verificado pela
+   API do GitHub em 2026-09-10), em
+   https://github.com/apps/cloudflare-workers-and-pages. Ele não aparece em
+   busca de marketplace e o caminho canônico é o dashboard: Workers & Pages →
+   `epico-site-docs` → Settings → Builds → Connect → GitHub, autorizando
+   `pagelab/epico-site-docs` (slug `cloudflare-workers-and-pages`; os antigos
+   `cloudflare-workers`/`cloudflare-pages` não existem mais, e o app de slug
+   `cloudflare` é de terceiro, TappNetwork). Pré-requisito de dashboard
    exigido pela doc oficial da API de Builds.
 3. Renovar o token da API em
    `https://dash.cloudflare.com/profile/api-tokens` (com permissão de Workers
