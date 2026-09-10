@@ -1152,3 +1152,45 @@
   do remoto e a abertura de `PANEL-01A`, agora desbloqueado tecnicamente
   pelo Docs em produção, em sessão própria no workspace Área de Clientes.
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+
+## Checkpoint de 2026-09-10: ADR 0004/0005 — analytics adotado e repo público
+
+- O owner decidiu as duas pendências separadas do fechamento do `DOCS-08`:
+  adotar o Web Analytics da Cloudflare com decisão registrada e aprovar a
+  visibilidade pública do repositório remoto.
+- [ADR 0004](docs/decisions/0004-web-analytics-cloudflare.md) registrou a
+  adoção pela injeção automática da zona, sem snippet manual: o HTML do
+  `dist` continua sem scripts de terceiros e o canary `workers.dev`, fora
+  da zona, não recebe injeção. A evidência veio do HTML servido: a edge
+  injeta `<script type="module">` com path versionado
+  (`beacon.min.js/v31edd6df...`) e SRI, então a autorização mínima estável
+  em `script-src` é o host `https://static.cloudflareinsights.com` (o
+  caminho exato da FAQ oficial quebraria a cada atualização do beacon).
+  `connect-src` permanece exatamente `'self'` porque a injeção automática
+  reporta para o próprio domínio, forma documentada pela FAQ. O produto é
+  cookieless e sem PII, e a política do `llms.txt` não mudou.
+- Endurecimento simétrico ao `wasm-unsafe-eval` do DOCS-07: o gate
+  `check-publishing.mjs` passou a EXIGIR o host do beacon em `script-src`
+  com mensagem própria citando a ADR, a fixture válida dos testes ganhou o
+  host e um teste de mutação novo confirma que a remoção derruba o gate
+  (177 testes no total). Prova por mutação no `public/_headers` REAL:
+  remoção do host derruba `check-publishing.mjs` com a violação alvo e a
+  restauração foi conferida por checksum. `npm run verify` exit 0.
+- Deploy pelo ciclo canônico: push `5936c02` → build `7a426b3b` SUCCESS →
+  produção servindo a CSP com o host do beacon. `probe-production.mjs`
+  16/16 e `probe-csp.mjs` contra produção com ZERO violações de console
+  (antes três, todas do beacon bloqueado), `/busca/` funcional, ToC
+  presente e script inline hostil continuando bloqueado. A coleta do
+  analytics está ativa no custom domain.
+- [ADR 0005](docs/decisions/0005-repositorio-publico.md) registrou a
+  visibilidade pública do `pagelab/epico-site-docs` (supersede pontual do
+  "privado" no ponto 1 da ADR 0002, anotado no status dela). Antes da
+  troca, o histórico INTEIRO do git foi escaneado por credenciais reais
+  (padrões de valor `cfut_`/`cfat_`/`ghp_`/`github_pat_`/`npm_`/AKIA,
+  chaves privadas e Bearer longos): zero matches. Os únicos achados do
+  scan amplo foram os hashes SHA-256 públicos da própria CSP, fixtures de
+  teste com hashes falsos e a sonda do lint que usa uma string
+  `BEGIN RSA PRIVATE KEY` fake para provar a barreira. O repositório foi
+  tornado público via `gh repo edit` e confirmado `visibility: PUBLIC` em
+  <https://github.com/pagelab/epico-site-docs>.
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).

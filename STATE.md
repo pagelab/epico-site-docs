@@ -8,8 +8,10 @@
 - **Fila canônica:** [`TASKS.md`](TASKS.md).
 - **Decisões vigentes:**
   [`docs/decisions/0001-public-docs-architecture.md`](docs/decisions/0001-public-docs-architecture.md),
-  [`docs/decisions/0002-cloudflare-publication.md`](docs/decisions/0002-cloudflare-publication.md)
-  e [`docs/decisions/0003-dominio-canonico-tutoriais.md`](docs/decisions/0003-dominio-canonico-tutoriais.md).
+  [`docs/decisions/0002-cloudflare-publication.md`](docs/decisions/0002-cloudflare-publication.md),
+  [`docs/decisions/0003-dominio-canonico-tutoriais.md`](docs/decisions/0003-dominio-canonico-tutoriais.md),
+  [`docs/decisions/0004-web-analytics-cloudflare.md`](docs/decisions/0004-web-analytics-cloudflare.md)
+  e [`docs/decisions/0005-repositorio-publico.md`](docs/decisions/0005-repositorio-publico.md).
 
 ## Estado corrente
 
@@ -284,23 +286,34 @@
   `scripts/probe-production.mjs` 16/16, agora com o redirect em verde.
   Narrativa no `TASKS.md` §"Checkpoint de 2026-09-10: fechamento do
   `DOCS-08`".
+- ADR 0004/0005 aplicadas em 2026-09-10 por decisão do owner: o Web
+  Analytics da Cloudflare foi ADOTADO pela injeção automática da zona, com
+  `script-src` aberto pontualmente para
+  `https://static.cloudflareinsights.com` (host, porque a edge injeta o
+  beacon com path versionado e SRI), `connect-src` permanecendo exatamente
+  `'self'` (injeção automática reporta para o próprio domínio, pela FAQ
+  oficial), gate `check-publishing.mjs` EXIGINDO o host com mensagem
+  própria, teste de mutação novo (177 testes) e prova por mutação no
+  `_headers` real. Deploy pelo ciclo canônico (push `5936c02` → build
+  `7a426b3b` verde) e sondas: `probe-production.mjs` 16/16 e
+  `probe-csp.mjs` com ZERO violações de console, beacon carregando e
+  script hostil bloqueado. O repositório remoto foi tornado PÚBLICO
+  (<https://github.com/pagelab/epico-site-docs>) após scan do histórico
+  inteiro por credenciais reais com zero achados. Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-10: ADR 0004/0005".
 
 ## ▶ Próxima ação
 
-`DOCS-08` está concluído e o ciclo de release canônico está ativo: todo push
+Não há task aberto neste repositório nem pendência do owner. As duas
+decisões que restavam foram resolvidas em 2026-09-10: Web Analytics adotado
+(ADR 0004, coleta ativa no custom domain) e repositório público (ADR 0005,
+scan do histórico limpo). O ciclo de release canônico está ativo: todo push
 no `main` de `pagelab/epico-site-docs` roda o Workers Builds com
-`npm ci && npm run verify` e só publica com o gate em exit 0. Não há task
-aberto neste repositório. Três decisões do owner, independentes entre si:
+`npm ci && npm run verify` e só publica com o gate em exit 0.
 
-1. Beacon de Web Analytics da zona: hoje a injeção automática da zona é
-   bloqueada pela CSP estrita (sem tracking). Ou o owner desliga a injeção
-   no dashboard (Analytics → Settings, zona `epico.site`), ou decide adotar
-   analytics deliberadamente, o que exige abrir `script-src`/`connect-src`
-   no `_headers`, mudar o gate `check-publishing.mjs` e emendar a ADR 0002.
-2. Visibilidade pública do remoto `pagelab/epico-site-docs` (segue privado).
-3. Abrir `PANEL-01A` (integração do Docs no plugin da Área de Clientes) em
-   sessão própria no workspace `Area-de-clientes`. O bloqueio técnico
-   "Docs em produção" está atendido.
+Próximo task da fila é `PANEL-01A` (integração do Docs no plugin da Área de
+Clientes), que roda em sessão própria no workspace `Area-de-clientes`. O
+bloqueio técnico "Docs em produção" está atendido.
 
 Editorial: mudanças de conteúdo seguem o fluxo do acervo (branch, PR,
 review), com deploy automático pelo pipeline e re-sonda
@@ -313,9 +326,9 @@ review), com deploy automático pelo pipeline e re-sonda
 - `G-CLOUDFLARE`: fechado em 2026-09-10. Produção no ar em
   `tutoriais.epico.site` pelo deploy canônico do Workers Builds (gate verde
   obrigatório, validado nos dois sentidos), redirect HTTP→HTTPS ativo por
-  Single Redirect escopado, sonda `probe-production.mjs` 16/16 e canary
-  workers.dev noindex. Ressalva viva: beacon de Web Analytics bloqueado
-  pela CSP, decisão separada do owner (ver ▶ Próxima ação).
+  Single Redirect escopado, sonda `probe-production.mjs` 16/16, canary
+  workers.dev noindex e Web Analytics da zona coletando com a CSP pontual
+  da ADR 0004 (`probe-csp.mjs` com zero violações).
 - `G-PANEL`: só abrir integração no plugin depois do Docs publicado e conferido.
 
 ## Decisões confirmadas pelo owner
@@ -348,12 +361,13 @@ review), com deploy automático pelo pipeline e re-sonda
   `pagelab/epico-site-docs` com deploy automático no `main` condicionado ao
   `npm ci && npm run verify` (trigger produção `ea467d5c`, preview
   `7f74ef20`).
-- Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-10 (fechamento do `DOCS-08`: token `cfut_`
-  validado, triggers do Workers Builds conferidos, build manual derrubado
-  pelo gate com MD034 do bookmark anterior e corrigido, push `366ad28` com
-  build verde `72f8af46` e versão `0cee9266` em produção, Single Redirect
-  HTTP→HTTPS criado e validado, sonda 16/16; verify verde; commit e push
+- Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
+  `main`.
+- Última sessão: 2026-09-10 (fechamento do `DOCS-08` com token `cfut_`
+  validado, builds canônicos validados nos dois sentidos, Single Redirect
+  HTTP→HTTPS e sonda 16/16; na sequência, ADR 0004 com Web Analytics
+  adotado e coleta ativa zero violações, e ADR 0005 com o repositório
+  tornado público após scan limpo do histórico; verify verde; commit e push
   cobertos pela autorização durável).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
