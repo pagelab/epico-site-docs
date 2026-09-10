@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://docs.epico.site/sitemap-index.xml
+Sitemap: https://tutoriais.epico.site/sitemap-index.xml

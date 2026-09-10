@@ -17,7 +17,7 @@ import {
 	sourceHost,
 } from '../scripts/check-publishing.mjs';
 
-const SITE = 'https://docs.epico.site/';
+const SITE = 'https://tutoriais.epico.site/';
 const INLINE_SCRIPT = "console.log('fixture')";
 
 function fixtureHash() {
@@ -61,7 +61,7 @@ function fixtureWrangler() {
 			compatibility_date: '2026-09-07',
 			workers_dev: true,
 			preview_urls: true,
-			routes: [{ pattern: 'docs.epico.site', custom_domain: true }],
+			routes: [{ pattern: new URL(SITE).hostname, custom_domain: true }],
 			assets: {
 				directory: './dist',
 				html_handling: 'auto-trailing-slash',
@@ -113,7 +113,7 @@ async function makeFixture() {
 	);
 	await writeFile(
 		join(root, 'dist/llms.txt'),
-		`Política de uso: busca, citação, grounding e treinamento.\n- https://docs.epico.site/llms-full.txt\n`,
+		`Política de uso: busca, citação, grounding e treinamento.\n- ${SITE}llms-full.txt\n`,
 	);
 	await writeFile(join(root, 'dist/llms-full.txt'), 'conteúdo completo\n');
 	await writeFile(join(root, 'dist/llms-small.txt'), 'conteúdo reduzido\n');
@@ -420,14 +420,11 @@ describe('publishing: gate sobre fixture válida e mutações', () => {
 		const root = await makeFixture();
 		await writeFile(
 			join(root, 'wrangler.jsonc'),
-			fixtureWrangler().replace(
-				'"routes": [\n\t\t{\n\t\t\t"pattern": "docs.epico.site",\n\t\t\t"custom_domain": true\n\t\t}\n\t]',
-				'"routes": [\n\t\t{\n\t\t\t"pattern": "outro.exemplo.com",\n\t\t\t"custom_domain": true\n\t\t}\n\t]',
-			),
+			fixtureWrangler().replace(new URL(SITE).hostname, 'outro.exemplo.com'),
 		);
 
 		expect(await checkPublishing(root)).toContainEqual(
-			expect.stringMatching(/routes deve ser exatamente o custom domain docs\.epico\.site/),
+			expect.stringMatching(new RegExp(`routes deve ser exatamente o custom domain ${new URL(SITE).hostname.replace(/\./gu, '\\.')}`)),
 		);
 	});
 

@@ -6,7 +6,7 @@
   "preview_urls": true,
   "routes": [
     {
-      "pattern": "docs.epico.site",
+      "pattern": "tutoriais.epico.site",
       "custom_domain": true
     }
   ],

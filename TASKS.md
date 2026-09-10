@@ -1045,3 +1045,45 @@
   exit 0 na sessão). O deploy em si usou o caminho bootstrap autorizado pela
   ADR e não abriu o gate humano do `G-CLOUDFLARE`, que segue em execução com
   produção no ar.
+
+## Checkpoint de 2026-09-10: domínio canônico tutoriais.epico.site
+
+- Decisão do owner no mesmo dia do deploy: a audiência é majoritariamente
+  brasileira e `tutoriais` comunica melhor o propósito do acervo que `docs`.
+  Registrada na
+  [ADR 0003](docs/decisions/0003-dominio-canonico-tutoriais.md), que
+  supersede apenas o ponto 6 da ADR 0002 (anotado no status da própria 0002).
+  Slugs publicados permanecem inalterados: só o hostname mudou.
+- Troca aplicada em todos os pontos vivos: `site` do `astro.config.mjs`
+  (fonte única dos URLs canônicos, sitemap, canonical e política llms, cujo
+  texto passou a citar `tutoriais.epico.site`), `Sitemap` do
+  `public/robots.txt`, rota do `wrangler.jsonc`, `AGENTS.md`, `README.md` e
+  default do `probe-production.mjs` (label de DNS derivado do host). Nenhuma
+  ocorrência do domínio antigo resta fora das ADRs e dos checkpoints
+  históricos.
+- O gate `check-publishing.mjs` parou de fixar hostname por literal: a rota
+  exigida passou a ser o hostname do site canônico lido do
+  `astro.config.mjs`. Divergência de domínio entre config e deploy derruba o
+  gate a partir de agora. Teste de mutação da rota reescrito derivado de
+  `SITE`. `npm run verify` verde com 176 testes.
+- Deploy da troca (versão `5d188d17-9905-46f2-820b-a1dbc50d477c`): 21 assets
+  reenviados (arquivos com URLs novos: sitemap, robots, llms, HTMLs com
+  canonical) e 52 reaproveitados. A API confirma `tutoriais.epico.site`
+  anexado ao Worker `epico-site-docs` e `docs.epico.site` removido da conta,
+  sem custom domain órfão (`epico.site` e `beta.epico.site` seguem anexados a
+  outros Workers do owner, intocados).
+- Verificação pós-troca: `probe-production.mjs` 15/16 no novo domínio (DNS,
+  TLS wildcard válido até 2026-10-19, CSP com os 10 hashes, headers de
+  segurança, `/busca/`, 404 custom, cache/ETag com 304, sitemap 1:1 servindo
+  `tutoriais.epico.site`, robots, llms, `search-index.json` byte a byte e
+  canary workers.dev com noindex). O hostname antigo não resolve mais
+  (registro DNS removido junto com o custom domain). A única vermelha segue
+  sendo o redirect HTTP→HTTPS, agora aplicável ao novo hostname, a mesma
+  pendência de zona do owner. `probe-csp.mjs` no novo domínio: funcionalidade
+  íntegra, script hostil bloqueado e as mesmas três violações do beacon de
+  Web Analytics da zona (decisão do owner pendente).
+- Sem redirect do hostname antigo por decisão registrada na ADR 0003:
+  a publicação no domínio antigo durou horas sem divulgação e Redirect Rule
+  exige permissão de zona que a sessão não tem. O caminho fica documentado
+  caso links tenham sido salvos.
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).

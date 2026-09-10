@@ -6,8 +6,10 @@
 - **Stack:** Astro estático + Starlight + Cloudflare Workers Static Assets.
 - **Autoridade editorial:** `src/content/docs/` neste repositório.
 - **Fila canônica:** [`TASKS.md`](TASKS.md).
-- **Decisão vigente:**
-  [`docs/decisions/0001-public-docs-architecture.md`](docs/decisions/0001-public-docs-architecture.md).
+- **Decisões vigentes:**
+  [`docs/decisions/0001-public-docs-architecture.md`](docs/decisions/0001-public-docs-architecture.md),
+  [`docs/decisions/0002-cloudflare-publication.md`](docs/decisions/0002-cloudflare-publication.md)
+  e [`docs/decisions/0003-dominio-canonico-tutoriais.md`](docs/decisions/0003-dominio-canonico-tutoriais.md).
 
 ## Estado corrente
 
@@ -258,24 +260,29 @@
   `smol-toml@1.7.0` do markdownlint, foi removido por override exato para
   `1.8.0`, sem o downgrade destrutivo sugerido pelo npm.
 - Produção no ar desde 2026-09-10 por bootstrap do `DOCS-08`: Worker
-  `epico-site-docs` com static assets, custom domain `docs.epico.site` e
-  canary `epico-site-docs.epico.workers.dev` noindex. Pendências para fechar o
-  task: redirect HTTP→HTTPS na zona (owner), Workers Builds (GitHub App no
-  dashboard + token de API válido, ver ▶ Próxima ação) e a decisão sobre o
-  beacon de Web Analytics bloqueado pela CSP. A visibilidade pública do
-  remoto permanece decisão separada.
+  `epico-site-docs` com static assets, custom domain `tutoriais.epico.site`
+  (domínio canônico trocado de `docs.epico.site` no mesmo dia por decisão do
+  owner, ADR 0003, hostname antigo removido sem redirect) e canary
+  `epico-site-docs.epico.workers.dev` noindex. Pendências para fechar o
+  task: redirect HTTP→HTTPS na zona (owner, agora para `tutoriais`), Workers
+  Builds (GitHub App no dashboard + token de API válido, ver ▶ Próxima
+  ação) e a decisão sobre o beacon de Web Analytics bloqueado pela CSP. A
+  visibilidade pública do remoto permanece decisão separada.
 
 ## ▶ Próxima ação
 
 Owner decide e executa três passos de credencial/permissão (nenhum é
 substituível por API a partir desta sessão):
 
-1. Redirect HTTP→HTTPS de `docs.epico.site`: no dashboard da zona `epico.site`,
-   ou `Always Use HTTPS` em SSL/TLS → Edge Certificates (vale para a zona
-   inteira) ou uma Redirect Rule escopada a `http.host eq "docs.epico.site"`
-   (preferível, não toca nos outros hosts da zona). Alternativa: incluir
-   permissão de Zone Rules/Settings no token renovado no passo 3 e deixar a
-   sessão aplicar via API.
+1. Redirect HTTP→HTTPS de `tutoriais.epico.site`: no dashboard da zona
+   `epico.site`, ou `Always Use HTTPS` em SSL/TLS → Edge Certificates (vale
+   para a zona inteira) ou uma Redirect Rule escopada a
+   `http.host eq "tutoriais.epico.site"` (preferível, não toca nos outros
+   hosts da zona). A mesma regra pode redirecionar o hostname antigo
+   `docs.epico.site` para o novo preservando o caminho, caso links tenham
+   sido salvos (ADR 0003). Alternativa: incluir permissão de Zone
+   Rules/Settings no token renovado no passo 3 e deixar a sessão aplicar via
+   API.
 2. Instalar o GitHub App da Cloudflare para `pagelab`: dashboard Cloudflare →
    Workers & Pages → `epico-site-docs` → Settings → Builds → Connect →
    GitHub, autorizando `pagelab/epico-site-docs`. Pré-requisito de dashboard
@@ -323,14 +330,17 @@ automática de Web Analytics na zona ou adotar analytics deliberadamente
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
 - Cloudflare: Worker `epico-site-docs` em produção (versão
-  `ca95ddeb-1d19-4873-aedf-083b27460b27`) com custom domain
-  `docs.epico.site` e canary `epico-site-docs.epico.workers.dev`. OAuth do
-  wrangler válido (conta `contato@uberfacil.com`). Token do MCP ainda inválido.
+  `5d188d17-9905-46f2-820b-a1dbc50d477c`) com custom domain
+  `tutoriais.epico.site` e canary `epico-site-docs.epico.workers.dev`. OAuth
+  do wrangler válido (conta `contato@uberfacil.com`). Token do MCP ainda
+  inválido.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-10 (bootstrap de produção do `DOCS-08`: custom
-  domain, canary workers.dev, gate endurecido com as asserções de deploy,
-  sonda 15/16, CSP de produção íntegra com beacon de analytics bloqueado,
-  Workers Builds bloqueado em GitHub App + token; verify verde com 176
-  testes; commit e push cobertos pela autorização durável).
+- Última sessão: 2026-09-10 (bootstrap de produção do `DOCS-08` e troca do
+  domínio canônico para `tutoriais.epico.site` por decisão do owner, ADR
+  0003: custom domain novo anexado, antigo removido, gate sem literal de
+  domínio, sonda 15/16 no novo host, CSP de produção íntegra com beacon de
+  analytics bloqueado, Workers Builds bloqueado em GitHub App + token;
+  verify verde com 176 testes; commit e push cobertos pela autorização
+  durável).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

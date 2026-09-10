@@ -544,12 +544,14 @@ export async function checkPublishing(root = repoRoot) {
 		}
 
 		const routes = Array.isArray(wrangler.routes) ? wrangler.routes : [];
-		const routeOk = routes.length === 1
-			&& routes[0]?.pattern === 'docs.epico.site'
+		const canonicalHost = site !== undefined ? new URL(site).hostname : null;
+		const routeOk = canonicalHost !== null
+			&& routes.length === 1
+			&& routes[0]?.pattern === canonicalHost
 			&& routes[0]?.custom_domain === true
 			&& Object.keys(routes[0]).length === 2;
 		if (!routeOk) {
-			violations.push('wrangler: routes deve ser exatamente o custom domain docs.epico.site (produção canônica da ADR 0002)');
+			violations.push(`wrangler: routes deve ser exatamente o custom domain ${canonicalHost ?? 'do site canônico do astro.config.mjs'} (hostname do site canônico)`);
 		}
 	}
 

@@ -14,7 +14,7 @@ import { readFile } from 'node:fs/promises';
 import { lookup } from 'node:dns/promises';
 import { connect as tlsConnect } from 'node:tls';
 
-const ORIGIN = process.argv[2] ?? 'https://docs.epico.site';
+const ORIGIN = process.argv[2] ?? 'https://tutoriais.epico.site';
 // Subdomínio workers.dev real da conta, confirmado via API em 2026-09-10 (o
 // palpite `pagelab` do DOCS-06 estava errado; os placeholders `:script`/
 // `:account` do `_headers` sempre casaram a origem correta).
@@ -38,8 +38,8 @@ function header(headers, name) {
 	return headers.get(name) ?? '';
 }
 // O certificado gerenciado do Custom Domain cobre o host por wildcard de um
-// rótulo (`*.epico.site` cobre `docs.epico.site`), então o SAN precisa ser
-// casado por regra, não por substring literal.
+// rótulo (`*.epico.site` cobre `tutoriais.epico.site`), então o SAN precisa
+// ser casado por regra, não por substring literal.
 function sanCoversHost(san, host) {
 	return san
 		.split(',')
@@ -62,7 +62,7 @@ async function main() {
 	const home = await get('/');
 	const homeHtml = await home.clone().text();
 
-	await check('DNS: docs.epico.site resolve', async () => {
+	await check(`DNS: ${HOST} resolve`, async () => {
 		const addresses = await lookup(HOST, { all: true });
 		assert(addresses.length > 0, 'nenhum endereço resolvido');
 		return addresses.map((entry) => entry.address).join(', ');

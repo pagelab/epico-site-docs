@@ -17,7 +17,7 @@ transitória no `STATE.md` quando existir.
 
 ## Autoridades e fronteiras
 
-- Este repositório é a autoridade do conteúdo público de `docs.epico.site`.
+- Este repositório é a autoridade do conteúdo público de `tutoriais.epico.site`.
 - Markdown em `src/content/docs/` é a única fonte editorial.
 - O índice JSON e a página `/busca/` são derivados do mesmo acervo.
 - A Área de Clientes apenas consome links e o índice. Ela não copia artigos.

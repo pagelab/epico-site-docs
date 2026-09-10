@@ -6,7 +6,7 @@ import { topicGroups } from './src/lib/topics.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://docs.epico.site/',
+	site: 'https://tutoriais.epico.site/',
 	output: 'static',
 	trailingSlash: 'always',
 	integrations: [
@@ -54,7 +54,7 @@ export default defineConfig({
 					// STATE.md §"Decisões confirmadas"): uso livre para busca,
 					// citação, grounding e treinamento.
 					details:
-						'Política de uso: o conteúdo deste acervo é público e de uso livre para busca, citação, grounding e treinamento de modelos de linguagem. Ao citar, aponte o endereço original da página em docs.epico.site.',
+						'Política de uso: o conteúdo deste acervo é público e de uso livre para busca, citação, grounding e treinamento de modelos de linguagem. Ao citar, aponte o endereço original da página em tutoriais.epico.site.',
 					// O 404 é página utilitária, não documentação.
 					exclude: ['404'],
 				}),

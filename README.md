@@ -1,7 +1,7 @@
 # Tutoriais Épico Site
 
 Acervo público e canônico de tutoriais do Épico Site, construído com Astro e
-Starlight para publicação em `https://docs.epico.site/`.
+Starlight para publicação em `https://tutoriais.epico.site/`.
 
 O conteúdo vive neste repositório em Markdown. O WordPress da Área de Clientes
 apenas aponta para as páginas públicas e consulta um índice JSON derivado deste
