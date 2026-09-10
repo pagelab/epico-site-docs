@@ -24,7 +24,7 @@
 | 14 | `DOCS-07` | P0 | M | QA local completo e preview pronto para aceite | concluído | `DOCS-03A` a `DOCS-06` |
 | 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | aceito 2026-09-10 | `DOCS-07` |
 | 16 | `G-VISUAL` | P0 | Humano | Aceite visual e acessível do owner | aceito 2026-09-10 | `DOCS-07` |
-| 17 | `DOCS-08` | P1 | M | Repo remoto, Workers Builds, preview, produção, DNS e rollback | em andamento | `G-CONTENT` ✅, `G-VISUAL` ✅, `G-CLOUDFLARE` |
+| 17 | `DOCS-08` | P1 | M | Repo remoto, Workers Builds, preview, produção, DNS e rollback | concluído | `G-CONTENT` ✅, `G-VISUAL` ✅, `G-CLOUDFLARE` |
 | 18 | `PANEL-01A` | P1 | M | `DocsSite`, cards, categorias, CSP e i18n no plugin | bloqueado | Docs em produção |
 | 19 | `PANEL-01B` | P1 | G | Busca defensiva e acessível em `shell.js` | bloqueado | `PANEL-01A` |
 | 20 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
@@ -1086,4 +1086,69 @@
   a publicação no domínio antigo durou horas sem divulgação e Redirect Rule
   exige permissão de zona que a sessão não tem. O caminho fica documentado
   caso links tenham sido salvos.
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+
+## Checkpoint de 2026-09-10: fechamento do DOCS-08
+
+- Token `cfut_` aplicado pelo owner nas quatro entradas autenticadas do
+  `~/.zcode/cli/config.json` (`cloudflare-api`, `cloudflare-bindings`,
+  `cloudflare-builds`, `cloudflare-observability`, mesmo valor conferido).
+  Verify da API: `active`. Zonas e conta listadas com o token: zona
+  `epico.site` (id `c42c09ae7884ffe30ca0f68a0ede83c3`) e conta
+  `ff43237266d9602f6f795600729b0bf1`, iguais aos ids registrados.
+- Triggers do Workers Builds conferidos por API: o owner já tinha conectado
+  o repo (repo_connection `73d43a6d`, repo `epico-site-docs` id `1361499499`,
+  provider `github`, org `pagelab` id `1451087`) e deixado os DOIS triggers
+  exatamente como a ADR 0002 define: produção (`ea467d5c`) com
+  `branch_includes ["main"]`, build command `npm ci && npm run verify` e
+  deploy `npx wrangler deploy`; preview (`7f74ef20`) com todas as branches
+  exceto `main`, o mesmo gate e deploy `npx wrangler versions upload`
+  (versão de preview, sem promover). Worker tag
+  `f433b2be6327495a938ab47307bac494`, build token próprio da conta.
+- Build manual de validação disparado pela API (`907df2a1`, branch `main`):
+  o ambiente detectou `nodejs@24.20.0` e `npm@11.19.0` do `.nvmrc` e do
+  `package.json`, o clone e o `npm clean-install` passaram, e o build
+  FALHOU dentro do gate: `markdownlint` MD034 em `STATE.md:289`, a URL do
+  GitHub App escrita crua no bookmark do commit `c3e8ab9` (escrito depois
+  do verify daquela sessão, então nunca tinha sido lintado). O deploy foi
+  bloqueado com o gate vermelho, que é a prova estrutural do critério da
+  ADR 0002: nenhum deploy sem verify exit 0. O histórico de builds contou a
+  mesma história: o build do push do bookmark `c3e8ab9` (`66054cfa`) tinha
+  falhado pelo mesmo MD034, e o build da conexão original (`4b05ed63`,
+  commit `c3352c3`) tinha passado com deploy.
+- Correção: a URL ganhou delimitadores `<...>` no `STATE.md` (commit
+  `366ad28`), `npm run verify` local exit 0 e push. O trigger automático de
+  push disparou o build `72f8af46` (commit `366ad28`) sem intervenção:
+  SUCCESS, deployment `99adcca2` às 17:55:16Z e versão
+  `0cee9266-f07e-464a-8791-9999ea6122f5` em produção. O ciclo canônico
+  push no `main` → build → gate → deploy está validado ponta a ponta, nos
+  dois sentidos (gate vermelho bloqueia, gate verde publica).
+- Single Redirect HTTP→HTTPS criado por API com a permissão
+  `Redirecionamento único: Editar` do token: PUT no entrypoint da fase
+  `http_request_dynamic_redirect` da zona `epico.site` (ruleset
+  `afc7e7ad004241f2864b82cddc64ddfe`, antes vazio), regra `ref`
+  `tutoriais_http_to_https` com expressão
+  `(not ssl) and (http.host eq "tutoriais.epico.site")`, ação `redirect`
+  301 para `concat("https://tutoriais.epico.site", http.request.uri.path)`
+  com `preserve_query_string`. Escopo restrito ao host novo: o hostname
+  antigo segue sem redirect por decisão da ADR 0003. Validação empírica:
+  `http://` raiz responde 301 com Location `https://tutoriais.epico.site/`,
+  `http://tutoriais.epico.site/busca/?q=dominio` preserva path e query no
+  Location, e `https://` direto responde 200 sem loop. Nenhum outro host da
+  zona foi tocado.
+- `scripts/probe-production.mjs` 16/16 contra produção (antes 15/16): DNS,
+  TLS wildcard válido, redirect HTTP→HTTPS agora VERDE com 301 e Location
+  https, home 200 sem noindex, CSP com os 10 hashes e `wasm-unsafe-eval`,
+  headers de segurança, CORS sem ACAO aberto, `/busca/` 200 com redirect de
+  barra, 404 real com corpo custom, `immutable` com ETag revalidado em 304,
+  sitemap 1:1 com o dist local (16 URLs), robots com Sitemap canônico, os
+  três `llms*.txt` com a política no `llms.txt`, `search-index.json` byte a
+  byte igual ao dist e canary workers.dev 200 com noindex e CSP. A sonda
+  validou o deployment novo do Workers Builds.
+- `DOCS-08` concluído e `G-CLOUDFLARE` fechado. Pendências separadas do
+  owner, fora do task: beacon de Web Analytics da zona (segue bloqueado
+  pela CSP estrita, sem tracking; desligar a injeção na zona ou adotar
+  analytics deliberadamente com emenda da ADR 0002), visibilidade pública
+  do remoto e a abertura de `PANEL-01A`, agora desbloqueado tecnicamente
+  pelo Docs em produção, em sessão própria no workspace Área de Clientes.
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).

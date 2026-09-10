@@ -268,65 +268,54 @@
   Builds (GitHub App no dashboard + token de API válido, ver ▶ Próxima
   ação) e a decisão sobre o beacon de Web Analytics bloqueado pela CSP. A
   visibilidade pública do remoto permanece decisão separada.
+- `DOCS-08` concluído em 2026-09-10 com o deploy canônico do ciclo: o token
+  `cfut_` aplicado pelo owner no config das MCPs passou no verify da API, os
+  triggers do Workers Builds já estavam conectados e configurados pelo owner
+  exatamente como a ADR 0002 (produção no `main` com build
+  `npm ci && npm run verify` e deploy `npx wrangler deploy`, preview nas
+  demais branches com `npx wrangler versions upload`). Build manual de
+  validação falhou NO GATE (MD034 de URL crua no bookmark `c3e8ab9`) e o
+  deploy foi bloqueado, provando o critério estrutural da ADR. Corrigido o
+  bookmark (commit `366ad28`), o push disparou build automático verde
+  (`72f8af46`), deployment `99adcca2` e versão `0cee9266` em produção.
+  Single Redirect HTTP→HTTPS criado por API (ruleset `afc7e7ad` da zona,
+  expressão `(not ssl) and (http.host eq "tutoriais.epico.site")`, 301 com
+  path e query preservados, escopo só no host novo) e validado sem loop.
+  `scripts/probe-production.mjs` 16/16, agora com o redirect em verde.
+  Narrativa no `TASKS.md` §"Checkpoint de 2026-09-10: fechamento do
+  `DOCS-08`".
 
 ## ▶ Próxima ação
 
-Owner decide e executa três passos de credencial/permissão (nenhum é
-substituível por API a partir desta sessão):
+`DOCS-08` está concluído e o ciclo de release canônico está ativo: todo push
+no `main` de `pagelab/epico-site-docs` roda o Workers Builds com
+`npm ci && npm run verify` e só publica com o gate em exit 0. Não há task
+aberto neste repositório. Três decisões do owner, independentes entre si:
 
-1. Redirect HTTP→HTTPS de `tutoriais.epico.site`: no dashboard da zona
-   `epico.site`, ou `Always Use HTTPS` em SSL/TLS → Edge Certificates (vale
-   para a zona inteira) ou uma Redirect Rule escopada a
-   `http.host eq "tutoriais.epico.site"` (preferível, não toca nos outros
-   hosts da zona). A mesma regra pode redirecionar o hostname antigo
-   `docs.epico.site` para o novo preservando o caminho, caso links tenham
-   sido salvos (ADR 0003). Alternativa: incluir permissão de Zone
-   Rules/Settings no token renovado no passo 3 e deixar a sessão aplicar via
-   API.
-2. Instalar o GitHub App da Cloudflare para `pagelab`: o app exato chama
-   "Cloudflare Workers and Pages" (dono oficial `cloudflare`, verificado pela
-   API do GitHub em 2026-09-10), em
-   <https://github.com/apps/cloudflare-workers-and-pages>. Ele não aparece em
-   busca de marketplace e o caminho canônico é o dashboard: Workers & Pages →
-   `epico-site-docs` → Settings → Builds → Connect → GitHub, autorizando
-   `pagelab/epico-site-docs` (slug `cloudflare-workers-and-pages`; os antigos
-   `cloudflare-workers`/`cloudflare-pages` não existem mais, e o app de slug
-   `cloudflare` é de terceiro, TappNetwork). Pré-requisito de dashboard
-   exigido pela doc oficial da API de Builds.
-3. Renovar o token da API em
-   `https://dash.cloudflare.com/profile/api-tokens` (token Custom Token
-   criado NO PERFIL DO USUÁRIO, com as permissões listadas abaixo). O token
-   NÃO passa por chat: o owner o aplica em `~/.zcode/cli/config.json` nas
-   quatro entradas autenticadas (`cloudflare-api`, `cloudflare-bindings`,
-   `cloudflare-builds`, `cloudflare-observability`, cabeçalho
-   `Authorization: Bearer`), ou salva em arquivo local temporário e informa
-   SÓ O CAMINHO à sessão, que aplica por script sem imprimir o valor. Depois
-   reiniciar o agente (o config das MCPs é lido na inicialização). As
-   permissões conferidas pelo owner em 2026-09-10 no dashboard pt-BR:
-   Conta `Configuração de builds de Workers: Editar`,
-   `Scripts do Workers: Ler`, `Cauda do Workers: Ler`, Zona
-   `Redirecionamento único: Editar` (Single Redirect, chave interna
-   `Dynamic URL Redirects Write`) e `Zona: Ler`, com Account Resources na
-   conta específica e Zone Resources na zona `epico.site`. Linhas opcionais:
-   `Configurações da conta: Ler` (MCP api listar contas) e a
-   `Usuário/Tokens de API: Ler` que o owner já tinha adicionado. GitHub App
-   instalado e repositório conectado pelo owner no dashboard em 2026-09-10.
+1. Beacon de Web Analytics da zona: hoje a injeção automática da zona é
+   bloqueada pela CSP estrita (sem tracking). Ou o owner desliga a injeção
+   no dashboard (Analytics → Settings, zona `epico.site`), ou decide adotar
+   analytics deliberadamente, o que exige abrir `script-src`/`connect-src`
+   no `_headers`, mudar o gate `check-publishing.mjs` e emendar a ADR 0002.
+2. Visibilidade pública do remoto `pagelab/epico-site-docs` (segue privado).
+3. Abrir `PANEL-01A` (integração do Docs no plugin da Área de Clientes) em
+   sessão própria no workspace `Area-de-clientes`. O bloqueio técnico
+   "Docs em produção" está atendido.
 
-Com isso, a sessão completa o `DOCS-08`: conexão e triggers do Workers Builds
-(org `pagelab` 1451087, repo 1361499499, build command `npm ci && npm run
-verify`), redirect HTTP→HTTPS se vier por API, e re-sonda completa
-(`probe-production.mjs` 16/16). Decisão pendente separada: desligar a injeção
-automática de Web Analytics na zona ou adotar analytics deliberadamente
-(hoje o beacon é bloqueado pela CSP estrita, sem tracking).
+Editorial: mudanças de conteúdo seguem o fluxo do acervo (branch, PR,
+review), com deploy automático pelo pipeline e re-sonda
+`scripts/probe-production.mjs` quando a mudança tocar publicação.
 
 ## Gates vivos
 
 - `G-CONTENT`: aceito pelo owner em 2026-09-10.
 - `G-VISUAL`: aceito pelo owner em 2026-09-10.
-- `G-CLOUDFLARE`: parâmetros decididos na ADR 0002 e produção publicada por
-  bootstrap em 2026-09-10 (custom domain + canary no ar, sonda 15/16). Faltam
-  para fechar: redirect HTTP→HTTPS (owner na zona), Workers Builds (GitHub App
-  no dashboard + token de API) e decisão sobre o beacon de Web Analytics.
+- `G-CLOUDFLARE`: fechado em 2026-09-10. Produção no ar em
+  `tutoriais.epico.site` pelo deploy canônico do Workers Builds (gate verde
+  obrigatório, validado nos dois sentidos), redirect HTTP→HTTPS ativo por
+  Single Redirect escopado, sonda `probe-production.mjs` 16/16 e canary
+  workers.dev noindex. Ressalva viva: beacon de Web Analytics bloqueado
+  pela CSP, decisão separada do owner (ver ▶ Próxima ação).
 - `G-PANEL`: só abrir integração no plugin depois do Docs publicado e conferido.
 
 ## Decisões confirmadas pelo owner
@@ -349,17 +338,22 @@ automática de Web Analytics na zona ou adotar analytics deliberadamente
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
 - Cloudflare: Worker `epico-site-docs` em produção (versão
-  `5d188d17-9905-46f2-820b-a1dbc50d477c`) com custom domain
-  `tutoriais.epico.site` e canary `epico-site-docs.epico.workers.dev`. OAuth
-  do wrangler válido (conta `contato@uberfacil.com`). Token do MCP ainda
-  inválido.
+  `0cee9266-f07e-464a-8791-9999ea6122f5`, publicada pelo Workers Builds do
+  push `366ad28`) com custom domain `tutoriais.epico.site`, canary
+  `epico-site-docs.epico.workers.dev` noindex e Single Redirect HTTP→HTTPS
+  escopado ao host (301 com path e query). OAuth do wrangler válido (conta
+  `contato@uberfacil.com`). Token `cfut_` da API ativo nas quatro MCPs
+  autenticadas (Builds user-scoped, Workers Scripts read, Tail read, Single
+  Redirect write, zona read). Workers Builds conectado a
+  `pagelab/epico-site-docs` com deploy automático no `main` condicionado ao
+  `npm ci && npm run verify` (trigger produção `ea467d5c`, preview
+  `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-10 (bootstrap de produção do `DOCS-08` e troca do
-  domínio canônico para `tutoriais.epico.site` por decisão do owner, ADR
-  0003: custom domain novo anexado, antigo removido, gate sem literal de
-  domínio, sonda 15/16 no novo host, CSP de produção íntegra com beacon de
-  analytics bloqueado, Workers Builds bloqueado em GitHub App + token;
-  verify verde com 176 testes; commit e push cobertos pela autorização
-  durável).
+- Última sessão: 2026-09-10 (fechamento do `DOCS-08`: token `cfut_`
+  validado, triggers do Workers Builds conferidos, build manual derrubado
+  pelo gate com MD034 do bookmark anterior e corrigido, push `366ad28` com
+  build verde `72f8af46` e versão `0cee9266` em produção, Single Redirect
+  HTTP→HTTPS criado e validado, sonda 16/16; verify verde; commit e push
+  cobertos pela autorização durável).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
