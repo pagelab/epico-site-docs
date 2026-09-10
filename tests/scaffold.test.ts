@@ -11,6 +11,7 @@ describe('reproducible scaffold', () => {
 		engines: Record<string, string>;
 		dependencies: Record<string, string>;
 		devDependencies: Record<string, string>;
+		overrides?: Record<string, string>;
 		allowScripts?: Record<string, boolean>;
 	};
 
@@ -22,6 +23,8 @@ describe('reproducible scaffold', () => {
 	]) {
 		expect(version).toMatch(/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u);
 	}
+
+	expect(packageJson.overrides?.['smol-toml']).toBe('1.8.0');
 });
 
 it('covers dependency install scripts with explicit approvals only', async () => {

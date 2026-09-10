@@ -1,9 +1,10 @@
 /**
  * Tema Épico Site Docs — apenas variáveis públicas do Starlight.
  *
- * Este arquivo não sobrescreve componentes, classes internas nem camadas
- * do Starlight: define as variáveis documentadas (--sl-*) nas duas paletas
- * e nada mais. O dark é o bloco padrão em :root e o claro sobrescreve via
+ * O bloco inicial define o tema por variáveis públicas do Starlight. As regras
+ * seguintes refinam os componentes que entraram no primeiro passe visual do
+ * owner em G-VISUAL, sem substituir os componentes do vendor. O dark é o bloco
+ * padrão em :root e o claro sobrescreve via
  * [data-theme='light'], espelhando a estrutura do próprio tema do Starlight
  * (incluindo ::backdrop para diálogos e popovers).
  *
@@ -41,14 +42,43 @@
 	--sl-color-text: var(--sl-color-gray-2);
 	--sl-color-text-accent: var(--sl-color-accent-high);
 	--sl-color-text-invert: var(--sl-color-accent-low);
-	--sl-color-bg-nav: var(--sl-color-gray-6);
-	--sl-color-bg-sidebar: var(--sl-color-gray-6);
+	--sl-color-bg-nav: var(--epico-sidebar-background);
+	--sl-color-bg-sidebar: var(--epico-sidebar-background);
 	--sl-color-bg-inline-code: var(--sl-color-gray-5);
 	--sl-color-bg-accent: var(--sl-color-accent-high);
 	--sl-color-hairline-light: var(--sl-color-gray-5);
 	--sl-color-hairline: var(--sl-color-gray-6);
 	--sl-color-hairline-shade: var(--sl-color-black);
 	--sl-color-backdrop-overlay: hsla(229, 26%, 10%, 0.66); /* derivado */
+	--sl-text-h1: var(--sl-text-4xl);
+	--sl-text-h2: var(--sl-text-3xl);
+	--sl-text-h3: var(--sl-text-2xl);
+	--sl-text-h4: var(--sl-text-xl);
+
+	/* Tokens locais copiados por valor, sem importar o design system do painel. */
+	--epico-sidebar-background: #12151c;
+	--epico-nav-active-background: var(--sl-color-black);
+	--epico-nav-active-color: var(--epico-color-action-primary);
+	--epico-color-action-primary: #8098f6;
+	--epico-color-action-secondary-hover: #8098f6;
+	--epico-color-nav-hover-surface: #141d3d;
+	--epico-scrollbar-track: var(--epico-sidebar-background);
+	--epico-scrollbar-thumb: #2c3240;
+	--epico-header-brand-strip-width: 5px;
+	--epico-brand-logo-max-width: 165px;
+	--epico-brand-logo-wordmark: #ffffff;
+	--epico-brand-logo-mark: #ffffff;
+	--epico-summary-card-text: #f5f8ff;
+	--epico-summary-card-muted: #8a92a6;
+	--epico-summary-card-icon-background: #141d3d;
+	--epico-summary-card-icon-color: #a9b9f9;
+	--epico-summary-card-shadow-hover: none;
+	--epico-space-overlay-blend-mode: screen;
+	--epico-space-overlay-opacity: 0.7;
+	--epico-space-mask-bottom: linear-gradient(to top, #000000, transparent);
+	--epico-font-weight-semibold: 600;
+	--epico-duration-slow: 240ms;
+	--epico-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
 
 	/* Tipografia: Outfit para tudo que herda o corpo do documento. */
 	--sl-font: 'Outfit', 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -65,7 +95,7 @@
 	--sl-color-gray-3: hsl(229, 10%, 42%);
 	--sl-color-gray-4: hsl(229, 8%, 54%);
 	--sl-color-gray-5: hsl(229, 12%, 76%);
-	--sl-color-gray-6: hsl(229, 26%, 93%);
+	--sl-color-gray-6: #d6d7e0;
 	--sl-color-gray-7: hsl(229, 33%, 96%);
 	--sl-color-black: hsl(0, 0%, 100%);
 
@@ -76,13 +106,33 @@
 
 	--sl-color-text-accent: var(--sl-color-accent);
 	--sl-color-text-invert: var(--sl-color-black);
-	--sl-color-bg-nav: var(--sl-color-gray-7);
-	--sl-color-bg-sidebar: var(--sl-color-bg);
+	--sl-color-bg-nav: var(--epico-sidebar-background);
+	--sl-color-bg-sidebar: var(--epico-sidebar-background);
 	--sl-color-bg-inline-code: var(--sl-color-gray-6);
 	--sl-color-bg-accent: var(--sl-color-accent);
-	--sl-color-hairline-light: var(--sl-color-gray-6);
+	--sl-color-hairline-light: var(--sl-color-gray-5);
 	--sl-color-hairline-shade: var(--sl-color-gray-6);
 	--sl-color-backdrop-overlay: hsla(228, 20%, 37%, 0.66); /* derivado */
+
+	/* Equivalentes light dos tokens compartilhados com a Área de Clientes. */
+	--epico-sidebar-background: #f5f8ff;
+	--epico-nav-active-background: var(--sl-color-black);
+	--epico-nav-active-color: var(--epico-color-action-primary);
+	--epico-color-action-primary: #3253e8;
+	--epico-color-action-secondary-hover: #3253e8;
+	--epico-color-nav-hover-surface: #eef2ff;
+	--epico-scrollbar-track: var(--epico-sidebar-background);
+	--epico-scrollbar-thumb: #e8eefb;
+	--epico-brand-logo-wordmark: #3d4b51;
+	--epico-brand-logo-mark: #2135dd;
+	--epico-summary-card-text: #292c36;
+	--epico-summary-card-muted: #6f7482;
+	--epico-summary-card-icon-background: #dde5ff;
+	--epico-summary-card-icon-color: #203aae;
+	--epico-summary-card-shadow-hover: 0 1px 2px rgb(0 39 255 / 5%),
+		0 8px 24px rgb(0 39 255 / 6%);
+	--epico-space-overlay-blend-mode: color;
+	--epico-space-overlay-opacity: 1;
 }
 
 /*
@@ -101,4 +151,323 @@ h5,
 h6 {
 	font-family: 'Cal Sans', var(--sl-font);
 	font-weight: 600;
+	text-wrap: balance;
+}
+
+html,
+body {
+	min-height: 100%;
+}
+
+body {
+	position: relative;
+}
+
+body:has(.hero)::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 40em;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-blend-mode: color;
+	mix-blend-mode: var(--epico-space-overlay-blend-mode);
+	opacity: var(--epico-space-overlay-opacity);
+	pointer-events: none;
+	z-index: -1;
+}
+
+body:has(.hero)::after {
+	bottom: 0;
+	-webkit-mask-image: var(--epico-space-mask-bottom);
+	mask-image: var(--epico-space-mask-bottom);
+}
+
+@media (min-width: 769px) {
+	body:has(.hero)::after {
+		background-image: url('../assets/outer-space.webp');
+	}
+}
+
+/* ---------- Refinamentos do primeiro passe G-VISUAL ---------- */
+
+.page > .header,
+.page > .header .header,
+.page > nav {
+	background-color: var(--epico-sidebar-background);
+	border-bottom: 0;
+}
+
+.page > .header {
+	border-top: var(--epico-header-brand-strip-width) solid var(--epico-color-action-primary);
+}
+
+#starlight__sidebar {
+	background-color: var(--epico-sidebar-background);
+	scrollbar-color: var(--epico-scrollbar-thumb) var(--epico-scrollbar-track);
+}
+
+#starlight__sidebar::-webkit-scrollbar-track {
+	background-color: var(--epico-scrollbar-track);
+	border: 0;
+	box-shadow: none;
+}
+
+#starlight__sidebar::-webkit-scrollbar-thumb {
+	background-color: var(--epico-scrollbar-thumb);
+	border: 0;
+}
+
+#starlight__sidebar ul {
+	--sl-sidebar-item-padding-inline: 0.8rem;
+}
+
+#starlight__sidebar summary {
+	padding: 0.6em var(--sl-sidebar-item-padding-inline);
+}
+
+#starlight__sidebar a {
+	padding: 0.6em;
+	text-wrap: balance;
+}
+
+#starlight__sidebar [aria-current='page'],
+#starlight__sidebar [aria-current='page']:hover,
+#starlight__sidebar [aria-current='page']:focus {
+	color: var(--epico-nav-active-color);
+	background-color: var(--epico-nav-active-background);
+	border-radius: 5px;
+}
+
+starlight-theme-select > label {
+	--sl-label-icon-size: 1.25rem;
+}
+
+starlight-theme-select .icon {
+	width: 0.9em;
+	height: 0.9em;
+}
+
+starlight-theme-select select {
+	width: calc(var(--sl-select-width) + var(--sl-inline-padding) * 3);
+	padding-inline: calc(var(--sl-label-icon-size) + var(--sl-inline-padding) + 0.35rem)
+		calc(var(--sl-caret-size) + var(--sl-inline-padding) + 0.35rem);
+}
+
+svg {
+	width: 1.1em;
+	height: 1.1em;
+}
+
+.brand__logo {
+	display: block;
+	width: auto;
+	max-width: var(--epico-brand-logo-max-width);
+	height: auto;
+}
+
+.brand__logo-wordmark {
+	fill: var(--epico-brand-logo-wordmark);
+}
+
+.brand__logo-mark {
+	fill: var(--epico-brand-logo-mark);
+}
+
+site-search dialog {
+	background-color: var(--epico-sidebar-background);
+	min-height: 6rem;
+}
+
+#starlight__search {
+	--sl-search-result-nested-pad-block: calc(0.925rem * var(--pagefind-ui-scale));
+}
+
+#starlight__search .pagefind-ui__search-input::placeholder {
+	color: var(--sl-color-gray-3);
+}
+
+#starlight__search .pagefind-ui__form::before {
+	width: calc(25px * var(--pagefind-ui-scale));
+	height: calc(25px * var(--pagefind-ui-scale));
+	top: calc(21px * var(--pagefind-ui-scale));
+}
+
+#starlight__search .pagefind-ui__result-title {
+	font-size: calc(25px * var(--pagefind-ui-scale));
+}
+
+#starlight__search .pagefind-ui__button {
+	font-size: calc(22px * var(--pagefind-ui-scale));
+	height: calc(60px * var(--pagefind-ui-scale));
+	color: var(--epico-color-action-primary);
+	border-radius: 999px;
+}
+
+#starlight__search .pagefind-ui__button:hover {
+	color: var(--epico-color-action-secondary-hover);
+	background: var(--epico-color-nav-hover-surface);
+	border-color: var(--epico-color-nav-hover-surface);
+}
+
+#starlight__search .pagefind-ui__result-nested {
+	font-size: 1em;
+}
+
+#starlight__search .pagefind-ui__result-excerpt {
+	font-size: calc(1.1rem * var(--pagefind-ui-scale));
+}
+
+#starlight__search .pagefind-ui__result-nested::before {
+	background: var(--sl-color-gray-6);
+}
+
+#starlight__search .pagefind-ui__result-inner > .pagefind-ui__result-title::before {
+	background: var(--epico-color-action-primary);
+}
+
+#starlight__search .pagefind-ui__message {
+	font-size: calc(22px * var(--pagefind-ui-scale));
+}
+
+.right-sidebar-panel a {
+	text-wrap: balance;
+}
+
+.right-sidebar-panel a[aria-current='true'] {
+	font-weight: 600;
+	color: var(--sl-color-gray-2);
+}
+
+.sl-markdown-content p:first-of-type {
+	text-align: center;
+}
+
+.sl-markdown-content a:not(.sl-link-button):not(.sl-anchor-link):not(.summary-card) {
+	font-weight: var(--epico-font-weight-semibold);
+	text-decoration: none;
+	background-image: linear-gradient(currentColor, currentColor);
+	background-repeat: no-repeat;
+	background-position: 0 100%;
+	background-size: 0% 1px;
+	transition: background-size var(--epico-duration-slow) var(--epico-ease-standard);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+.sl-markdown-content a:not(.sl-link-button):not(.sl-anchor-link):not(.summary-card):hover,
+.sl-markdown-content a:not(.sl-link-button):not(.sl-anchor-link):not(.summary-card):focus-visible {
+	background-size: 100% 1px;
+}
+
+.sl-link-button {
+	--epico-link-button-padding: 0.4375rem 1.125rem;
+	padding: var(--epico-link-button-padding);
+}
+
+.sl-link-button.not-content.minimal {
+	border-color: var(--sl-color-gray-3);
+	padding: var(--epico-link-button-padding);
+}
+
+.sl-flex .actions,
+.sl-flex.actions {
+	gap: 1rem;
+}
+
+.sl-markdown-content .summary-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+	gap: 1rem;
+}
+
+.sl-markdown-content .summary-card {
+	display: flex;
+	min-height: 9.5rem;
+	padding: clamp(1.2656rem, 1.2022rem + 0.317vw, 1.44rem);
+	flex-direction: column;
+	justify-content: space-between;
+	color: var(--epico-summary-card-text);
+	background: transparent;
+	border: 1px solid var(--sl-color-gray-3);
+	border-radius: 0.75rem;
+	box-shadow: none;
+	text-decoration: none;
+	transition-property: background-color, border-color, color;
+	transition-duration: var(--epico-duration-slow);
+	transition-timing-function: var(--epico-ease-standard);
+}
+
+:root[data-theme='light'] .sl-markdown-content .summary-card,
+[data-theme='light'] .sl-markdown-content .summary-card {
+	border-color: var(--sl-color-gray-5);
+}
+
+.sl-markdown-content .summary-card:hover {
+	color: var(--epico-color-action-primary);
+	border-color: var(--epico-color-action-primary);
+	box-shadow: var(--epico-summary-card-shadow-hover);
+	transform: translateY(-0.125rem);
+}
+
+.sl-markdown-content .summary-card .eyebrow {
+	margin: 0;
+	color: var(--epico-summary-card-muted);
+	font-size: 0.875rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	line-height: 1.4;
+	text-transform: uppercase;
+}
+
+.sl-markdown-content .summary-card:hover .eyebrow {
+	color: var(--epico-color-action-primary);
+}
+
+.sl-markdown-content .summary-card__footer {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 1rem;
+	align-items: end;
+}
+
+.sl-markdown-content .summary-card strong {
+	max-width: 24ch;
+	font-family: 'Cal Sans', var(--sl-font);
+	font-size: clamp(1.2656rem, 1.2022rem + 0.317vw, 1.44rem);
+	font-weight: 600;
+	line-height: 1.3;
+	text-wrap: balance;
+}
+
+.sl-markdown-content .summary-card .icon {
+	width: clamp(1.6018rem, 1.4302rem + 0.8578vw, 2.0736rem);
+	height: clamp(1.6018rem, 1.4302rem + 0.8578vw, 2.0736rem);
+	padding: 0.25rem;
+	background: var(--epico-summary-card-icon-background);
+	border-radius: 999px;
+	stroke: var(--epico-summary-card-icon-color);
+	stroke-width: 1.7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+@media (width >= 50rem) {
+	.large {
+		font-size: var(--sl-text-sm);
+	}
+
+	.sl-link-button {
+		--epico-link-button-padding: 0.9375rem 1.1rem 0.9375rem 1.65rem;
+		font-size: var(--sl-text-base);
+		padding: var(--epico-link-button-padding);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sl-markdown-content a:not(.sl-link-button):not(.sl-anchor-link):not(.summary-card),
+	.sl-markdown-content .summary-card {
+		transition-duration: 1ms;
+	}
 }

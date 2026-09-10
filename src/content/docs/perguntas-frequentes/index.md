@@ -52,12 +52,12 @@ significa que o domínio deve ser alterado.
 
 ## Onde cada dúvida é respondida em detalhe?
 
-- **O que é headless, os três serviços e o que acontece com os plugins**:
+- O que é headless, os três serviços e o que acontece com os plugins:
   [Entenda os formatos de publicação do Épico Site](/primeiros-passos/formatos-de-publicacao/).
-- **Para quem o Épico Site é indicado, personalização de design e textos, recriação de
-  páginas e publicação de conteúdo**: [Produto, nichos e edição de conteúdo](/editar-seu-site/edicao-e-personalizacao/).
-- **Preços, assinatura, quando escolher cada serviço, o que o Setup Headless inclui e
-  hospedagem**: [Preços, hospedagem e tipos de implantação](/servicos-e-suporte/precos-e-hospedagem/).
-- **O que configuramos, suporte e os 100 dias, operação gerenciada, dono dos arquivos e
-  das contas, cancelamento e reembolso**:
+- Para quem o Épico Site é indicado, personalização de design e textos, recriação de
+  páginas e publicação de conteúdo: [Produto, nichos e edição de conteúdo](/editar-seu-site/edicao-e-personalizacao/).
+- Preços, assinatura, quando escolher cada serviço, o que o Setup Headless inclui e
+  hospedagem: [Preços, hospedagem e tipos de implantação](/servicos-e-suporte/precos-e-hospedagem/).
+- O que configuramos, suporte e os 100 dias, operação gerenciada, dono dos arquivos e
+  das contas, cancelamento e reembolso:
   [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/).

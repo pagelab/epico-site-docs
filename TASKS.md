@@ -798,3 +798,114 @@
   bloqueados até a revisão do owner e `G-CLOUDFLARE` segue fechado.
   Nenhum deploy, DNS ou mudança de conta foi executado. Commit e push ao
   fim da sessão cobertos pela autorização durável do owner.
+
+## Checkpoint de 2026-09-09: primeira passagem de G-VISUAL/G-CONTENT
+
+- Primeira passagem pedida pelo owner aplicada localmente, sem promover os
+  gates humanos: o cabeçalho usa o SVG fornecido num override pontual de
+  `SiteTitle`, único seam que mantém os dois paths inline e recoloríveis,
+  com o título textual preservado como nome acessível; headings e links
+  receberam os ajustes tipográficos; sidebar, Pagefind, botões e superfícies
+  receberam os refinamentos literais do feedback.
+- Os quatro trechos indicados no FAQ perderam somente o negrito, sem mudança
+  de texto, ordem, links ou conteúdo factual.
+- As cores compartilhadas foram declaradas como tokens locais responsivos,
+  sem importar `tokens.css`: light usa os valores literais indicados pelo
+  owner e dark usa os equivalentes vigentes do design system da Área de
+  Clientes. O logo segue os tokens canônicos do painel: largura renderizada
+  164 px, `max-width: 165px`, wordmark `#3d4b51` e mark `#2135dd` no light,
+  ambos `#ffffff` no dark, sem filtro. Inspeção no browser confirmou os cinco
+  valores computados e cobriu desktop dark/light, sidebar e pill ativo,
+  Pagefind com resultados e mobile 390 px. Por correção posterior do owner,
+  o diálogo do Pagefind usa o mesmo token responsivo de fundo da sidebar,
+  `--epico-sidebar-background`, em vez do rosa claro de navegação ativa. O
+  scrollbar da sidebar também ganhou tokens próprios por tema: trilha igual
+  à superfície e sem borda, thumb dessaturado `#e8eefb` no light e equivalente
+  neutro `#2c3240` no dark.
+  No breakpoint a partir de 50 rem, `.large` passou a usar
+  `var(--sl-text-sm)`, conforme o ajuste tipográfico literal do owner.
+  O brand strip canônico de 5 px foi adaptado ao Starlight somente no header,
+  via token local de espessura e `--epico-color-action-primary` responsivo.
+  Os ícones do seletor de tema usam `0.9em`; o `select` ganhou largura e
+  paddings calculados pelos tokens públicos do componente, deixando “Escuro”
+  visível por inteiro. O hero passou a renderizar o asset local
+  `src/assets/hero-image.webp` à direita da stack, com alt descritivo e grid
+  desktop ajustado de `7fr 4fr` para `6fr 5fr`. Após o owner identificar o
+  corte do preset `400 × 400` do Starlight, um override pontual de `Hero`
+  passou a usar os metadados intrínsecos `609 × 306` e largura responsiva,
+  preservando a imagem inteira.
+  `--sl-color-hairline-light` passou a referenciar `--sl-color-gray-5` nas
+  duas paletas, conforme a correção literal do owner.
+- O owner removeu a superfície rosa do item ativo da sidebar. O link passou a
+  ter padding uniforme de `.6em` e raio de 5 px. Os tokens semânticos apontam
+  para `--epico-color-action-primary` no texto e `--sl-color-black` no fundo:
+  no light, `#3253e8` sobre branco; no dark, `#8098f6` sobre a própria
+  superfície escura da sidebar. A inspeção no browser confirmou os valores
+  computados, o padding de 9,6 px nos quatro lados e o raio de 5 px nas duas
+  paletas. O gate de contraste agora passa com 5,94:1 no light e 6,65:1 no
+  dark.
+- Próximo passo verificável: devolver o preview para o owner continuar os
+  aceites humanos `G-VISUAL` e `G-CONTENT`. Nenhum commit ou push foi feito
+  durante esta iteração visual.
+- O hero manteve `src/assets/hero-image.webp` por correção direta do owner,
+  com metadados intrínsecos `609 × 306`; o grid `6fr 5fr` passou para o
+  próprio override de `Hero`, removendo a duplicação no CSS global. O botão
+  minimal compartilha o mesmo token de padding do botão primário nos dois
+  breakpoints; o browser confirmou `7 px × 18 px` em ambos no viewport móvel.
+- Dois atalhos foram adicionados depois do parágrafo introdutório da home com
+  a estrutura `summary-grid`/`summary-card` da página Início do painel:
+  eyebrow, footer, título e ícone de saída. Os tokens locais reproduzem as
+  superfícies, bordas, tipografia, raio, espaçamento e hover do painel em
+  light e dark sem importar `tokens.css`. Hover real no browser confirmou
+  ação azul, borda azul, elevação de 2 px e sombra no light; no dark, a
+  elevação e a cor permanecem, com sombra desativada como no painel.
+- O seam público `SocialIcons` recebeu override local para os dois links do
+  header e do menu móvel: Área de clientes usa o SVG de entrada fornecido e
+  Épico Site usa o SVG de foguete fornecido. Os dois usam `currentColor`, sem
+  media query própria, e `--sl-icon-size: 1.2em`; o browser confirmou 19,2 px
+  e cores resolvidas pelas paletas do Starlight. O gate de contraste ganhou
+  título, eyebrow, hover e ícone dos cards e passa nos 32 pares medidos.
+- Durante o gate final, o registro npm passou a reportar a vulnerabilidade
+  `GHSA-7w5x-hrqm-74c2` no `smol-toml@1.7.0` fixado pela versão corrente de
+  `markdownlint-cli2`. O downgrade destrutivo sugerido por `npm audit fix
+  --force` não foi usado; override exato para `smol-toml@1.8.0`, versão já
+  consumida por Astro, removeu a cópia vulnerável e ganhou contrato na suíte.
+  `npm run verify` voltou a exit 0: 172 testes, 32 pares de contraste, build
+  de 17 páginas, publicação estática PASS, zero vulnerabilidades e install
+  scripts PASS.
+- A escala de headings foi reduzida para os degraus móveis do Starlight em
+  todos os viewports: H1 `4xl`, H2 `3xl`, H3 `2xl` e H4 `xl`. O literal
+  `--sl-text-1xl` indicado pelo owner não existe no Starlight 0.42; foi usado
+  o token nativo equivalente `--sl-text-xl`, evitando uma referência sem
+  resolução. O browser confirmou 35, 29, 24 e 20 px nas duas paletas.
+- O efeito espacial do `epico.site` foi adaptado ao pseudo-elemento inferior do
+  `body` com o asset local `src/assets/outer-space.webp` (2048 × 1153,
+  SHA-256 `d15fd91727da2471e5e428dfdf6c8d2a08e33f95a62e812efee5cbe9b3ab1936`).
+  A imagem só é carregada a partir de 769 px e mantém a CSP `img-src 'self'`.
+  O overlay inferior usa altura de 40 em, máscara para o topo e z-index
+  negativo; tokens de tema preservam `color`/opacidade 1 no light e
+  `screen`/opacidade 0,7 no dark, conforme a implementação canônica. No
+  viewport móvel, o browser confirmou ausência de download da imagem e os
+  demais valores computados por tema.
+- O primeiro parágrafo de cada bloco `.sl-markdown-content` passou a usar
+  `text-align: center`, conforme o ajuste literal do owner.
+- As capturas do owner revelaram que os pseudos espaciais com `70em`
+  ultrapassavam o conteúdo curto da home e aumentavam o `scrollHeight`.
+  A altura foi reduzida para `40em`; `isolation: isolate` foi removido para
+  recuperar no light o mesmo contexto de composição `mix-blend-mode: color`
+  observado no `epico.site`. Os `summary-card` passaram a ter fundo
+  transparente e o gate de contraste mede seu texto contra o fundo real da
+  página.
+- O overlay espacial foi escopado a `body:has(.hero)`, marcador exclusivo da
+  homepage. Nenhuma rota editorial sem hero recebe os pseudos ou solicita o
+  asset `outer-space.webp`.
+- A borda dos `summary-card` usa `var(--sl-color-gray-3)` no dark e
+  `var(--sl-color-gray-5)` no light. O `body::before` foi removido por completo
+  para a homepage curta, mantendo somente o overlay inferior `body::after`.
+- Ao fim da primeira rodada de revisão no preview, o owner autorizou commit e
+  push. `npm run verify` rodou verde na sessão (exit 0, 173 testes em 9
+  arquivos, 32 pares de contraste, build de 17 páginas, publicação estática
+  PASS, zero vulnerabilidades) e a árvore foi commitada e enviada para
+  `origin/main`. Os gates `G-CONTENT` e `G-VISUAL` seguem em aberto até os
+  aceites explícitos do owner; correções adicionais apontadas na revisão
+  entrarão como commit próprio.

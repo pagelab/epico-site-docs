@@ -129,13 +129,92 @@
   `G-VISUAL`), troca de tema via evento `change` no headless e VoiceOver
   real é verificação humana. Narrativa no `TASKS.md` §"Checkpoint de
   2026-09-09: DOCS-07".
+- Primeira passagem de `G-VISUAL/G-CONTENT` aplicada localmente em 2026-09-09,
+  sem aceite: logo SVG fornecido no cabeçalho via override pontual de
+  `SiteTitle`, com os dois paths inline, título textual acessível, largura
+  renderizada de 164 px e `max-width: 165px`; light usa wordmark `#3d4b51` e
+  mark `#2135dd`, dark usa `#ffffff` nos dois, sem filtro. Os demais
+  refinamentos pedidos cobrem sidebar, navegação, headings, links, botões e
+  Pagefind, além da remoção somente do negrito nos quatro tópicos indicados
+  do FAQ.
+  As cores viraram tokens responsivos: valores literais pedidos no light e
+  equivalentes do design system da Área de Clientes no dark. Inspeção cobriu
+  desktop light/dark, Pagefind com resultados e mobile 390 px. Por correção
+  do owner, o diálogo do Pagefind agora compartilha o token responsivo de
+  fundo da sidebar, não o rosa de navegação ativa; a equivalência foi
+  confirmada por valores computados nos dois temas. O scrollbar da sidebar
+  usa trilha transparente à superfície e sem borda, com thumb tokenizado em
+  `#e8eefb` no light e `#2c3240` no dark; CSS padrão e WebKit foram
+  conferidos no browser. No breakpoint a partir de 50 rem, `.large` usa
+  `var(--sl-text-sm)`, confirmado no browser como 14 px no viewport de
+  1280 px. O header recebeu o brand strip de 5 px do painel por token local,
+  usando `--epico-color-action-primary`; o browser confirmou `#3253e8` no
+  light e `#8098f6` no dark. O seletor de tema usa ícones de `0.9em` e largura
+  calculada para exibir “Escuro” integralmente. O hero usa o WebP local com
+  alt descritivo na coluna direita e grid desktop `6fr 5fr`. O preset fixo
+  `400 × 400` do componente do Starlight cortava a imagem; por correção do
+  owner, o override local de `Hero` usa os metadados intrínsecos `609 × 306`
+  e largura responsiva. Browser confirmou atributos e recurso natural
+  `609 × 306`, com proporção renderizada de 1,9904 e sem corte; build gerou
+  a variante otimizada de 15 kB. `--sl-color-hairline-light` referencia
+  `--sl-color-gray-5` nas duas paletas, confirmado no browser como `#323648`
+  no dark e `#babdc9` no light. O owner removeu a superfície rosa do item
+  ativo da sidebar: links usam padding uniforme de `.6em`, o item ativo usa
+  raio de 5 px e os tokens semânticos apontam o texto para
+  `--epico-color-action-primary` e o fundo para `--sl-color-black`. O browser
+  confirmou `#3253e8` sobre branco no light, `#8098f6` sobre a superfície da
+  sidebar no dark, padding computado de 9,6 px e raio de 5 px nas duas
+  paletas. O gate mede 5,94:1 no light e 6,65:1 no dark. O hero manteve
+  `src/assets/hero-image.webp` por correção do owner, e o grid `6fr 5fr`
+  passou para o override local. Os botões primary e minimal compartilham o
+  mesmo padding por breakpoint. Dois `summary-card` derivados da página
+  Início do painel aparecem após o parágrafo da home, com tokens próprios
+  light/dark e hover real conferido. O override público `SocialIcons` serve
+  os links Área de clientes (`https://app.epico.site/painel`) e Épico Site no
+  header e menu móvel com os SVGs fornecidos, `currentColor` e
+  `--sl-icon-size: 1.2em`. Ao fim da primeira rodada de revisão, o owner
+  autorizou commit e push: `npm run verify` exit 0 na sessão (173 testes) e
+  árvore enviada para `origin/main`. Os gates `G-CONTENT` e `G-VISUAL` seguem
+  em aberto até os aceites explícitos. Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-09: primeira passagem de G-VISUAL/G-CONTENT".
+- Refinamento visual adicional aplicado localmente em 2026-09-09, ainda sem
+  aceite: os tokens de título passaram a `--sl-text-4xl`, `--sl-text-3xl`,
+  `--sl-text-2xl` e `--sl-text-xl`. Para H4 foi usado o token nativo
+  `--sl-text-xl`, equivalente a 20 px, porque o Starlight 0.42 não define
+  `--sl-text-1xl`. O browser confirmou 35, 29, 24 e 20 px nas duas paletas.
+  O efeito espacial canônico do `epico.site` foi reproduzido no
+  `body::after` com uma máscara para o topo e a imagem
+  `src/assets/outer-space.webp` servida localmente, preservando a CSP
+  `img-src 'self' data:`. O pseudo usa `height: 40em`; `isolation` permanece
+  automático no `body`, como na referência, para que `mix-blend-mode: color`
+  componha corretamente no light. O conjunto foi escopado a
+  `body:has(.hero)`, marcador exclusivo da homepage. Em viewport desktop a
+  imagem usa `color` e opacidade 1 no light, `screen` e opacidade 0,7 no dark.
+  Abaixo de 769 px o pseudo da homepage permanece, mas sem
+  `background-image`, evitando baixar o asset. Rotas editoriais sem hero não
+  recebem o pseudo nem solicitam a imagem. O build emitiu
+  `_astro/outer-space.DBburU8Q.webp` com 34.510 bytes e SHA-256
+  `d15fd91727da2471e5e428dfdf6c8d2a08e33f95a62e812efee5cbe9b3ab1936`.
+  Os `summary-card` passaram a ter fundo transparente, e o gate de contraste
+  mede título, eyebrow e ação contra o fundo real da página. O browser confirmou
+  `scrollHeight` igual à altura do conteúdo na homepage, pseudo de 800 px,
+  blend `color`/`screen`, cards transparentes com borda `gray-3` no dark e
+  `gray-5` no light, e o primeiro parágrafo centralizado nas duas paletas.
+  O `body::before` foi removido por completo. Em `/primeiros-passos/`, o
+  browser confirmou ausência de hero, pseudos sem imagem e `scrollHeight` sem
+  contribuição do overlay.
+  O primeiro parágrafo de cada `.sl-markdown-content` também passou a usar
+  alinhamento central, conforme o ajuste literal do owner.
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
-- `npm run verify` verde: Astro Check sem diagnósticos e sem avisos, lint
-  limpo, 168 testes em 9 arquivos, contraste do tema PASS, Static publishing
-  PASS, build de 17 páginas (acervo + `/busca/` + 404 custom) +
-  `/search-index.json`, zero vulnerabilidades e política de install scripts
-  PASS.
+- Último baseline fechado (`DOCS-07`) tinha `npm run verify` verde com 168
+  testes. A árvore da primeira passagem está verde com `npm run verify` exit
+  0: Astro Check sem diagnósticos, lint e política de conteúdo PASS, 173
+  testes, 32 pares de contraste PASS, build de 17 páginas, publicação
+  estática PASS, zero vulnerabilidades e política de install scripts PASS. O
+  advisory `GHSA-7w5x-hrqm-74c2`, surgido durante a sessão na cópia
+  `smol-toml@1.7.0` do markdownlint, foi removido por override exato para
+  `1.8.0`, sem o downgrade destrutivo sugerido pelo npm.
 - Nenhum projeto Cloudflare, domínio ou deploy foi configurado: o
   `wrangler.jsonc` e o `_headers` são configuração estática verificada
   localmente. A visibilidade pública do remoto e a branch de produção
@@ -143,15 +222,11 @@
 
 ## ▶ Próxima ação
 
-Revisão do owner no preview de plantão para os gates humanos `G-CONTENT`
-(revisão factual, comercial, editorial, acessível e de segurança) e
-`G-VISUAL` (desktop, mobile, teclado, leitor de tela, dark mode, ToC,
-sidebar, Pagefind, `/busca/`, 404 e fontes), usando o `wrangler dev` em
-`http://localhost:8787/` (`npx wrangler dev --port 8787`, que aplica os
-`_headers`; o `astro preview` não aplica). QA técnico do `DOCS-07` não é
-aceite. Depois dos dois gates, abrir `DOCS-08` com as decisões de
-`G-CLOUDFLARE` (repo/branch, least privilege, checks, preview, rollback,
-DNS) antes de qualquer publicação.
+Owner continuar as revisões humanas `G-CONTENT` e `G-VISUAL` no preview
+`http://localhost:8787/`, agora sobre a árvore já commitada e enviada. Aplicar
+os próximos ajustes literais como commit próprio, sem promover os gates até o
+aceite explícito. Não abrir `DOCS-08`, Cloudflare, DNS, deploy ou integração
+do painel antes dos dois aceites humanos e do gate `G-CLOUDFLARE`.
 
 ## Gates vivos
 
@@ -184,8 +259,11 @@ DNS) antes de qualquer publicação.
 - Starlight: `0.42.0`.
 - Cloudflare: não configurado.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-09 (`DOCS-07` concluído, incluindo a correção da
-  CSP que quebrava o Pagefind; commit e push cobertos pela autorização
-  durável de fim de sessão).
+- Última sessão: 2026-09-09 (primeira passagem de `G-VISUAL/G-CONTENT`
+  aplicada; hero preservado, cards e links de ecossistema adicionados, títulos
+  reduzidos, efeito espacial responsivo ao tema ajustado, escopo restrito à
+  homepage, pseudo superior removido e bordas dos cards ajustadas por tema;
+  gate verde; commit e push autorizados pelo owner ao fim da rodada e enviados
+  para `origin/main`).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

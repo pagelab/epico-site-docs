@@ -12,17 +12,15 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Tutoriais Épico Site',
+			components: {
+				Hero: './src/components/Hero.astro',
+				SiteTitle: './src/components/SiteTitle.astro',
+				SocialIcons: './src/components/SocialIcons.astro',
+			},
 			description: 'Guias públicos para configurar, editar e publicar seu site.',
 			locales: {
 				root: { label: 'Português', lang: 'pt-BR' },
 			},
-			social: [
-				{
-					icon: 'external',
-					label: 'Área de clientes',
-					href: 'https://app.epico.site/painel',
-				},
-			],
 			customCss: ['/src/styles/fonts.css', '/src/styles/theme.css'],
 			// Preload das duas fontes locais: o LCP é texto e o antecipamento
 			// cobre o atraso de descoberta entre CSS e a primeira pintura.

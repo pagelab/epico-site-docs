@@ -18,6 +18,13 @@ const REQUIRED_PAIRS = [
   ['corpo na navegação', '--sl-color-text', '--sl-color-bg-nav', 4.5],
   ['corpo na sidebar', '--sl-color-text', '--sl-color-bg-sidebar', 4.5],
   ['texto secundário na sidebar', '--sl-color-gray-3', '--sl-color-bg-sidebar', 4.5],
+  ['item ativo na sidebar', '--epico-nav-active-color', '--epico-nav-active-background', 4.5],
+  ['ação no fundo da busca', '--epico-color-action-primary', '--sl-color-black', 4.5],
+  ['ação no hover', '--epico-color-action-secondary-hover', '--epico-color-nav-hover-surface', 4.5],
+  ['título no summary card', '--epico-summary-card-text', '--sl-color-bg', 4.5],
+  ['eyebrow no summary card', '--epico-summary-card-muted', '--sl-color-bg', 4.5],
+  ['ação no summary card', '--epico-color-action-primary', '--sl-color-bg', 4.5],
+  ['ícone no summary card', '--epico-summary-card-icon-color', '--epico-summary-card-icon-background', 3],
   ['corpo em código inline', '--sl-color-text', '--sl-color-bg-inline-code', 4.5],
   ['anel de foco sobre fundo', '--sl-color-accent', '--sl-color-bg', 3],
 ];
