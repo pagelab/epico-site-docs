@@ -265,6 +265,16 @@ export async function checkPublishing(root = repoRoot) {
 				violations.push("_headers: CSP script-src sem 'wasm-unsafe-eval' (a busca do Pagefind não carrega o WASM sem ele)");
 			}
 
+			// O Web Analytics da Cloudflare (ADR 0004) é injetado pela edge da
+			// zona como módulo com path versionado (`beacon.min.js/v31...`) e
+			// SRI, então a autorização mínima estável é o host do beacon. Sem
+			// ela o beacon é bloqueado e a coleta não acontece (achado do
+			// DOCS-08). `connect-src` permanece exatamente 'self' porque a
+			// injeção automática reporta para o próprio domínio.
+			if (!scriptSources.includes('https://static.cloudflareinsights.com')) {
+				violations.push('_headers: CSP script-src sem https://static.cloudflareinsights.com (o beacon do Web Analytics da ADR 0004 é injetado pela zona e não carrega sem a autorização)');
+			}
+
 			for (const forbidden of ["'unsafe-inline'", "'unsafe-eval'"]) {
 				if (scriptSources.includes(forbidden)) {
 					violations.push(`_headers: CSP script-src não pode conter ${forbidden}`);

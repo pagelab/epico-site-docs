@@ -1,7 +1,10 @@
 # ADR 0002 — publicação no Cloudflare com Static Assets
 
 - **Status:** aceita (o domínio canônico do ponto 6 foi alterado pela
-  [ADR 0003](0003-dominio-canonico-tutoriais.md))
+  [ADR 0003](0003-dominio-canonico-tutoriais.md); o "privado" do ponto 1 foi
+  alterado pela [ADR 0005](0005-repositorio-publico.md); o beacon de Web
+  Analytics da zona passou a ser autorizado pela
+  [ADR 0004](0004-web-analytics-cloudflare.md))
 - **Data:** 2026-09-10
 - **Decisor:** owner do Épico Studio
 

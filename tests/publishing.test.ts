@@ -27,7 +27,7 @@ function fixtureHash() {
 function fixtureHeaders(hash = fixtureHash()) {
 	return [
 		'/*',
-		`  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' '${hash}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'`,
+		`  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com '${hash}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'`,
 		'  X-Content-Type-Options: nosniff',
 		'  X-Frame-Options: DENY',
 		'  Referrer-Policy: strict-origin-when-cross-origin',
@@ -221,6 +221,20 @@ describe('publishing: gate sobre fixture válida e mutações', () => {
 
 		expect(await checkPublishing(root)).toContainEqual(
 			expect.stringMatching(/script-src sem 'wasm-unsafe-eval'/),
+		);
+	});
+
+	it('script-src sem o host do beacon do Web Analytics é violação (ADR 0004)', async () => {
+		const root = await makeFixture();
+		const broken = fixtureHeaders().replace(
+			" 'wasm-unsafe-eval' https://static.cloudflareinsights.com",
+			" 'wasm-unsafe-eval'",
+		);
+		await writeFile(join(root, 'public/_headers'), broken);
+		await writeFile(join(root, 'dist/_headers'), broken);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/script-src sem https:\/\/static\.cloudflareinsights\.com/),
 		);
 	});
 
