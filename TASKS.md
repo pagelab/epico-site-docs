@@ -947,8 +947,18 @@
   conseguir renovar e cinco tentativas de `wrangler login` (janela de ~10
   minutos com aba aberta no navegador e notificação do macOS) expiraram sem
   o owner aprovar. Nenhum recurso Cloudflare foi criado ou alterado.
-- Próximo passo verificável: owner aprovar o login do wrangler na aba do
-  navegador na próxima tentativa, ou rodar `npx wrangler login` em terminal
-  próprio, ou exportar `CLOUDFLARE_API_TOKEN` na sessão. Com autenticação
-  válida, a sessão retoma `DOCS-08`: deploy de produção, custom domain
+- Setup oficial de agente Cloudflare executado na sequência, a pedido do
+  owner (`developers.cloudflare.com/agent-setup/prompt.md`): 14 skills
+  oficiais instaladas em `~/.zcode/skills` (wrangler, cloudflare,
+  workers-best-practices, durable-objects e demais) e os cinco servidores
+  MCP remotos registrados em `~/.zcode/cli/config.json`: api
+  (`mcp.cloudflare.com`, já existia com o token `cfat_` expirado), docs
+  (`docs.mcp.cloudflare.com`, sem autenticação), bindings, builds e
+  observability (os três com o mesmo Bearer do api, a renovar de uma vez).
+  Backup do config em `config.json.bak-agent-setup`. Os servidores ficam
+  disponíveis depois de reiniciar o agente.
+- Próximo passo verificável: owner reiniciar o agente ZCode, renovar o token
+  da API em `https://dash.cloudflare.com/profile/api-tokens` e informar o
+  novo valor à sessão, que o aplica às quatro entradas autenticadas. Com o
+  token válido, a sessão retoma `DOCS-08`: deploy de produção, custom domain
   `docs.epico.site`, Workers Builds e `probe-production.mjs` em verde.

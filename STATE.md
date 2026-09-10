@@ -220,6 +220,12 @@
   CSP e canary workers.dev). O deploy em si não aconteceu: o token do MCP da
   API Cloudflare é inválido, o OAuth do wrangler expirou e cinco tentativas
   de `wrangler login` com aba aberta no navegador expiraram sem aprovação.
+  Na sequência, a pedido do owner, o setup oficial de agente Cloudflare
+  (`developers.cloudflare.com/agent-setup/prompt.md`) foi executado: 14
+  skills oficiais instaladas em `~/.zcode/skills` e os cinco servidores MCP
+  remotos registrados em `~/.zcode/cli/config.json` (api já existia com o
+  token expirado; docs sem autenticação; bindings, builds e observability
+  com o mesmo Bearer). Backup do config em `config.json.bak-agent-setup`.
   Narrativa no `TASKS.md` §"Checkpoint de 2026-09-10".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
@@ -231,17 +237,20 @@
   advisory `GHSA-7w5x-hrqm-74c2`, surgido durante a sessão na cópia
   `smol-toml@1.7.0` do markdownlint, foi removido por override exato para
   `1.8.0`, sem o downgrade destrutivo sugerido pelo npm.
-- Nenhum projeto Cloudflare, domínio ou deploy foi configurado: o `wrangler.jsonc` e o `_headers` são configuração estática verificada localmente, e as decisões de publicação estão fechadas na ADR 0002. A execução do `DOCS-08` espera credencial válida do owner (login do wrangler ou `CLOUDFLARE_API_TOKEN`). A visibilidade pública do remoto permanece decisão separada.
+- Nenhum projeto Cloudflare, domínio ou deploy foi configurado: o `wrangler.jsonc` e o `_headers` são configuração estática verificada localmente, e as decisões de publicação estão fechadas na ADR 0002. A execução do `DOCS-08` espera o reinício do agente com os servidores MCP Cloudflare registrados e um token de API válido do owner. A visibilidade pública do remoto permanece decisão separada.
 
 ## ▶ Próxima ação
 
-Owner destravar a credencial Cloudflare: aprovar o login do wrangler na aba
-que a próxima sessão abrir no navegador, ou rodar `npx wrangler login` em
-terminal próprio, ou exportar `CLOUDFLARE_API_TOKEN`. Retomar `DOCS-08` na
-sequência: deploy de produção do Worker `epico-site-docs`, custom domain
-`docs.epico.site`, Workers Builds com `npm ci && npm run verify` e
-`scripts/probe-production.mjs` (mais `probe-csp.mjs`) em verde. Sem
-autenticação válida, nenhum recurso Cloudflare pode ser criado.
+Owner reiniciar o agente ZCode para ativar o setup Cloudflare executado em
+2026-09-10 (skills oficiais em `~/.zcode/skills` e cinco servidores MCP
+remotos em `~/.zcode/cli/config.json`: api, docs, bindings, builds e
+observability). Depois, renovar o token da API em
+`https://dash.cloudflare.com/profile/api-tokens` e informar o novo valor à
+sessão, que o aplica às quatro entradas autenticadas (o token `cfat_` atual
+expirou, causa raiz dos erros `1000 Invalid API Token`). Com o token válido,
+retomar `DOCS-08`: deploy de produção do Worker `epico-site-docs`, custom
+domain `docs.epico.site`, Workers Builds com `npm ci && npm run verify` e
+`scripts/probe-production.mjs` (mais `probe-csp.mjs`) em verde.
 
 ## Gates vivos
 
