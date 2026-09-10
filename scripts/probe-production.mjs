@@ -15,8 +15,11 @@ import { lookup } from 'node:dns/promises';
 import { connect as tlsConnect } from 'node:tls';
 
 const ORIGIN = process.argv[2] ?? 'https://docs.epico.site';
+// Subdomínio workers.dev real da conta, confirmado via API em 2026-09-10 (o
+// palpite `pagelab` do DOCS-06 estava errado; os placeholders `:script`/
+// `:account` do `_headers` sempre casaram a origem correta).
 const WORKERS_ORIGIN =
-	process.argv[3] ?? 'https://epico-site-docs.pagelab.workers.dev';
+	process.argv[3] ?? 'https://epico-site-docs.epico.workers.dev';
 const HOST = new URL(ORIGIN).hostname;
 
 const results = [];
@@ -33,6 +36,22 @@ function assert(condition, message) {
 }
 function header(headers, name) {
 	return headers.get(name) ?? '';
+}
+// O certificado gerenciado do Custom Domain cobre o host por wildcard de um
+// rótulo (`*.epico.site` cobre `docs.epico.site`), então o SAN precisa ser
+// casado por regra, não por substring literal.
+function sanCoversHost(san, host) {
+	return san
+		.split(',')
+		.map((part) => part.trim().replace(/^DNS:/iu, ''))
+		.some((name) => {
+			if (name === host) return true;
+			if (!name.startsWith('*.')) return false;
+			const suffix = name.slice(1);
+			if (!host.endsWith(suffix)) return false;
+			const label = host.slice(0, host.length - suffix.length);
+			return label.length > 0 && !label.includes('.');
+		});
 }
 
 async function get(path, origin = ORIGIN, redirect = 'follow') {
@@ -70,7 +89,7 @@ async function main() {
 			});
 		});
 		assert(
-			(info.subjectaltname ?? '').includes(HOST),
+			sanCoversHost(info.subjectaltname ?? '', HOST),
 			`SAN não cobre ${HOST}: ${info.subjectaltname ?? 'vazio'}`,
 		);
 		assert(
@@ -174,8 +193,10 @@ async function main() {
 		const page = await get('/busca/');
 		assert(page.status === 200, `/busca/ status ${page.status}`);
 		const redirect = await get('/busca', ORIGIN, 'manual');
+		// O runtime de static assets emite 307 no redirect de barra final
+		// (comportamento fixo da plataforma com auto-trailing-slash).
 		assert(
-			[301, 302, 308].includes(redirect.status),
+			[301, 302, 307, 308].includes(redirect.status),
 			`/busca status ${redirect.status}`,
 		);
 		assert(
@@ -283,16 +304,22 @@ async function main() {
 		return 'Allow e Sitemap presentes';
 	});
 
-	await check('llms: três arquivos com a política pública', async () => {
+	await check('llms: três arquivos servidos, política no llms.txt', async () => {
 		for (const file of ['llms.txt', 'llms-full.txt', 'llms-small.txt']) {
 			const response = await get(`/${file}`);
 			assert(response.status === 200, `${file} status ${response.status}`);
 			const body = await response.text();
-			for (const word of ['busca', 'citação', 'grounding', 'treinamento']) {
-				assert(body.includes(word), `${file} sem a palavra "${word}"`);
+			assert(body.trim().length > 0, `${file} vazio`);
+			if (file === 'llms.txt') {
+				// Contrato do gate check-publishing: a política pública vive nos
+				// details do llms.txt; as variantes full/small são conteúdo
+				// derivado e não repetem o bloco de política.
+				for (const word of ['busca', 'citação', 'grounding', 'treinamento']) {
+					assert(body.includes(word), `${file} sem a palavra "${word}"`);
+				}
 			}
 		}
-		return 'llms, llms-full e llms-small com as quatro palavras';
+		return 'llms, llms-full e llms-small servidos; política no llms.txt';
 	});
 
 	await check('search-index.json: bytes idênticos ao dist', async () => {

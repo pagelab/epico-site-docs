@@ -962,3 +962,86 @@
   novo valor à sessão, que o aplica às quatro entradas autenticadas. Com o
   token válido, a sessão retoma `DOCS-08`: deploy de produção, custom domain
   `docs.epico.site`, Workers Builds e `probe-production.mjs` em verde.
+
+## Checkpoint de 2026-09-10: bootstrap de produção do DOCS-08
+
+- Agente reiniciado com os cinco servidores MCP Cloudflare ativos. O token
+  `cfat_` do MCP segue inválido (`1000 Invalid API Token`), mas o OAuth do
+  wrangler foi renovado pelo owner (`wrangler whoami` autenticado como
+  `contato@uberfacil.com`, account `ff43237266d9602f6f795600729b0bf1`, com
+  `workers_scripts`/`workers_routes` write, `zone` read e `ssl_certs` write).
+  A ADR 0002 ponto 3 autoriza `wrangler deploy` local com verify verde na
+  sessão como bootstrap, então a publicação seguiu por esse caminho. Zona
+  `epico.site` confirmada ativa na conta (id
+  `c42c09ae7884ffe30ca0f68a0ede83c3`) antes de qualquer mudança.
+- `wrangler.jsonc` ganhou a declaração completa da ADR 0002: rota
+  `{ "pattern": "docs.epico.site", "custom_domain": true }`, `workers_dev:
+  true` e `preview_urls: true`. Achado real do primeiro deploy: com `routes`
+  declaradas o wrangler DESLIGA a rota workers.dev salvo declaração
+  explícita, e a origem canary respondia 404 com `error code: 1042` (a ADR
+  ponto 6 exige a origem publicada como canary). O subdomínio workers.dev
+  REAL da conta é `epico` (confirmado via API), não `pagelab` (palpite do
+  DOCS-06). Os placeholders `:script`/`:account` do `_headers` sempre casaram
+  a origem correta, então só o default da sonda apontava errado. Segundo
+  deploy com os três campos: versão `ca95ddeb-1d19-4873-aedf-083b27460b27`
+  (o primeiro, só custom domain, foi `6482dc37-7cbb-411e-a517-9169fb3f07c4`),
+  73 assets, triggers `https://epico-site-docs.epico.workers.dev` e
+  `docs.epico.site` (custom domain).
+- Gate `check-publishing.mjs` endurecido na mesma sessão: agora exige
+  `workers_dev: true`, `preview_urls: true` e `routes` exatamente igual ao
+  custom domain canônico (chave extra ou padrão divergente falha), guardando
+  as decisões de deploy da ADR no `verify`. Três testes de mutação novos em
+  `tests/publishing.test.ts` (29 no arquivo) e duas provas por mutação no
+  `wrangler.jsonc` REAL (sem `workers_dev` e com padrão de rota trocado), cada
+  uma derrubando o gate com a violação alvo, restauração conferida por
+  checksum. `npm run verify` verde: 176 testes em 9 arquivos, contraste 32
+  pares, build de 17 páginas, publicação estática PASS, zero vulnerabilidades.
+- `probe-production.mjs` contra a produção real: primeira rodada 11/16. Quatro
+  expectativas eram da SONDA, não do produto, e foram corrigidas nela: SAN
+  precisa casar wildcard de um rótulo (`*.epico.site` cobre `docs.epico.site`,
+  certificado gerenciado Google Trust Services válido até 2026-12-09), o
+  redirect de barra final do runtime de static assets é 307 fixo da
+  plataforma (aceito 301/302/307/308 com Location canônica), a política
+  pública vive só no `llms.txt` por contrato do gate (as variantes full/small
+  são conteúdo derivado sem o bloco `details`) e o default da origem canary
+  passou ao subdomínio real. Segunda rodada 15/16.
+- Verificado em produção (verde): DNS resolvendo, TLS wildcard válido, home
+  200 sem `noindex`, CSP com os 10 hashes e `wasm-unsafe-eval` sem
+  `unsafe-inline`/`unsafe-eval`, headers de segurança completos, CORS sem
+  ACAO aberto, `/busca/` 200 com redirect de barra, 404 real com o corpo
+  custom, `immutable` + ETag revalidado com 304 em `/_astro/*`, ETag no HTML,
+  sitemap 1:1 com o dist local (16 URLs em HEAD), robots com Sitemap
+  canônico, três `llms*.txt` servidos com a política no `llms.txt`,
+  `search-index.json` byte a byte igual ao dist e canary workers.dev 200 com
+  `noindex` e CSP.
+- Única vermelha da sonda: redirect HTTP→HTTPS. `http://docs.epico.site/`
+  serve 200 direto (sem redirect permanente). A correção é setting de zona
+  (`Always Use HTTPS`, afeta a zona inteira) ou Redirect Rule escopada ao
+  host, e o OAuth do wrangler não cobre escrita (nem leitura) de settings ou
+  regras de zona (403 código 10000). Fica como ação do owner: dashboard, ou
+  token de API renovado com permissão de Zone Rules/Settings para a sessão
+  aplicar via API. O HSTS já enviado e o canonical/robots em https mitigam
+  conteúdo duplicado enquanto isso.
+- `probe-csp.mjs` apontado à produção: funcionalidade íntegra (theme provider
+  executando, ToC presente, `/busca/` revelada com índice carregado e input
+  habilitado, script inline hostil bloqueado pela CSP). Achado real: a zona
+  tem Web Analytics da Cloudflare com injeção automática e o beacon
+  `static.cloudflareinsights.com` é bloqueado pela CSP estrita (as três
+  violações reportadas são o mesmo beacon). Nenhum tracking ocorre (bloqueado
+  por construção). Decisão do owner pendente: desligar a injeção automática
+  na zona OU decidir adotar analytics, o que exigiria abrir `script-src`/
+  `connect-src` no `_headers`, mudar gate e emendar a ADR.
+- Workers Builds bloqueado em duas pontas independentes, ambas confirmadas por
+  sondagem: (1) o GitHub App da Cloudflare NÃO está instalado para `pagelab`
+  (API do GitHub do owner lista zero instalações) e a doc oficial exige a
+  instalação via dashboard (Workers & Pages → Worker → Settings → Builds →
+  Connect → GitHub), fluxo web que a API não substitui. (2) A API de Builds
+  responde 403 código 10000 até para leitura com o OAuth do wrangler
+  (permissão Workers Builds ausente no OAuth). Deixado pronto para a próxima
+  sessão: org `pagelab` id `1451087`, repo `epico-site-docs` id `1361499499`,
+  build command `npm ci && npm run verify` (ADR ponto 3), trigger de produção
+  no `main` e previews fora de `main` já `noindex` pelo `_headers`.
+- Commit e push ao fim da sessão cobertos pela autorização durável (verify
+  exit 0 na sessão). O deploy em si usou o caminho bootstrap autorizado pela
+  ADR e não abriu o gate humano do `G-CLOUDFLARE`, que segue em execução com
+  produção no ar.

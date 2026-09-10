@@ -534,6 +534,23 @@ export async function checkPublishing(root = repoRoot) {
 		if (wrangler.assets?.run_worker_first !== undefined && wrangler.assets.run_worker_first !== false) {
 			violations.push('wrangler: run_worker_first desvia o tráfego do asset server e dos _headers');
 		}
+
+		if (wrangler.workers_dev !== true) {
+			violations.push('wrangler: workers_dev deve ser true (origem workers.dev é o canary noindex da ADR 0002)');
+		}
+
+		if (wrangler.preview_urls !== true) {
+			violations.push('wrangler: preview_urls deve ser true (previews fora de main vivem em *.workers.dev, nunca em custom domain)');
+		}
+
+		const routes = Array.isArray(wrangler.routes) ? wrangler.routes : [];
+		const routeOk = routes.length === 1
+			&& routes[0]?.pattern === 'docs.epico.site'
+			&& routes[0]?.custom_domain === true
+			&& Object.keys(routes[0]).length === 2;
+		if (!routeOk) {
+			violations.push('wrangler: routes deve ser exatamente o custom domain docs.epico.site (produção canônica da ADR 0002)');
+		}
 	}
 
 	return violations;

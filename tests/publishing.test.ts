@@ -59,6 +59,9 @@ function fixtureWrangler() {
 		{
 			name: 'epico-site-docs',
 			compatibility_date: '2026-09-07',
+			workers_dev: true,
+			preview_urls: true,
+			routes: [{ pattern: 'docs.epico.site', custom_domain: true }],
 			assets: {
 				directory: './dist',
 				html_handling: 'auto-trailing-slash',
@@ -386,6 +389,45 @@ describe('publishing: gate sobre fixture válida e mutações', () => {
 
 		expect(await checkPublishing(root)).toContainEqual(
 			expect.stringMatching(/main não pode existir/),
+		);
+	});
+
+	it('wrangler sem workers_dev apaga o canary workers.dev da ADR 0002', async () => {
+		const root = await makeFixture();
+		await writeFile(
+			join(root, 'wrangler.jsonc'),
+			fixtureWrangler().replace('\t"workers_dev": true,\n', ''),
+		);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/workers_dev deve ser true/),
+		);
+	});
+
+	it('wrangler sem preview_urls tira os previews de *.workers.dev', async () => {
+		const root = await makeFixture();
+		await writeFile(
+			join(root, 'wrangler.jsonc'),
+			fixtureWrangler().replace('\t"preview_urls": true,\n', '\t"preview_urls": false,\n'),
+		);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/preview_urls deve ser true/),
+		);
+	});
+
+	it('wrangler com rota que não seja o custom domain canônico', async () => {
+		const root = await makeFixture();
+		await writeFile(
+			join(root, 'wrangler.jsonc'),
+			fixtureWrangler().replace(
+				'"routes": [\n\t\t{\n\t\t\t"pattern": "docs.epico.site",\n\t\t\t"custom_domain": true\n\t\t}\n\t]',
+				'"routes": [\n\t\t{\n\t\t\t"pattern": "outro.exemplo.com",\n\t\t\t"custom_domain": true\n\t\t}\n\t]',
+			),
+		);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/routes deve ser exatamente o custom domain docs\.epico\.site/),
 		);
 	});
 

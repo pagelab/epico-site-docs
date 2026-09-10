@@ -229,6 +229,26 @@
   Narrativa no `TASKS.md` §"Checkpoint de 2026-09-10".
 - Pagefind, sitemap e `llms.txt`, `llms-full.txt` e `llms-small.txt` são
   gerados.
+- Bootstrap de produção do `DOCS-08` executado em 2026-09-10: o OAuth do
+  wrangler foi renovado pelo owner (conta `contato@uberfacil.com`), a zona
+  `epico.site` foi confirmada ativa e o Worker `epico-site-docs` foi publicado
+  com o custom domain `docs.epico.site` e a origem canary
+  `epico-site-docs.epico.workers.dev` (subdomínio real da conta é `epico`;
+  com `routes` declaradas o wrangler exige `workers_dev: true` explícito, senão
+  desliga o canary). Versão em produção `ca95ddeb-1d19-4873-aedf-083b27460b27`
+  (bootstrap autorizado pela ADR 0002 ponto 3, com `npm run verify` exit 0
+  antes de cada deploy). O gate `check-publishing.mjs` passou a exigir
+  `workers_dev`, `preview_urls` e a rota custom domain exata, com testes e
+  provas por mutação (176 testes no total). `scripts/probe-production.mjs`
+  15/16 em produção (a sonda teve quatro expectativas corrigidas: SAN
+  wildcard, 307 do runtime de assets, política llms só no `llms.txt` e
+  subdomínio real). `scripts/probe-csp.mjs` contra produção: funcionalidade
+  íntegra e script hostil bloqueado. Restam duas ações do owner para fechar o
+  task: redirect HTTP→HTTPS na zona (setting ou Redirect Rule escopada) e os
+  dois pré-requisitos do Workers Builds (instalação do GitHub App da Cloudflare
+  para `pagelab` no dashboard + token de API com permissão de Builds, o
+  `cfat_` do MCP segue inválido). Narrativa no `TASKS.md` §"Checkpoint de
+  2026-09-10: bootstrap de produção do DOCS-08".
 - Último baseline fechado (`DOCS-07`) tinha `npm run verify` verde com 168
   testes. A árvore da primeira passagem está verde com `npm run verify` exit
   0: Astro Check sem diagnósticos, lint e política de conteúdo PASS, 173
@@ -237,28 +257,50 @@
   advisory `GHSA-7w5x-hrqm-74c2`, surgido durante a sessão na cópia
   `smol-toml@1.7.0` do markdownlint, foi removido por override exato para
   `1.8.0`, sem o downgrade destrutivo sugerido pelo npm.
-- Nenhum projeto Cloudflare, domínio ou deploy foi configurado: o `wrangler.jsonc` e o `_headers` são configuração estática verificada localmente, e as decisões de publicação estão fechadas na ADR 0002. A execução do `DOCS-08` espera o reinício do agente com os servidores MCP Cloudflare registrados e um token de API válido do owner. A visibilidade pública do remoto permanece decisão separada.
+- Produção no ar desde 2026-09-10 por bootstrap do `DOCS-08`: Worker
+  `epico-site-docs` com static assets, custom domain `docs.epico.site` e
+  canary `epico-site-docs.epico.workers.dev` noindex. Pendências para fechar o
+  task: redirect HTTP→HTTPS na zona (owner), Workers Builds (GitHub App no
+  dashboard + token de API válido, ver ▶ Próxima ação) e a decisão sobre o
+  beacon de Web Analytics bloqueado pela CSP. A visibilidade pública do
+  remoto permanece decisão separada.
 
 ## ▶ Próxima ação
 
-Owner reiniciar o agente ZCode para ativar o setup Cloudflare executado em
-2026-09-10 (skills oficiais em `~/.zcode/skills` e cinco servidores MCP
-remotos em `~/.zcode/cli/config.json`: api, docs, bindings, builds e
-observability). Depois, renovar o token da API em
-`https://dash.cloudflare.com/profile/api-tokens` e informar o novo valor à
-sessão, que o aplica às quatro entradas autenticadas (o token `cfat_` atual
-expirou, causa raiz dos erros `1000 Invalid API Token`). Com o token válido,
-retomar `DOCS-08`: deploy de produção do Worker `epico-site-docs`, custom
-domain `docs.epico.site`, Workers Builds com `npm ci && npm run verify` e
-`scripts/probe-production.mjs` (mais `probe-csp.mjs`) em verde.
+Owner decide e executa três passos de credencial/permissão (nenhum é
+substituível por API a partir desta sessão):
+
+1. Redirect HTTP→HTTPS de `docs.epico.site`: no dashboard da zona `epico.site`,
+   ou `Always Use HTTPS` em SSL/TLS → Edge Certificates (vale para a zona
+   inteira) ou uma Redirect Rule escopada a `http.host eq "docs.epico.site"`
+   (preferível, não toca nos outros hosts da zona). Alternativa: incluir
+   permissão de Zone Rules/Settings no token renovado no passo 3 e deixar a
+   sessão aplicar via API.
+2. Instalar o GitHub App da Cloudflare para `pagelab`: dashboard Cloudflare →
+   Workers & Pages → `epico-site-docs` → Settings → Builds → Connect →
+   GitHub, autorizando `pagelab/epico-site-docs`. Pré-requisito de dashboard
+   exigido pela doc oficial da API de Builds.
+3. Renovar o token da API em
+   `https://dash.cloudflare.com/profile/api-tokens` (com permissão de Workers
+   Builds Edit e, se quiser o redirect via API, Zone Rules/Settings Edit) e
+   informar o novo valor à sessão, que o aplica às quatro entradas
+   autenticadas do MCP (o `cfat_` atual segue inválido).
+
+Com isso, a sessão completa o `DOCS-08`: conexão e triggers do Workers Builds
+(org `pagelab` 1451087, repo 1361499499, build command `npm ci && npm run
+verify`), redirect HTTP→HTTPS se vier por API, e re-sonda completa
+(`probe-production.mjs` 16/16). Decisão pendente separada: desligar a injeção
+automática de Web Analytics na zona ou adotar analytics deliberadamente
+(hoje o beacon é bloqueado pela CSP estrita, sem tracking).
 
 ## Gates vivos
 
 - `G-CONTENT`: aceito pelo owner em 2026-09-10.
 - `G-VISUAL`: aceito pelo owner em 2026-09-10.
-- `G-CLOUDFLARE`: parâmetros decididos na ADR 0002 (repo `main`, projeto sem
-  runtime, Workers Builds com gate, preview `noindex`, rollback por versions,
-  custom domain `docs.epico.site`). Execução bloqueada em credencial do owner.
+- `G-CLOUDFLARE`: parâmetros decididos na ADR 0002 e produção publicada por
+  bootstrap em 2026-09-10 (custom domain + canary no ar, sonda 15/16). Faltam
+  para fechar: redirect HTTP→HTTPS (owner na zona), Workers Builds (GitHub App
+  no dashboard + token de API) e decisão sobre o beacon de Web Analytics.
 - `G-PANEL`: só abrir integração no plugin depois do Docs publicado e conferido.
 
 ## Decisões confirmadas pelo owner
@@ -280,12 +322,15 @@ domain `docs.epico.site`, Workers Builds com `npm ci && npm run verify` e
 - npm: `11.19.0`.
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
-- Cloudflare: não configurado.
+- Cloudflare: Worker `epico-site-docs` em produção (versão
+  `ca95ddeb-1d19-4873-aedf-083b27460b27`) com custom domain
+  `docs.epico.site` e canary `epico-site-docs.epico.workers.dev`. OAuth do
+  wrangler válido (conta `contato@uberfacil.com`). Token do MCP ainda inválido.
 - Remoto: `pagelab/epico-site-docs` no GitHub, privado, branch `main`.
-- Última sessão: 2026-09-10 (aceites de `G-CONTENT`/`G-VISUAL` registrados,
-  `G-CLOUDFLARE` decidido na ADR 0002, sonda de produção escrita, `DOCS-08`
-  aberto e bloqueado em credencial: token MCP inválido, OAuth do wrangler
-  expirado e login sem aprovação no navegador; verify verde duas vezes;
-  commit e push cobertos pela autorização durável).
+- Última sessão: 2026-09-10 (bootstrap de produção do `DOCS-08`: custom
+  domain, canary workers.dev, gate endurecido com as asserções de deploy,
+  sonda 15/16, CSP de produção íntegra com beacon de analytics bloqueado,
+  Workers Builds bloqueado em GitHub App + token; verify verde com 176
+  testes; commit e push cobertos pela autorização durável).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
