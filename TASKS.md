@@ -1194,3 +1194,34 @@
   tornado público via `gh repo edit` e confirmado `visibility: PUBLIC` em
   <https://github.com/pagelab/epico-site-docs>.
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+
+## Checkpoint de 2026-09-14: verificação pós-adoção do analytics
+
+- Verificação de fechamento da ADR 0004 além do beacon carregando: a coleta
+  produz dado? A evidência HTTP veio de sonda descartável Chrome headless +
+  CDP (mesma família do `probe-csp.mjs`, fora do `verify`): o GET do módulo
+  `beacon.min.js/v31...` responde 200 pela CSP nova, o POST para
+  `https://tutoriais.epico.site/cdn-cgi/rum?` leva o payload RUM completo
+  (location real, timings, versões) e responde 204, com zero erros de
+  console. O beacon carrega E envia.
+- A leitura agregada veio da GraphQL Analytics API
+  (`rumPageloadEventsAdaptiveGroups`, escopo da conta, token `cfut_` com
+  `Zona: Ler`): o `siteTag` do `data-cf-beacon` servido no HTML
+  (`370569bf...`, identificador público do site da zona) soma ZERO pageviews
+  entre 2026-09-10 e 2026-09-14, enquanto os demais sites da conta
+  contabilizam quase em tempo real (12 e 49 eventos só em 14/09). Duas
+  visitas reais geradas pela sonda antes da re-consulta seguem ausentes do
+  dataset.
+- Achado honesto: a edge ACEITA o RUM (204) mas o dataset do site da zona
+  não contabiliza. A listagem de sites RUM por REST
+  (`/accounts/{id}/rum/site_info`) recusa Bearer (erro 10405), então a
+  sessão não distingue site pausado ou legado de defasagem do produto. A
+  conferência final é do owner no dashboard da zona (Analytics & Traffic):
+  se zerar lá também, o caminho é desligar e religar o Web Analytics da
+  zona, que gera site novo. A CSP da ADR 0004 autoriza por HOST e não por
+  token, então nenhuma dessas hipóteses quebra o acervo.
+- `README.md` ganhou a política pública de uso (link para o `llms.txt`
+  servido) e a seção de publicação e contribuição (Workers Builds no `main`
+  com gate obrigatório, PR para externos), para a audiência externa que a
+  ADR 0005 trouxe.
+- Verify exit 0 na sessão. Commit e push cobertos pela autorização durável.

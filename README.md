@@ -7,6 +7,10 @@ O conteúdo vive neste repositório em Markdown. O WordPress da Área de Cliente
 apenas aponta para as páginas públicas e consulta um índice JSON derivado deste
 mesmo acervo. Ele não mantém uma segunda cópia dos artigos.
 
+O acervo é de uso livre para busca, citação, grounding e treinamento. A
+política pública de uso está declarada em
+<https://tutoriais.epico.site/llms.txt>.
+
 ## Ambiente local
 
 Use exatamente as versões registradas em `.nvmrc`, `package.json` e
@@ -38,3 +42,11 @@ npm run preview
   critérios de conclusão.
 - [`docs/decisions/0001-public-docs-architecture.md`](docs/decisions/0001-public-docs-architecture.md)
   fixa a fronteira entre o acervo, o painel e a infraestrutura de publicação.
+
+## Publicação e contribuição
+
+A produção é o branch `main` deste repositório, publicada pelo Workers Builds
+da Cloudflare com o gate `npm ci && npm run verify`: o deploy só acontece com
+o gate em exit code zero. Contribuições externas seguem pull request e
+passam pelo mesmo gate. As decisões vigentes estão em
+[`docs/decisions/`](docs/decisions/).

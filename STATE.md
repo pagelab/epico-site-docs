@@ -301,14 +301,30 @@
   (<https://github.com/pagelab/epico-site-docs>) após scan do histórico
   inteiro por credenciais reais com zero achados. Narrativa no `TASKS.md`
   §"Checkpoint de 2026-09-10: ADR 0004/0005".
+- Verificação pós-adoção do analytics em 2026-09-14: sonda Chrome+CDP provou
+  o ciclo completo no HTTP (GET do beacon 200 pela CSP nova, POST
+  `/cdn-cgi/rum` com payload real respondido 204, zero erros de console).
+  Porém a GraphQL Analytics API mostra o `siteTag` do beacon da zona com
+  ZERO pageviews em 10-14/09 enquanto os demais sites da conta contabilizam
+  quase em tempo real: a edge aceita o RUM e o dataset não contabiliza.
+  A listagem de sites RUM por REST recusa Bearer (erro 10405), então a
+  distinção entre site pausado/legado e defasagem do produto fica para o
+  dashboard da zona, na mão do owner. A CSP da ADR 0004 autoriza por host,
+  então religar o produto da zona (que gera site novo) não quebra nada no
+  acervo. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14".
 
 ## ▶ Próxima ação
 
-Não há task aberto neste repositório nem pendência do owner. As duas
-decisões que restavam foram resolvidas em 2026-09-10: Web Analytics adotado
-(ADR 0004, coleta ativa no custom domain) e repositório público (ADR 0005,
-scan do histórico limpo). O ciclo de release canônico está ativo: todo push
-no `main` de `pagelab/epico-site-docs` roda o Workers Builds com
+Owner confere o dashboard do Web Analytics da zona `epico.site`
+(Analytics & Traffic), único ponto que o token da sessão não alcança: o
+beacon carrega e o POST do RUM é aceito (204, provado por sonda em
+2026-09-14), mas o dataset do `siteTag` da zona segue zerado enquanto os
+demais sites da conta contabilizam. Se o dashboard também zerar, desligar e
+religar o Web Analytics da zona gera site novo sem quebrar nada no acervo
+(a CSP da ADR 0004 autoriza por host, não por token).
+
+Sem task aberto neste repositório. O ciclo de release canônico está ativo:
+todo push no `main` de `pagelab/epico-site-docs` roda o Workers Builds com
 `npm ci && npm run verify` e só publica com o gate em exit 0.
 
 Próximo task da fila é `PANEL-01A` (integração do Docs no plugin da Área de
@@ -327,8 +343,11 @@ review), com deploy automático pelo pipeline e re-sonda
   `tutoriais.epico.site` pelo deploy canônico do Workers Builds (gate verde
   obrigatório, validado nos dois sentidos), redirect HTTP→HTTPS ativo por
   Single Redirect escopado, sonda `probe-production.mjs` 16/16, canary
-  workers.dev noindex e Web Analytics da zona coletando com a CSP pontual
-  da ADR 0004 (`probe-csp.mjs` com zero violações).
+  workers.dev noindex e beacon do Web Analytics autorizado pela CSP da
+  ADR 0004 (carregando e enviando, 204, com `probe-csp.mjs` em zero
+  violações). Ressalva viva da verificação de 2026-09-14: o dataset do
+  `siteTag` da zona segue zerado no GraphQL, conferência no dashboard é do
+  owner (ver ▶ Próxima ação).
 - `G-PANEL`: só abrir integração no plugin depois do Docs publicado e conferido.
 
 ## Decisões confirmadas pelo owner
@@ -363,11 +382,11 @@ review), com deploy automático pelo pipeline e re-sonda
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-09-10 (fechamento do `DOCS-08` com token `cfut_`
-  validado, builds canônicos validados nos dois sentidos, Single Redirect
-  HTTP→HTTPS e sonda 16/16; na sequência, ADR 0004 com Web Analytics
-  adotado e coleta ativa zero violações, e ADR 0005 com o repositório
-  tornado público após scan limpo do histórico; verify verde; commit e push
-  cobertos pela autorização durável).
+- Última sessão: 2026-09-14 (verificação pós-adoção do analytics: ciclo
+  completo provado no HTTP com GET 200 e POST `/cdn-cgi/rum` 204 e zero
+  erros de console, mas dataset do `siteTag` da zona zerado no GraphQL,
+  conferência no dashboard fica com o owner; README ganhou política de uso
+  e seção de contribuição para a audiência pública; verify verde; commit e
+  push cobertos pela autorização durável).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
