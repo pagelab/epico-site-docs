@@ -1256,3 +1256,27 @@
   Build de produção `08831b18` concluiu com sucesso. A sonda canônica passou
   16/16 e os seis artigos foram lidos pela origem pública: todos contêm
   Núcleo, Horizonte e Fronteira e nenhum contém os três nomes históricos.
+
+## Checkpoint de 2026-09-14: prefixo Site e ordem canônica dos serviços
+
+- Nova decisão direta do owner, que refina os rótulos públicos sem alterar o
+  mapeamento operacional: usar sempre **Site Núcleo**, **Site Horizonte** e
+  **Site Fronteira**. Quando os três estiverem em uma lista, a ordem é
+  obrigatoriamente Núcleo → Horizonte → Fronteira.
+- Os mesmos seis artigos canônicos foram sincronizados. As listas de formatos,
+  disponibilidade da publicação, itens da etapa, escopo de suporte e tabela de
+  preços foram reordenadas quando reuniam os três serviços. Referências em
+  títulos, parágrafos e links descritivos receberam o prefixo `Site`. Datas de
+  revisão permanecem em `2026-09-14` e nenhum slug ou URL mudou.
+- `AGENTS.md` registra a grafia e a ordem. A barreira de conteúdo continua
+  rejeitando os três nomes históricos e agora também recusa `Núcleo`,
+  `Horizonte` ou `Fronteira` sem o prefixo `Site`. Blocos de lista ou tabela
+  que contenham os três nomes falham fora da ordem canônica.
+- A suíte permanente de vocabulário cresceu de quatro para dez provas: três
+  nomes históricos proibidos, três nomes públicos incompletos proibidos, frase
+  com os nomes completos aceita, lista e tabela em ordem errada rejeitadas e
+  lista na ordem correta aceita. Total do projeto: 187 testes.
+- Escopo preservado: chaves internas, catálogo comercial da Área de Clientes,
+  fontes históricas de proveniência, preço, escopo e CTA não foram alterados.
+  Mudança segue pelo fluxo editorial na branch
+  `codex/site-prefixo-servicos`, com merge e produção sujeitos ao PR.

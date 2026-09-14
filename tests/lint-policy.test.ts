@@ -121,8 +121,35 @@ describe('vocabulário público dos serviços', () => {
 		},
 	);
 
-	it('permite os nomes públicos Núcleo, Horizonte e Fronteira', () => {
-		expect(violationsFor('Compare os serviços Núcleo, Horizonte e Fronteira.')).toEqual([]);
+	it.each([
+		['Núcleo', 'Site Núcleo'],
+		['Horizonte', 'Site Horizonte'],
+		['Fronteira', 'Site Fronteira'],
+	])('proíbe o nome público incompleto %s', (incompleteName, publicName) => {
+		const violations = violationsFor(`O serviço ${incompleteName} foi contratado.`);
+
+		expect(violations).toEqual([
+			expect.stringContaining(`nome público incompleto: ${incompleteName}; use ${publicName}`),
+		]);
+	});
+
+	it('permite os nomes públicos completos', () => {
+		expect(violationsFor('Compare Site Núcleo, Site Horizonte e Site Fronteira.')).toEqual([]);
+	});
+
+	it.each([
+		'- Site Horizonte\n- Site Núcleo\n- Site Fronteira',
+		'| Serviço |\n| --- |\n| Site Fronteira |\n| Site Núcleo |\n| Site Horizonte |',
+	])('proíbe os três serviços fora da ordem canônica em lista', (body) => {
+		expect(violationsFor(body)).toEqual([
+			expect.stringContaining('lista de serviços deve seguir Site Núcleo, Site Horizonte, Site Fronteira'),
+		]);
+	});
+
+	it('permite lista na ordem Site Núcleo, Site Horizonte e Site Fronteira', () => {
+		const body = '- Site Núcleo\n- Site Horizonte\n- Site Fronteira';
+
+		expect(violationsFor(body)).toEqual([]);
 	});
 });
 

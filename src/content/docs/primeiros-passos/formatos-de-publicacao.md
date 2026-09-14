@@ -20,27 +20,27 @@ controle de acesso, backup e operação responsável.
 
 Não. O portfólio tem três serviços:
 
-- **Horizonte:** instala e valida a infraestrutura técnica headless.
-- **Núcleo:** mantém o site e o WordPress atuais, publicando uma versão
+- **Site Núcleo:** mantém o site e o WordPress atuais, publicando uma versão
   estática sem site kit.
-- **Fronteira:** cria ou recria o site real no site kit e o leva até o
+- **Site Horizonte:** instala e valida a infraestrutura técnica headless.
+- **Site Fronteira:** cria ou recria o site real no site kit e o leva até o
   lançamento conforme a proposta.
 
-## O Horizonte substitui meu site atual?
+## O Site Horizonte substitui meu site atual?
 
 Não imediatamente. Ele usa uma página técnica para validar o motor, sem converter suas
 páginas ou sua identidade visual. O site atual permanece canônico enquanto você prepara
-o conteúdo real. Depois disso, o mesmo Horizonte inclui a etapa de ativação: você
+o conteúdo real. Depois disso, o mesmo Site Horizonte inclui a etapa de ativação: você
 pode seguir os tutoriais de DNS e revisão de plugins ou pedir ajuda dentro dos 100 dias
 de suporte.
 
 ## O que acontece com os plugins que já uso?
 
-No Horizonte, não se deve desativar ou remover plugins só porque a infraestrutura
+No Site Horizonte, não se deve desativar ou remover plugins só porque a infraestrutura
 foi instalada. Depois que o site real entrar no ar, a revisão dos plugins está
 incluída: apenas os que comprovadamente deixaram de ser necessários são desativados,
 com backup e caminho de reversão. Exclusão indiscriminada não faz parte do processo.
 
-No Núcleo, tema, plugins e WordPress atuais são preservados como origem, mas recursos
-dinâmicos precisam passar por compatibilidade. No serviço Fronteira, cada plugin é
+No Site Núcleo, tema, plugins e WordPress atuais são preservados como origem, mas recursos
+dinâmicos precisam passar por compatibilidade. No Site Fronteira, cada plugin é
 avaliado conforme sua função no conteúdo, no painel ou na jornada externa.

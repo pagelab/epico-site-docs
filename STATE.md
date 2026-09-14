@@ -325,19 +325,25 @@
   HTTP dos seis artigos com os três nomes novos e zero nomes históricos.
   Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14: nomes públicos Núcleo,
   Horizonte e Fronteira".
+- Refinamento editorial preparado em 2026-09-14 por nova decisão do owner:
+  os nomes passam a ser sempre **Site Núcleo**, **Site Horizonte** e **Site
+  Fronteira**, nessa ordem quando reunidos em lista. Os seis artigos, a regra
+  durável de `AGENTS.md` e o lint foram sincronizados. A política agora rejeita
+  nomes históricos, nomes novos sem o prefixo `Site` e listas/tabelas com os
+  três serviços fora da ordem canônica. Dez provas de vocabulário, 187 testes
+  no total; chaves internas, slugs, URLs e catálogo comercial externo seguem
+  intocados. Mudança na branch `codex/site-prefixo-servicos`, aguardando o
+  fluxo editorial. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14:
+  prefixo Site e ordem canônica dos serviços".
 
 ## ▶ Próxima ação
 
-Owner confere o dashboard do Web Analytics da zona `epico.site`
-(Analytics & Traffic), único ponto que o token da sessão não alcança: o
-beacon carrega e o POST do RUM é aceito (204, provado por sonda em
-2026-09-14), mas o dataset do `siteTag` da zona segue zerado enquanto os
-demais sites da conta contabilizam. Se o dashboard também zerar, desligar e
-religar o Web Analytics da zona gera site novo sem quebrar nada no acervo
-(a CSP da ADR 0004 autoriza por host, não por token).
-
-Sem task aberto neste repositório. O próximo task da fila é `PANEL-01A`, em
-sessão própria no workspace `Area-de-clientes`.
+Owner revisa e integra o PR editorial da branch
+`codex/site-prefixo-servicos`. Depois do merge, confirmar o Workers Build
+verde, executar `scripts/probe-production.mjs` e conferir nos seis artigos
+servidos que os nomes completos aparecem e nenhuma forma incompleta vazou.
+A conferência do dashboard do Web Analytics da zona `epico.site` continua
+como follow-up independente do owner.
 
 ## Gates vivos
 
@@ -386,10 +392,9 @@ sessão própria no workspace `Area-de-clientes`.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-09-14 (nomes públicos Núcleo, Horizonte e Fronteira
-  publicados nos seis artigos canônicos pelo PR #1/merge `cc6913b`; Workers
-  Build verde, sonda de produção 16/16 e conferência HTTP sem nomes históricos;
-  lint antirregressão com quatro provas e catálogo comercial externo
-  preservado).
+- Última sessão: 2026-09-14 (refinamento para Site Núcleo, Site Horizonte e
+  Site Fronteira aplicado aos seis artigos, com ordem canônica em listas;
+  lint ampliado para dez provas de vocabulário e 187 testes no total; branch
+  `codex/site-prefixo-servicos` aguarda PR, sem mudança em produção).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
