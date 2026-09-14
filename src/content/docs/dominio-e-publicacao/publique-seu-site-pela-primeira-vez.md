@@ -3,7 +3,7 @@ title: Publique seu site pela primeira vez
 description: Da revisão final ao site no ar, com a checklist de publicação.
 topic: dominio-e-publicacao
 draft: false
-lastReviewed: 2026-09-08
+lastReviewed: 2026-09-14
 sidebar:
   order: 2
 ---
@@ -23,11 +23,11 @@ só depois da sua aprovação é que a etapa de publicação é aberta no painel
 
 A etapa aparece no painel quando a revisão termina:
 
-- **Setup Headless**: depois que você declara **Meu conteúdo está pronto** na
+- **Horizonte**: depois que você declara **Meu conteúdo está pronto** na
   tela **Prepare seu site**.
-- **Conversão Estática**: depois que você clica em **Aprovo o conteúdo** na
+- **Núcleo**: depois que você clica em **Aprovo o conteúdo** na
   tela **Revise e aprove a cópia estática**.
-- **Site Headless Sob Medida**: depois que você clica em **Aprovo o conteúdo**
+- **Fronteira**: depois que você clica em **Aprovo o conteúdo**
   na tela **Revise e aprove o seu site**.
 
 Enquanto a revisão não termina, o painel não oferece a troca de domínio. Isso é
@@ -42,15 +42,15 @@ seu serviço:
 - **DNS e ativação do domínio**: o apontamento acontece somente depois de
   conferir o site real. O site atual permanece no ar até a mudança de DNS fazer
   efeito.
-- **Rotas e endereços** (Conversão Estática): conferimos que os endereços das
+- **Rotas e endereços** (Núcleo): conferimos que os endereços das
   suas páginas continuam funcionando exatamente como hoje, para que nada do que
   você já publicou se perca.
-- **Redirecionamentos e endereços** (Site Headless Sob Medida): conferimos os
+- **Redirecionamentos e endereços** (Fronteira): conferimos os
   redirecionamentos dos seus endereços antigos, para que links já publicados em
   outros lugares continuem funcionando.
 - **Plano de retorno pronto**: o seu site atual não é removido. Se algo der
   errado durante a troca, apontamos o domínio de volta para ele.
-- No **Setup Headless**, a lista inclui ainda a **Revisão segura de plugins do
+- No **Horizonte**, a lista inclui ainda a **Revisão segura de plugins do
   WordPress**, feita após um backup completo e sem excluir nada, e os
   **Testes de confiabilidade** com as configurações do WordPress e a sua conta
   Cloudflare.
@@ -73,7 +73,7 @@ Não. As duas rotas ficam abertas na etapa de publicação:
   registrador, enviado pelo próprio painel.
 - **Como fazer eu mesmo**: os tutoriais para executar cada item no seu ritmo.
 
-No Setup Headless, a ajuda com a ativação está incluída durante os 100 dias de
+No Horizonte, a ajuda com a ativação está incluída durante os 100 dias de
 suporte, e o painel mostra até que data ela vale. Depois desse prazo, os
 tutoriais e o acesso por conta própria continuam disponíveis. O que o suporte
 cobre está detalhado em

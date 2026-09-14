@@ -40,10 +40,11 @@ transitória no `STATE.md` quando existir.
 
 - Nunca publicar PII, credenciais, tokens, URLs assinadas ou dados de cliente.
 - Usar `equipe Épico` para trabalho humano.
-- Não chamar o serviço de `setup` em texto corrido voltado ao cliente. Usar o
-  nome próprio `Setup Headless` quando necessário.
+- Usar **Núcleo**, **Horizonte** e **Fronteira** como nomes públicos dos três
+  serviços. `Conversão Estática`, `Setup Headless` e `Site Headless Sob Medida`
+  são nomes históricos e não entram em texto voltado ao cliente.
 - Não prometer lançamento depois de uma fixture técnica.
-- DNS e revisão de plugins são etapa posterior incluída no Setup Headless.
+- DNS e revisão de plugins são etapa posterior incluída no Horizonte.
 - Preservar a escolha entre fazer por conta própria e contratar execução.
 - Não usar travessão longo nem ponto e vírgula em texto voltado ao cliente.
 - Slugs publicados são permanentes. Mudança posterior exige redirect

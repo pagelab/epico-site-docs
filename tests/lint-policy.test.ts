@@ -109,6 +109,23 @@ describe('segredos e dados privados', () => {
 	});
 });
 
+describe('vocabulário público dos serviços', () => {
+	it.each(['Setup Headless', 'Conversão Estática', 'Site Headless Sob Medida'])(
+		'proíbe o nome histórico %s',
+		(legacyName) => {
+			const violations = violationsFor(`O serviço ${legacyName} foi contratado.`);
+
+			expect(violations).toEqual([
+				expect.stringContaining(`nome histórico de serviço não permitido: ${legacyName}`),
+			]);
+		},
+	);
+
+	it('permite os nomes públicos Núcleo, Horizonte e Fronteira', () => {
+		expect(violationsFor('Compare os serviços Núcleo, Horizonte e Fronteira.')).toEqual([]);
+	});
+});
+
 describe('modelo de conteúdo', () => {
 	it('proíbe slug não canônico no caminho', () => {
 		const violations = lintSource('primeiros-passos/Editar_Site.md', page('Texto comum'));
