@@ -312,7 +312,7 @@
   dashboard da zona, na mão do owner. A CSP da ADR 0004 autoriza por host,
   então religar o produto da zona (que gera site novo) não quebra nada no
   acervo. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14".
-- Padronização dos nomes públicos preparada em 2026-09-14, por ordem direta
+- Padronização dos nomes públicos publicada em 2026-09-14, por ordem direta
   do owner: seis artigos agora usam **Núcleo** (`static_conversion`),
   **Horizonte** (`headless_setup`) e **Fronteira** (`headless_agency`), sem
   alterar as chaves internas, slugs ou URLs. O lint passou a rejeitar os três
@@ -320,16 +320,24 @@
   Gate completo no runtime fixado: 181 testes, build de 17 páginas, zero
   vulnerabilidades e `npm run verify` exit 0. O catálogo comercial da Área de
   Clientes ficou fora do recorte porque seu `STATE.md` registra preço, escopo
-  e CTA como decisão pendente sem mapeamento 1:1. Narrativa no `TASKS.md`
-  §"Checkpoint de 2026-09-14: nomes públicos Núcleo, Horizonte e Fronteira".
+  e CTA como decisão pendente sem mapeamento 1:1. PR #1 integrado no merge
+  `cc6913b`, Workers Build `08831b18` verde, sonda canônica 16/16 e conferência
+  HTTP dos seis artigos com os três nomes novos e zero nomes históricos.
+  Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14: nomes públicos Núcleo,
+  Horizonte e Fronteira".
 
 ## ▶ Próxima ação
 
-Owner revisa e integra o PR editorial da branch
-`codex/padroniza-nomes-servicos`. Depois do merge, confirmar o Workers Build
-verde e executar `scripts/probe-production.mjs` contra produção antes de
-fechar a mudança. A conferência do dashboard do Web Analytics da zona
-`epico.site` continua como follow-up independente do owner.
+Owner confere o dashboard do Web Analytics da zona `epico.site`
+(Analytics & Traffic), único ponto que o token da sessão não alcança: o
+beacon carrega e o POST do RUM é aceito (204, provado por sonda em
+2026-09-14), mas o dataset do `siteTag` da zona segue zerado enquanto os
+demais sites da conta contabilizam. Se o dashboard também zerar, desligar e
+religar o Web Analytics da zona gera site novo sem quebrar nada no acervo
+(a CSP da ADR 0004 autoriza por host, não por token).
+
+Sem task aberto neste repositório. O próximo task da fila é `PANEL-01A`, em
+sessão própria no workspace `Area-de-clientes`.
 
 ## Gates vivos
 
@@ -379,8 +387,9 @@ fechar a mudança. A conferência do dashboard do Web Analytics da zona
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
 - Última sessão: 2026-09-14 (nomes públicos Núcleo, Horizonte e Fronteira
-  aplicados aos seis artigos canônicos, lint antirregressão com quatro provas,
-  `lastReviewed` atualizado, catálogo comercial externo preservado e fluxo
-  editorial aberto na branch `codex/padroniza-nomes-servicos`; verify verde).
+  publicados nos seis artigos canônicos pelo PR #1/merge `cc6913b`; Workers
+  Build verde, sonda de produção 16/16 e conferência HTTP sem nomes históricos;
+  lint antirregressão com quatro provas e catálogo comercial externo
+  preservado).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

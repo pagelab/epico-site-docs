@@ -1251,4 +1251,8 @@
   verify` exit 0, Astro Check sem diagnósticos, lint e política de conteúdo
   PASS, 181 testes, 32 pares de contraste PASS, build estático de 17 páginas,
   publicação PASS, zero vulnerabilidades e política de install scripts PASS.
-  Mudança segue pelo fluxo editorial em branch e PR, sem deploy direto.
+  Mudança seguiu pelo fluxo editorial em branch e PR, sem deploy direto.
+- PR #1 integrado pelo owner em 2026-09-14 no merge commit `cc6913b`. Workers
+  Build de produção `08831b18` concluiu com sucesso. A sonda canônica passou
+  16/16 e os seis artigos foram lidos pela origem pública: todos contêm
+  Núcleo, Horizonte e Fronteira e nenhum contém os três nomes históricos.
