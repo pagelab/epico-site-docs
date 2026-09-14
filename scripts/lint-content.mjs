@@ -25,6 +25,11 @@ const forbiddenSecrets = [
   [/\/Users\/[A-Za-z0-9._-]+\//u, 'caminho local'],
   [/\b(?:localhost|127\.0\.0\.1)(?::\d+)?\b/iu, 'endereço local'],
 ];
+const legacyServiceNames = [
+  /\bSetup Headless\b/iu,
+  /\bConversão Estática\b/iu,
+  /\bSite Headless Sob Medida\b/iu,
+];
 // Cerca de código segundo o CommonMark: até 3 espaços de recuo, 3 ou mais
 // crases ou tils, e fechamento apenas com o mesmo caractere em comprimento
 // igual ou maior, sem texto na linha de fechamento.
@@ -204,6 +209,14 @@ export function lintSource(relativePath, source) {
   for (const [pattern, label] of forbiddenSecrets) {
     if (pattern.test(source)) {
       violations.push(`${relativePath}: conteúdo proibido detectado: ${label}`);
+    }
+  }
+
+  for (const pattern of legacyServiceNames) {
+    const legacyName = source.match(pattern)?.[0];
+
+    if (legacyName !== undefined) {
+      violations.push(`${relativePath}: nome histórico de serviço não permitido: ${legacyName}`);
     }
   }
 

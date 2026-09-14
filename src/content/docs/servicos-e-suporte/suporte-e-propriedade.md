@@ -3,7 +3,7 @@ title: Suporte, garantias e propriedade do site
 description: O que o suporte cobre, quem fica com arquivos e contas e como funcionam cancelamento e reembolso.
 topic: servicos-e-suporte
 draft: false
-lastReviewed: 2026-09-08
+lastReviewed: 2026-09-14
 sidebar:
   order: 3
 ---
@@ -12,19 +12,19 @@ sidebar:
 
 Configuramos tudo o que pertence ao serviço contratado:
 
-- no **Setup Headless**, implantamos e validamos a infraestrutura e incluímos uma ativação
+- no **Horizonte**, implantamos e validamos a infraestrutura e incluímos uma ativação
   posterior com DNS e revisão segura de plugins.
-- na **Conversão Estática**, avaliamos a compatibilidade, geramos a versão estática do
+- no **Núcleo**, avaliamos a compatibilidade, geramos a versão estática do
   site real e conduzimos revisão e publicação conforme o escopo.
-- no **Site Headless Sob Medida**, criamos ou recriamos o site no site kit conforme a
+- no **Fronteira**, criamos ou recriamos o site no site kit conforme a
   proposta aprovada.
 
-O Setup Headless básico não inclui converter páginas existentes, reproduzir a marca,
+O Horizonte não inclui converter páginas existentes, reproduzir a marca,
 produzir textos ou imagens nem configurar integrações sob medida. Esses trabalhos podem
 ser feitos pelo cliente ou contratados em pacote adicional/projeto sob medida. DNS e
-revisão de plugins já pertencem ao Setup Headless e não são vendidos novamente.
+revisão de plugins já pertencem ao Horizonte e não são vendidos novamente.
 
-## O Setup Headless já coloca meu novo site no ar imediatamente?
+## O Horizonte já coloca meu novo site no ar imediatamente?
 
 Não. Primeiro ele comprova que WordPress, site kit e Cloudflare estão conectados por meio
 de uma página técnica. Como não há páginas reais nem identidade visual convertida nessa
@@ -42,7 +42,7 @@ manutenção geral do WordPress, conflitos de terceiros e novas integrações n�
 suporte por estarem próximos do site. Quando necessários, são avaliados como serviço
 adicional.
 
-No Setup Headless, a janela é de 100 dias e inclui ajuda solicitada para DNS e revisão de
+No Horizonte, a janela é de 100 dias e inclui ajuda solicitada para DNS e revisão de
 plugins. Os tutoriais continuam disponíveis depois. A execução humana posterior pode ser
 contratada à parte.
 
@@ -54,7 +54,7 @@ inclui esse trabalho operacional.
 
 As contas e os artefatos entregues devem permanecer sob controle do cliente conforme o
 contrato do serviço. No modelo headless, o código do site kit e a infraestrutura de
-publicação ficam nas contas definidas durante o onboarding. Na Conversão Estática, o
+publicação ficam nas contas definidas durante o onboarding. No Núcleo, o
 cliente recebe o resultado estático e mantém o WordPress atual como origem, respeitando
 as licenças de temas, plugins, fontes, imagens e demais componentes de terceiros.
 

@@ -1225,3 +1225,30 @@
   com gate obrigatório, PR para externos), para a audiência externa que a
   ADR 0005 trouxe.
 - Verify exit 0 na sessão. Commit e push cobertos pela autorização durável.
+
+## Checkpoint de 2026-09-14: nomes públicos Núcleo, Horizonte e Fronteira
+
+- Ordem direta do owner para sincronizar o acervo com os nomes publicados na
+  Área de Clientes `0.129.0`. Mapeamento confirmado no `STATE.md` daquele
+  workspace: `static_conversion` → **Núcleo**, `headless_setup` →
+  **Horizonte** e `headless_agency` → **Fronteira**. As chaves operacionais
+  não mudaram.
+- Seis artigos canônicos em `src/content/docs/` foram revisados: lista dos
+  três serviços, escolha e limites de cada modalidade, personalização,
+  revisão, publicação, suporte, propriedade, preços e FAQ. Os seis
+  `lastReviewed` passaram a `2026-09-14`. Nenhum slug ou URL mudou.
+- O vocabulário durável do repositório foi sincronizado em `AGENTS.md`.
+  `scripts/lint-content.mjs` agora rejeita os três nomes históricos no acervo
+  público, com quatro provas permanentes em `tests/lint-policy.test.ts` (uma
+  por nome retirado e uma positiva para os três nomes públicos).
+- Escopo deliberado: os cards do catálogo **Serviços** na Área de Clientes
+  não foram alterados. O `STATE.md` daquele workspace registra que preço,
+  escopo e CTA desses cards ainda dependem da decisão da landing e não têm
+  mapeamento 1:1. Os arquivos antigos de proveniência em
+  `Area-de-clientes/docs/knowledge-base/` também não são a autoridade
+  editorial e não foram convertidos em uma segunda cópia do acervo.
+- Gate local no runtime fixado Node `24.20.0` + npm `11.19.0`: `npm run
+  verify` exit 0, Astro Check sem diagnósticos, lint e política de conteúdo
+  PASS, 181 testes, 32 pares de contraste PASS, build estático de 17 páginas,
+  publicação PASS, zero vulnerabilidades e política de install scripts PASS.
+  Mudança segue pelo fluxo editorial em branch e PR, sem deploy direto.

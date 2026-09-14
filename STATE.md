@@ -312,28 +312,24 @@
   dashboard da zona, na mão do owner. A CSP da ADR 0004 autoriza por host,
   então religar o produto da zona (que gera site novo) não quebra nada no
   acervo. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14".
+- Padronização dos nomes públicos preparada em 2026-09-14, por ordem direta
+  do owner: seis artigos agora usam **Núcleo** (`static_conversion`),
+  **Horizonte** (`headless_setup`) e **Fronteira** (`headless_agency`), sem
+  alterar as chaves internas, slugs ou URLs. O lint passou a rejeitar os três
+  nomes históricos no conteúdo público e ganhou quatro provas permanentes.
+  Gate completo no runtime fixado: 181 testes, build de 17 páginas, zero
+  vulnerabilidades e `npm run verify` exit 0. O catálogo comercial da Área de
+  Clientes ficou fora do recorte porque seu `STATE.md` registra preço, escopo
+  e CTA como decisão pendente sem mapeamento 1:1. Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-14: nomes públicos Núcleo, Horizonte e Fronteira".
 
 ## ▶ Próxima ação
 
-Owner confere o dashboard do Web Analytics da zona `epico.site`
-(Analytics & Traffic), único ponto que o token da sessão não alcança: o
-beacon carrega e o POST do RUM é aceito (204, provado por sonda em
-2026-09-14), mas o dataset do `siteTag` da zona segue zerado enquanto os
-demais sites da conta contabilizam. Se o dashboard também zerar, desligar e
-religar o Web Analytics da zona gera site novo sem quebrar nada no acervo
-(a CSP da ADR 0004 autoriza por host, não por token).
-
-Sem task aberto neste repositório. O ciclo de release canônico está ativo:
-todo push no `main` de `pagelab/epico-site-docs` roda o Workers Builds com
-`npm ci && npm run verify` e só publica com o gate em exit 0.
-
-Próximo task da fila é `PANEL-01A` (integração do Docs no plugin da Área de
-Clientes), que roda em sessão própria no workspace `Area-de-clientes`. O
-bloqueio técnico "Docs em produção" está atendido.
-
-Editorial: mudanças de conteúdo seguem o fluxo do acervo (branch, PR,
-review), com deploy automático pelo pipeline e re-sonda
-`scripts/probe-production.mjs` quando a mudança tocar publicação.
+Owner revisa e integra o PR editorial da branch
+`codex/padroniza-nomes-servicos`. Depois do merge, confirmar o Workers Build
+verde e executar `scripts/probe-production.mjs` contra produção antes de
+fechar a mudança. A conferência do dashboard do Web Analytics da zona
+`epico.site` continua como follow-up independente do owner.
 
 ## Gates vivos
 
@@ -382,11 +378,9 @@ review), com deploy automático pelo pipeline e re-sonda
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-09-14 (verificação pós-adoção do analytics: ciclo
-  completo provado no HTTP com GET 200 e POST `/cdn-cgi/rum` 204 e zero
-  erros de console, mas dataset do `siteTag` da zona zerado no GraphQL,
-  conferência no dashboard fica com o owner; README ganhou política de uso
-  e seção de contribuição para a audiência pública; verify verde; commit e
-  push cobertos pela autorização durável).
+- Última sessão: 2026-09-14 (nomes públicos Núcleo, Horizonte e Fronteira
+  aplicados aos seis artigos canônicos, lint antirregressão com quatro provas,
+  `lastReviewed` atualizado, catálogo comercial externo preservado e fluxo
+  editorial aberto na branch `codex/padroniza-nomes-servicos`; verify verde).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
