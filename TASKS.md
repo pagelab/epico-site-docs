@@ -25,8 +25,8 @@
 | 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | aceito 2026-09-10 | `DOCS-07` |
 | 16 | `G-VISUAL` | P0 | Humano | Aceite visual e acessível do owner | aceito 2026-09-10 | `DOCS-07` |
 | 17 | `DOCS-08` | P1 | M | Repo remoto, Workers Builds, preview, produção, DNS e rollback | concluído | `G-CONTENT` ✅, `G-VISUAL` ✅, `G-CLOUDFLARE` |
-| 18 | `DOCS-09` | P1 | G | Tutoriais de operação do painel do kit `epico-base` | em andamento | ordem do owner de 2026-09-15 |
-| 19 | `PANEL-01A` | P1 | M | `DocsSite`, cards, categorias, CSP e i18n no plugin | bloqueado | Docs em produção |
+| 18 | `DOCS-09` | P1 | G | Tutoriais de operação do painel do kit `epico-base` | concluído | ordem do owner de 2026-09-15 |
+| 19 | `PANEL-01A` | P1 | M | `DocsSite`, cards, categorias, CSP e i18n no plugin | bloqueado | ordem do owner; Docs publicado e conferido em 2026-09-15 |
 | 20 | `PANEL-01B` | P1 | G | Busca defensiva e acessível em `shell.js` | bloqueado | `PANEL-01A` |
 | 21 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
 
@@ -1352,3 +1352,33 @@
   `codex/tutoriais-painel-epico-site`, com merge e produção sujeitos ao PR.
   Os links do painel do kit para estas páginas são trabalho futuro do lado
   do kit, fora deste repositório.
+
+## Checkpoint de 2026-09-15: integração do PR #3 e fechamento do DOCS-09
+
+- O owner revisou o PR editorial e declarou a revisão ok, autorizando a
+  integração dos novos docs do painel. PR #3
+  (`codex/tutoriais-painel-epico-site`) integrado no merge commit `52cce8e`
+  pelo fluxo de merge commit, a mesma forma dos PRs #1 e #2.
+- Workers Build de produção do commit de merge concluído com sucesso (check
+  run "Workers Builds: epico-site-docs" com conclusion `success`), deploy
+  liberado pelo gate `npm ci && npm run verify` verde conforme a ADR 0002.
+  Versão em produção `02128101-28c9-4877-bd27-108fbf557a71`, deployment de
+  2026-09-15T14:32:50Z.
+- `scripts/probe-production.mjs` 16/16 contra produção: DNS, TLS, redirect
+  HTTP→HTTPS, home 200 sem noindex, CSP com os 10 hashes, headers de
+  segurança, CORS sem ACAO aberto, `/busca/`, 404 custom, `immutable` com
+  ETag revalidado em 304, sitemap 1:1 com o dist local em 28 URLs, robots,
+  os três `llms*.txt` com a política, `search-index.json` byte a byte com o
+  dist (27 entradas) e canary workers.dev com noindex e CSP.
+- Conferência HTTP da nova área em produção: as 12 rotas de
+  `/painel-epico-site/` respondem 200, o índice de busca serve as 12
+  entradas novas com `topic` `painel-epico-site` (27 no total), a sidebar de
+  página interna linka `/painel-epico-site/` e a navegação manual da
+  `/busca/` traz o card "Painel Épico Site" no HTML estático (degradação
+  sem JavaScript preservada com a sétima área).
+- `DOCS-09` concluído. `G-PANEL` liberado: a condição "Docs publicado e
+  conferido" está satisfeita e a integração no plugin (`PANEL-01A`) abre por
+  ordem do owner em sessão própria no workspace Área de Clientes, usando os
+  slugs publicados como mapa de URLs. A conferência do dashboard do Web
+  Analytics da zona `epico.site` segue follow-up independente do owner.
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).

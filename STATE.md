@@ -353,18 +353,27 @@
   com PR aberto, aguardando o fluxo editorial. Narrativa no `TASKS.md`
   §"Checkpoint de 2026-09-15: fechamento do PR #2 e tutoriais do painel do
   kit".
+- Fechamento do `DOCS-09` em 2026-09-15: o owner revisou o PR #3 e declarou
+  a revisão ok, autorizando a integração. Merge commit `52cce8e` no `main`,
+  Workers Build de produção verde (check run `success`, versão
+  `02128101-28c9-4877-bd27-108fbf557a71`), `scripts/probe-production.mjs`
+  16/16 e conferência HTTP da nova área em produção: 12 rotas 200, 12
+  entradas no índice (27 no total), sidebar de página interna e navegação
+  manual da `/busca/` com a sétima área. `G-PANEL` liberado. Narrativa no
+  `TASKS.md` §"Checkpoint de 2026-09-15: integração do PR #3 e fechamento
+  do DOCS-09".
 
 ## ▶ Próxima ação
 
-Owner revisa e integra o PR editorial da branch
-`codex/tutoriais-painel-epico-site` (doze artigos da área Painel Épico
-Site). Depois do merge, confirmar o Workers Build verde, executar
-`scripts/probe-production.mjs` e conferir em produção a nova área
-`/painel-epico-site/` no índice de busca, na sidebar e na navegação manual
-da `/busca/`. Depois disso, os links do painel do kit para estas páginas são
-trabalho futuro do lado do kit, em sessão própria no workspace dele. A
-conferência do dashboard do Web Analytics da zona `epico.site` continua como
-follow-up independente do owner.
+Fila local sem tasks abertos (`DOCS-00` a `DOCS-09` concluídos). A próxima
+ação é do owner, fora deste workspace: abrir `PANEL-01A` em sessão própria
+no workspace Área de Clientes para linkar as seções do painel do kit às
+páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`
+(verificar o registro da abertura no `STATE.md` daquele workspace). A
+conferência do dashboard do Web Analytics da zona `epico.site` (dataset do
+`siteTag` zerado no GraphQL desde 2026-09-14) continua como follow-up
+independente do owner. Este repositório só volta a agir por novo task do
+owner; o build canônico de produção a cada push no `main` segue automático.
 
 ## Gates vivos
 
@@ -379,7 +388,10 @@ follow-up independente do owner.
   violações). Ressalva viva da verificação de 2026-09-14: o dataset do
   `siteTag` da zona segue zerado no GraphQL, conferência no dashboard é do
   owner (ver ▶ Próxima ação).
-- `G-PANEL`: só abrir integração no plugin depois do Docs publicado e conferido.
+- `G-PANEL`: liberado em 2026-09-15. A condição "Docs publicado e conferido"
+  está satisfeita (merge `52cce8e`, sonda 16/16 e conferência da área
+  `/painel-epico-site/` em produção). A integração no plugin (`PANEL-01A`)
+  abre por ordem do owner em sessão própria no workspace Área de Clientes.
 
 ## Decisões confirmadas pelo owner
 
@@ -401,8 +413,9 @@ follow-up independente do owner.
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
 - Cloudflare: Worker `epico-site-docs` em produção (versão
-  `0cee9266-f07e-464a-8791-9999ea6122f5`, publicada pelo Workers Builds do
-  push `366ad28`) com custom domain `tutoriais.epico.site`, canary
+  `02128101-28c9-4877-bd27-108fbf557a71`, deployment de 2026-09-15T14:32:50Z
+  pelo Workers Builds do merge `52cce8e`) com custom domain
+  `tutoriais.epico.site`, canary
   `epico-site-docs.epico.workers.dev` noindex e Single Redirect HTTP→HTTPS
   escopado ao host (301 com path e query). OAuth do wrangler válido (conta
   `contato@uberfacil.com`). Token `cfut_` da API ativo nas quatro MCPs
@@ -413,10 +426,10 @@ follow-up independente do owner.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-09-15 (PR #2 integrado com build verde, sonda 16/16 e
-  conferência dos seis artigos; `DOCS-09` com a nova área `painel-epico-site`
-  e doze tutoriais do painel do kit `epico-base`, gate exit 0 com 187 testes
-  e build de 29 páginas; branch `codex/tutoriais-painel-epico-site` com PR
-  aberto, sem mudança em produção).
+- Última sessão: 2026-09-15 (PR #3 integrado no merge `52cce8e` por ordem do
+  owner após revisão ok, Workers Build verde, sonda 16/16 e conferência em
+  produção das 12 rotas, do índice, da sidebar e da navegação da `/busca/`
+  com a área Painel Épico Site; `DOCS-09` concluído e fila local sem tasks
+  abertos).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
