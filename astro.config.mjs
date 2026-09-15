@@ -45,6 +45,15 @@ export default defineConfig({
 						crossorigin: 'anonymous',
 					},
 				},
+				// Cópia do deep link de títulos: script público estático, coberto
+				// pela CSP por 'self' (sem script inline novo no _headers).
+				{
+					tag: 'script',
+					attrs: {
+						type: 'module',
+						src: '/scripts/anchor-link-copy.js',
+					},
+				},
 			],
 			plugins: [
 				starlightLlmsTxt({

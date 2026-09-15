@@ -362,10 +362,31 @@
   manual da `/busca/` com a sétima área. `G-PANEL` liberado. Narrativa no
   `TASKS.md` §"Checkpoint de 2026-09-15: integração do PR #3 e fechamento
   do DOCS-09".
+- `DOCS-10` executado em 2026-09-15 por ordem direta do owner: o clique no
+  ícone de corrente dos títulos agora COPIA o deep link da seção (URL
+  absoluta com fragmento percentual-codado) em vez de apenas navegar. Script
+  público estático `public/scripts/anchor-link-copy.js` carregado pelo hook
+  `head` em todas as páginas (CSP cobre por `'self'`, sem hash novo no
+  `_headers`), clique com modificador segue nativo, feedback por check +
+  tooltip com o par de botão já medido pelo gate de contraste e anúncio em
+  região live, fallback `execCommand` para clipboard indisponível e sem
+  JavaScript o link navega como antes. Override `heading.anchorLabel`
+  ("Copiar link da seção...") com renome `pt-br.json` → `pt-BR.json`: o
+  lookup do vendor casa o arquivo com o `lang` BCP-47 do locale e o nome
+  antigo nunca aplicava (localmente foi preciso limpar `.astro` pelo
+  filesystem case-insensitive). Namespace do SVG do check percentual-codado
+  no data URI para preservar a barreira de tema sem URL remota. Suíte
+  `tests/anchor-copy.test.ts` com funções puras dos bytes servidos (11
+  testes, 198 no total), três provas por mutação e sonda empírica
+  `scripts/probe-anchor-copy.mjs` PASS contra `wrangler dev` com headers
+  reais (clipboard byte a byte, sem hash na URL, feedback presente e
+  restaurado, Ctrl+clique nativo, zero violações de CSP). `npm run verify`
+  exit 0. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-15: cópia do deep
+  link de títulos (DOCS-10)".
 
 ## ▶ Próxima ação
 
-Fila local sem tasks abertos (`DOCS-00` a `DOCS-09` concluídos). A próxima
+Fila local sem tasks abertos (`DOCS-00` a `DOCS-10` concluídos). A próxima
 ação é do owner, fora deste workspace: abrir `PANEL-01A` em sessão própria
 no workspace Área de Clientes para linkar as seções do painel do kit às
 páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`
@@ -426,10 +447,10 @@ owner; o build canônico de produção a cada push no `main` segue automático.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-09-15 (PR #3 integrado no merge `52cce8e` por ordem do
-  owner após revisão ok, Workers Build verde, sonda 16/16 e conferência em
-  produção das 12 rotas, do índice, da sidebar e da navegação da `/busca/`
-  com a área Painel Épico Site; `DOCS-09` concluído e fila local sem tasks
+- Última sessão: 2026-09-15 (`DOCS-10` por ordem direta do owner: clique no
+  ícone de corrente dos títulos copia o deep link da seção, com `npm run
+  verify` exit 0 na sessão — 198 testes —, três provas por mutação e sonda
+  `probe-anchor-copy.mjs` PASS contra `wrangler dev`; fila local sem tasks
   abertos).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

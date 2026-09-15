@@ -29,6 +29,7 @@
 | 19 | `PANEL-01A` | P1 | M | `DocsSite`, cards, categorias, CSP e i18n no plugin | bloqueado | ordem do owner; Docs publicado e conferido em 2026-09-15 |
 | 20 | `PANEL-01B` | P1 | G | Busca defensiva e acessível em `shell.js` | bloqueado | `PANEL-01A` |
 | 21 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
+| 22 | `DOCS-10` | P1 | P | Clique no ícone de corrente copia o deep link do título | concluído | ordem do owner de 2026-09-15 |
 
 ## Critérios por task
 
@@ -109,6 +110,18 @@
   painel do kit deve linkar as páginas correspondentes no futuro.
 - A política editorial vigente vale integralmente (vocabulário dos serviços,
   pontuação, sem PII, escolha entre fazer sozinho e contratar).
+
+### `DOCS-10` — cópia do deep link de títulos
+
+- O clique simples no ícone de corrente copia a URL absoluta da seção (com o
+  fragmento percentual-codado), sem navegar; clique com modificador e botões
+  do meio/direito seguem nativos.
+- O script é público, estático e sem dependência: coberto pela CSP por
+  `'self'`, sem script inline novo e portanto sem hash novo no `_headers`.
+- Sem JavaScript o link continua navegando para o fragmento, como hoje.
+- O feedback usa o par de botão já medido pelo gate de contraste e uma
+  região live anuncia a cópia para leitores de tela.
+- Escreve no DOM apenas por APIs de texto, nunca `innerHTML`.
 
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
@@ -1381,4 +1394,60 @@
   ordem do owner em sessão própria no workspace Área de Clientes, usando os
   slugs publicados como mapa de URLs. A conferência do dashboard do Web
   Analytics da zona `epico.site` segue follow-up independente do owner.
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+
+## Checkpoint de 2026-09-15: cópia do deep link de títulos (DOCS-10)
+
+- Ordem direta do owner: o ícone de corrente no hover dos títulos precisava
+  copiar o link daquele ponto do artigo, não apenas navegar. Implementado
+  como script público estático `public/scripts/anchor-link-copy.js`,
+  carregado em todas as páginas pelo hook público `head` do Starlight
+  (module, mesmo pipeline das fontes). A CSP não mudou: script externo
+  same-origin é autorizado por `'self'`, o conjunto exato de hashes dos
+  scripts inline permanece o mesmo e o gate `check-publishing.mjs` seguiu
+  PASS sem edição.
+- Comportamento: clique primário simples previne a navegação, copia a URL
+  absoluta da seção com o fragmento percentual-codado (Clipboard API com
+  fallback `execCommand`) e confirma por 2 s trocando a corrente por um
+  check (mesma geometria do ícone do vendor via fill/mask no próprio SVG)
+  mais rótulo flutuante "Link copiado" e anúncio em região live. Clique com
+  cmd/ctrl/shift/alt, botão do meio e teclado com modificador seguem
+  nativos; sem JavaScript o link navega para o fragmento como antes.
+- O rótulo acessível da âncora passou a declarar a ação: override
+  `heading.anchorLabel` em `src/content/i18n/`. Achado estrutural na sessão:
+  o lookup do vendor casa o nome do arquivo com o `lang` BCP-47 do locale
+  (`pt-BR`), então o histórico `pt-br.json` (minúsculo) nunca aplicava; o
+  arquivo foi renomeado para `pt-BR.json` (git mv). Em filesystem
+  case-insensitive o store da content layer exigiu limpar `.astro` para o
+  rename valer no build local.
+- Barreira preservada: o tema segue sem URL remota no CSS. O namespace do
+  SVG do check ficou percentual-codado dentro do data URI da máscara
+  (`http%3A%2F%2F...`), porque `tests/theme.test.ts` proíbe `http`/`//` em
+  `theme.css`; data URI é recurso inline, não remoto.
+- Feedback visual com o par de botão primário já medido pelo gate de
+  contraste (`--sl-color-text-invert` sobre `--sl-color-bg-accent`, AA nas
+  duas paletas), sem tocar no gate.
+- Suíte nova `tests/anchor-copy.test.ts` (11 testes, 198 no total):
+  funções puras importadas dos MESMOS bytes servidos em produção
+  (codificação do fragmento, rejeição de href externo/relativo), contrato
+  do head, barreiras (sem innerHTML/eval/fetch/URL externa no script),
+  tokens do tooltip, dicionário e presença do script em TODAS as páginas do
+  dist quando o dist existe. Três provas por mutação (script fora do head,
+  `isCopyActivation` aceitando Ctrl, tooltip fora do par medido), cada uma
+  derrubando exatamente um teste, com restauração byte a byte.
+- Sonda empírica `scripts/probe-anchor-copy.mjs` (ferramenta de sessão,
+  Chrome headless via CDP contra `wrangler dev` com os headers reais):
+  clique real do mouse copiou
+  `.../publicacao-do-site/#endere%C3%A7o-p%C3%BAblico-do-site` byte a byte,
+  a URL da página não ganhou hash, `data-copied` + região live + tooltip
+  presentes, estado restaurado após 2 s, Ctrl+clique não interceptado e
+  ZERO violações de CSP ou erros de console. Screenshot inspecionado
+  confirmando check alinhado à linha do título e tooltip sobre o ícone nas
+  duas conferências visuais.
+- Gate completo no runtime fixado: `npm run verify` exit 0 (Astro Check sem
+  erros, lint e política PASS, 198 testes, 32 pares de contraste PASS, build
+  de 29 páginas, publicação PASS, zero vulnerabilidades, install scripts
+  PASS). Ressalva única e esperada: warning de deprecação do
+  `document.execCommand` no fallback, aceito porque o caminho primário é a
+  Clipboard API.
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).

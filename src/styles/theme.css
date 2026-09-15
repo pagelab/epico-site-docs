@@ -79,6 +79,12 @@
 	--epico-font-weight-semibold: 600;
 	--epico-duration-slow: 240ms;
 	--epico-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+	/* Check desenhado sobre o SVG da corrente quando o deep link é copiado
+	   (mesma geometria do ícone do vendor, só trocando fill por máscara).
+	   O namespace do SVG fica percentual-codado porque a barreira do tema
+	   proíbe http/protocolo absoluto no CSS: data URI é recurso inline, não
+	   remoto. */
+	--epico-anchor-check-mask: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 24 24'%3E%3Cpath d='M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
 
 	/* Tipografia: Outfit para tudo que herda o corpo do documento. */
 	--sl-font: 'Outfit', 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -470,4 +476,40 @@ site-search dialog {
 	.sl-markdown-content .summary-card {
 		transition-duration: 1ms;
 	}
+}
+
+/* ---------- Cópia do deep link de títulos ---------- */
+
+/*
+ * O script público /scripts/anchor-link-copy.js marca a âncora com
+ * data-copied enquanto confirma a cópia. O SVG da corrente perde o fill
+ * (o atributo de apresentação currentColor é vencido por CSS) e o próprio
+ * elemento pinta o check por máscara, herdando o enquadramento exato do
+ * vendor. O rótulo flutuante usa o par de botão primário já medido pelo
+ * gate de contraste (texto de botão sobre ação, AA nas duas paletas).
+ */
+.sl-markdown-content .sl-anchor-link[data-copied] .sl-anchor-icon > svg {
+	fill: none;
+	background-color: currentColor;
+	-webkit-mask: var(--epico-anchor-check-mask) center / contain no-repeat;
+	mask: var(--epico-anchor-check-mask) center / contain no-repeat;
+}
+
+.sl-markdown-content .sl-anchor-link[data-copied]::before {
+	content: 'Link copiado';
+	position: absolute;
+	bottom: calc(100% + 0.35rem);
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 0.2rem 0.55rem;
+	border-radius: 0.3rem;
+	background-color: var(--sl-color-bg-accent);
+	color: var(--sl-color-text-invert);
+	font-family: var(--sl-font);
+	font-size: 0.8rem;
+	font-weight: var(--epico-font-weight-semibold);
+	line-height: 1.3;
+	white-space: nowrap;
+	pointer-events: none;
+	z-index: 2;
 }
