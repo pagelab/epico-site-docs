@@ -386,6 +386,17 @@
   `/scripts/anchor-link-copy.js` servido, tag presente no HTML da página e
   rótulo "Copiar link da seção" renderizado. Narrativa no `TASKS.md`
   §"Checkpoint de 2026-09-15: cópia do deep link de títulos (DOCS-10)".
+- Três ajustes diretos do owner na sequência, sobre o mesmo acervo: ícone de
+  corrente dos títulos em `1.5rem` (antes `1.1em` da regra global de svg; o
+  check do estado copiado pinta o mesmo elemento e herda a caixa), primeiro
+  parágrafo de `.sl-markdown-content` em itálico em vez do alinhamento
+  central da primeira passagem (teste do tema sincronizado, incluindo a
+  negativa do `text-align`) e `.link-title` da paginação com
+  `--sl-text-xl`, `text-wrap: balance` e `display: inline-block` (antes
+  `--sl-text-2xl` do vendor). `npm run verify` exit 0 (198 testes) e
+  conferência de estilos computados no dist: 24px no ícone, `italic` com
+  alinhamento `start` no parágrafo e 20px/balance/inline-block no
+  link-title, com screenshots inspecionados.
 
 ## ▶ Próxima ação
 

@@ -341,13 +341,23 @@ site-search dialog {
 	text-wrap: balance;
 }
 
+/* Título dos links de paginação (anterior/próximo): ajuste literal do
+   owner de 2026-09-15, menor que o 2xl do vendor e com balance. */
+.link-title {
+	display: inline-block;
+	font-size: var(--sl-text-xl);
+	text-wrap: balance;
+}
+
 .right-sidebar-panel a[aria-current='true'] {
 	font-weight: 600;
 	color: var(--sl-color-gray-2);
 }
 
+/* Primeiro parágrafo em itálico, ajuste literal do owner de 2026-09-15
+   (substituiu o alinhamento central da primeira passagem visual). */
 .sl-markdown-content p:first-of-type {
-	text-align: center;
+	font-style: italic;
 }
 
 .sl-markdown-content a:not(.sl-link-button):not(.sl-anchor-link):not(.summary-card) {
@@ -479,6 +489,16 @@ site-search dialog {
 }
 
 /* ---------- Cópia do deep link de títulos ---------- */
+
+/*
+ * Ajuste direto do owner (2026-09-15): ícone de corrente em 1.5rem, maior
+ * que o 1.1em da regra global de svg. O check do estado copiado pinta o
+ * mesmo elemento e herda o tamanho.
+ */
+span.sl-anchor-icon svg {
+	width: 1.5rem;
+	height: 1.5rem;
+}
 
 /*
  * O script público /scripts/anchor-link-copy.js marca a âncora com

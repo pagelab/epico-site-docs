@@ -148,7 +148,8 @@ describe('tema e refinamentos autorizados pelo primeiro passe visual', () => {
 		expect(css).toMatch(/site-search dialog\s*{[^}]*var\(--epico-sidebar-background\)[^}]*min-height: 6rem/s);
 		expect(css).toMatch(/\.pagefind-ui__form::before\s*{[^}]*width: calc\(25px \* var\(--pagefind-ui-scale\)\)[^}]*height: calc\(25px \* var\(--pagefind-ui-scale\)\)[^}]*top: calc\(21px \* var\(--pagefind-ui-scale\)\)/s);
 		expect(css).toMatch(/\.pagefind-ui__button\s*{[^}]*font-size: calc\(22px \* var\(--pagefind-ui-scale\)\)[^}]*height: calc\(60px \* var\(--pagefind-ui-scale\)\)[^}]*var\(--epico-color-action-primary\)[^}]*border-radius: 999px/s);
-		expect(css).toMatch(/\.sl-markdown-content p:first-of-type\s*{[^}]*text-align: center/s);
+		expect(css).toMatch(/\.sl-markdown-content p:first-of-type\s*{[^}]*font-style: italic/s);
+		expect(css).not.toMatch(/\.sl-markdown-content p:first-of-type\s*{[^}]*text-align/s);
 		expect(css).toMatch(/\.sl-markdown-content a:not\(\.sl-link-button\):not\(\.sl-anchor-link\):not\(\.summary-card\)\s*{[^}]*text-decoration: none[^}]*background-image: linear-gradient\(currentColor, currentColor\)[^}]*var\(--epico-duration-slow\) var\(--epico-ease-standard\)/s);
 		expect(css).toMatch(/\.sl-link-button\s*{[^}]*--epico-link-button-padding: 0\.4375rem 1\.125rem[^}]*padding: var\(--epico-link-button-padding\)/s);
 		expect(css).toMatch(/\.sl-link-button\.not-content\.minimal\s*{[^}]*border-color: var\(--sl-color-gray-3\)[^}]*padding: var\(--epico-link-button-padding\)/s);

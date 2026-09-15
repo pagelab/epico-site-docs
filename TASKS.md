@@ -1455,3 +1455,10 @@
   `scripts/probe-production.mjs` 16/16 e conferência HTTP do script servido em
   `/scripts/anchor-link-copy.js`, da tag no HTML da página e do rótulo
   "Copiar link da seção" renderizado no acervo público.
+- Ajustes diretos do owner na sequência do fechamento: ícone de corrente em
+  `1.5rem`, primeiro parágrafo do conteúdo em itálico (substituindo o centro,
+  com o teste do tema sincronizado e negativa do `text-align`) e
+  `.link-title` da paginação com `--sl-text-xl`, `text-wrap: balance` e
+  `display: inline-block`. Estilos computados conferidos no dist (24px no
+  ícone, italic/start no parágrafo, 20px/balance/inline-block no link-title)
+  com screenshots inspecionados; `npm run verify` exit 0 nas três ordens.
