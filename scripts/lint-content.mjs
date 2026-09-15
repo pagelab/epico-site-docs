@@ -30,6 +30,12 @@ const legacyServiceNames = [
   /\bConversão Estática\b/iu,
   /\bSite Headless Sob Medida\b/iu,
 ];
+const publicServiceNames = ['Site Núcleo', 'Site Horizonte', 'Site Fronteira'];
+const incompleteServiceNames = [
+  [/(?<!Site )\bNúcleo\b/u, 'Núcleo', 'Site Núcleo'],
+  [/(?<!Site )\bHorizonte\b/u, 'Horizonte', 'Site Horizonte'],
+  [/(?<!Site )\bFronteira\b/u, 'Fronteira', 'Site Fronteira'],
+];
 // Cerca de código segundo o CommonMark: até 3 espaços de recuo, 3 ou mais
 // crases ou tils, e fechamento apenas com o mesmo caractere em comprimento
 // igual ou maior, sem texto na linha de fechamento.
@@ -126,6 +132,45 @@ export function scanBody(source) {
   return { lines: body, unclosedFence: openFence !== null };
 }
 
+function serviceListOrderViolation(lines) {
+  let block = [];
+  let violationLine = null;
+
+  const inspectBlock = () => {
+    if (violationLine !== null || block.length === 0) {
+      block = [];
+      return;
+    }
+
+    const isList = block.some(({ line }) => /^\s*(?:[-*+] |\d+[.)] |\|)/u.test(line));
+
+    if (isList) {
+      const text = block.map(({ line }) => line).join('\n');
+      const positions = publicServiceNames.map((name) => text.indexOf(name));
+
+      if (
+        positions.every((position) => position >= 0)
+        && !(positions[0] < positions[1] && positions[1] < positions[2])
+      ) {
+        violationLine = block[0].number;
+      }
+    }
+
+    block = [];
+  };
+
+  for (const entry of lines) {
+    if (entry.line.trim() === '') {
+      inspectBlock();
+    } else {
+      block.push(entry);
+    }
+  }
+
+  inspectBlock();
+  return violationLine;
+}
+
 export function lintSource(relativePath, source) {
   const violations = [];
   const pathSegments = relativePath.split(sep);
@@ -220,6 +265,12 @@ export function lintSource(relativePath, source) {
     }
   }
 
+  for (const [pattern, incompleteName, publicName] of incompleteServiceNames) {
+    if (pattern.test(source)) {
+      violations.push(`${relativePath}: nome público incompleto: ${incompleteName}; use ${publicName}`);
+    }
+  }
+
   for (const email of unapprovedEmails(source)) {
     violations.push(`${relativePath}: e-mail público não aprovado: ${email}`);
   }
@@ -228,6 +279,12 @@ export function lintSource(relativePath, source) {
 
   if (unclosedFence) {
     violations.push(`${relativePath}: cerca de código não fechada até o fim do arquivo`);
+  }
+
+  const serviceOrderViolationLine = serviceListOrderViolation(lines);
+
+  if (serviceOrderViolationLine !== null) {
+    violations.push(`${relativePath}:${serviceOrderViolationLine}: lista de serviços deve seguir Site Núcleo, Site Horizonte, Site Fronteira`);
   }
 
   for (const { line, number } of lines) {

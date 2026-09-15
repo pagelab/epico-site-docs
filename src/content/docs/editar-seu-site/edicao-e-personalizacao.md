@@ -18,24 +18,24 @@ e área de membros continuam em serviços externos.
 
 No modelo headless, o site kit oferece decisões globais de design e seções estruturadas
 para que o cliente edite conteúdo sem reconstruir o layout em um page builder. Essa
-capacidade do produto não significa que o Horizonte inclua aplicar sua marca ou
+capacidade do produto não significa que o Site Horizonte inclua aplicar sua marca ou
 criar suas páginas.
 
-Você pode produzir o conteúdo depois do Horizonte ou escolher “Quero que a equipe
+Você pode produzir o conteúdo depois do Site Horizonte ou escolher “Quero que a equipe
 Épico faça” em Andamento. Pacotes adicionais podem cobrir páginas, branding, logo ou
-conteúdo. Escopos maiores seguem para o serviço **Fronteira**, com orçamento de agência.
+conteúdo. Escopos maiores seguem para o **Site Fronteira**, com orçamento de agência.
 
 Essa oferta é opcional. A rota “Fazer por conta própria” continua disponível com
 tutoriais, e DNS/revisão de plugins não são cobrados de novo porque já pertencem à
-ativação do Horizonte.
+ativação do Site Horizonte.
 
 ## Já tenho páginas com design personalizado. Preciso recriá-las?
 
 Para levá-las ao site kit headless, sim: páginas de temas e construtores visuais não
-são convertidas automaticamente pelo Horizonte. A recriação faz parte do serviço
-Fronteira.
+são convertidas automaticamente pelo Site Horizonte. A recriação faz parte
+do Site Fronteira.
 
-Se quiser preservar o layout e o modo atual de editar, o **Núcleo** pode
+Se quiser preservar o layout e o modo atual de editar, o **Site Núcleo** pode
 ser a alternativa adequada, desde que formulários, busca, login, carrinho e outros
 recursos dinâmicos passem no preflight de compatibilidade.
 
@@ -43,10 +43,10 @@ recursos dinâmicos passem no preflight de compatibilidade.
 
 Depois que houver um site real configurado para consumir aquele conteúdo, publicar ou
 atualizar no WordPress pode acionar uma nova geração da frente estática. O tempo e o
-resultado dependem do pipeline e do conteúdo. A fixture do Horizonte apenas
+resultado dependem do pipeline e do conteúdo. A fixture do Site Horizonte apenas
 comprova essa conexão e não representa páginas finais do cliente.
 
-## E no Núcleo?
+## E no Site Núcleo?
 
 O WordPress atual continua sendo a origem, mas o processo de gerar e publicar uma nova
 versão estática é definido no escopo. Não se deve prometer o mesmo fluxo automático do

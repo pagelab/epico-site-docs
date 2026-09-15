@@ -14,15 +14,15 @@ Há três serviços, escolhidos conforme o resultado desejado:
 
 | Serviço | Investimento | Resultado |
 | --- | --- | --- |
-| **Horizonte** | **R$ 497**, pagamento único | prepara a conexão técnica e inclui a ativação posterior com DNS e revisão de plugins |
-| **Núcleo** | **R$ 497**, pagamento único | publica uma versão estática do site atual, preservando seu layout e sua estrutura tecnológica |
-| **Fronteira** | orçamento individual | cria ou recria o site atual no modelo headless, usando um site kit |
+| **Site Núcleo** | **R$ 497**, pagamento único | publica uma versão estática do site atual, preservando seu layout e sua estrutura tecnológica |
+| **Site Horizonte** | **R$ 497**, pagamento único | prepara a conexão técnica e inclui a ativação posterior com DNS e revisão de plugins |
+| **Site Fronteira** | orçamento individual | cria ou recria o site atual no modelo headless, usando um site kit |
 
-O Horizonte e o Núcleo têm o mesmo preço, mas entregam resultados diferentes. O
-serviço Fronteira é trabalho de agência: páginas, identidade visual, conteúdo,
+O Site Núcleo e o Site Horizonte têm o mesmo preço, mas entregam resultados diferentes. O
+Site Fronteira é trabalho de agência: páginas, identidade visual, conteúdo,
 integrações e complexidade de migração variam de projeto para projeto.
 
-## O que o Horizonte inclui?
+## O que o Site Horizonte inclui?
 
 Inclui a implantação e a validação da infraestrutura técnica. Depois que você preparar o
 conteúdo real, inclui também tutoriais para redirecionar o DNS e revisar/desativar com
@@ -33,17 +33,17 @@ Não inclui converter as páginas existentes, transportar a identidade visual, r
 conteúdo ou preparar o site real no seu lugar.
 
 A validação usa uma página técnica preparada para comprovar a conexão. Ela não representa
-o site final. Posts existentes, quando houver, podem ser avaliados depois do Horizonte.
+o site final. Posts existentes, quando houver, podem ser avaliados depois do Site Horizonte.
 
 ## E se eu quiser que a equipe Épico prepare páginas e identidade visual?
 
 Depois da implantação técnica, você poderá continuar por conta própria ou solicitar um
 pacote adicional para páginas, branding, logo ou conteúdo. Projetos maiores ou integrados
-recebem orçamento do serviço Fronteira. Esses adicionais vendem execução. Não
+recebem orçamento do Site Fronteira. Esses adicionais vendem execução. Não
 substituem os tutoriais nem cobram novamente por DNS, revisão de plugins ou suporte já
 incluídos.
 
-## Quando escolher o Núcleo?
+## Quando escolher o Site Núcleo?
 
 Escolha esse serviço quando quiser manter o site e o modo atual de trabalhar no WordPress,
 mas servir ao público uma versão estática. Antes da contratação, verificamos se o site usa
@@ -53,7 +53,7 @@ conversão.
 Como o resultado reproduz o site real, esse fluxo inclui uma versão para revisão e uma
 etapa de publicação. Ele não transforma o WordPress em CMS headless e não usa o site kit.
 
-## Quando escolher o serviço Fronteira?
+## Quando escolher o Site Fronteira?
 
 Escolha esse serviço quando quiser levar o site atual para a arquitetura headless e também
 precisar que a equipe Épico crie ou recrie páginas, marca, conteúdo ou integrações no site
@@ -63,7 +63,7 @@ kit. O escopo, o cronograma e o preço são definidos em proposta própria.
 
 Os três serviços de implantação são cobrados como projeto ou pagamento único. Hospedagem e
 operação gerenciadas são um serviço recorrente separado e opcional. Não estão escondidas no
-preço do Horizonte.
+preço do Site Horizonte.
 
 ## Onde o site público pode ficar hospedado?
 
@@ -75,6 +75,6 @@ monitoramento e manutenção humana estejam incluídos para sempre.
 ## Preciso trocar a hospedagem do WordPress?
 
 Não necessariamente. No modelo headless, o WordPress continua como fonte canônica do
-conteúdo e pode permanecer na hospedagem atual se ela atender aos requisitos. No Núcleo,
+conteúdo e pode permanecer na hospedagem atual se ela atender aos requisitos. No Site Núcleo,
 o WordPress e o setup existente são preservados como origem do site. A forma de
 atualizar a versão pública é definida no escopo do serviço.

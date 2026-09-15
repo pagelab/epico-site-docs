@@ -40,11 +40,13 @@ transitória no `STATE.md` quando existir.
 
 - Nunca publicar PII, credenciais, tokens, URLs assinadas ou dados de cliente.
 - Usar `equipe Épico` para trabalho humano.
-- Usar **Núcleo**, **Horizonte** e **Fronteira** como nomes públicos dos três
-  serviços. `Conversão Estática`, `Setup Headless` e `Site Headless Sob Medida`
-  são nomes históricos e não entram em texto voltado ao cliente.
+- Usar sempre **Site Núcleo**, **Site Horizonte** e **Site Fronteira** como
+  nomes públicos dos três serviços. Quando os três aparecerem em uma lista,
+  preservar exatamente essa ordem. `Conversão Estática`, `Setup Headless` e
+  `Site Headless Sob Medida` são nomes históricos e não entram em texto
+  voltado ao cliente.
 - Não prometer lançamento depois de uma fixture técnica.
-- DNS e revisão de plugins são etapa posterior incluída no Horizonte.
+- DNS e revisão de plugins são etapa posterior incluída no Site Horizonte.
 - Preservar a escolha entre fazer por conta própria e contratar execução.
 - Não usar travessão longo nem ponto e vírgula em texto voltado ao cliente.
 - Slugs publicados são permanentes. Mudança posterior exige redirect

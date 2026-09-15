@@ -23,11 +23,11 @@ só depois da sua aprovação é que a etapa de publicação é aberta no painel
 
 A etapa aparece no painel quando a revisão termina:
 
-- **Horizonte**: depois que você declara **Meu conteúdo está pronto** na
-  tela **Prepare seu site**.
-- **Núcleo**: depois que você clica em **Aprovo o conteúdo** na
+- **Site Núcleo**: depois que você clica em **Aprovo o conteúdo** na
   tela **Revise e aprove a cópia estática**.
-- **Fronteira**: depois que você clica em **Aprovo o conteúdo**
+- **Site Horizonte**: depois que você declara **Meu conteúdo está pronto** na
+  tela **Prepare seu site**.
+- **Site Fronteira**: depois que você clica em **Aprovo o conteúdo**
   na tela **Revise e aprove o seu site**.
 
 Enquanto a revisão não termina, o painel não oferece a troca de domínio. Isso é
@@ -42,18 +42,18 @@ seu serviço:
 - **DNS e ativação do domínio**: o apontamento acontece somente depois de
   conferir o site real. O site atual permanece no ar até a mudança de DNS fazer
   efeito.
-- **Rotas e endereços** (Núcleo): conferimos que os endereços das
+- **Rotas e endereços** (Site Núcleo): conferimos que os endereços das
   suas páginas continuam funcionando exatamente como hoje, para que nada do que
   você já publicou se perca.
-- **Redirecionamentos e endereços** (Fronteira): conferimos os
+- No **Site Horizonte**, a lista inclui ainda a **Revisão segura de plugins do
+  WordPress**, feita após um backup completo e sem excluir nada, e os
+  **Testes de confiabilidade** com as configurações do WordPress e a sua conta
+  Cloudflare.
+- **Redirecionamentos e endereços** (Site Fronteira): conferimos os
   redirecionamentos dos seus endereços antigos, para que links já publicados em
   outros lugares continuem funcionando.
 - **Plano de retorno pronto**: o seu site atual não é removido. Se algo der
   errado durante a troca, apontamos o domínio de volta para ele.
-- No **Horizonte**, a lista inclui ainda a **Revisão segura de plugins do
-  WordPress**, feita após um backup completo e sem excluir nada, e os
-  **Testes de confiabilidade** com as configurações do WordPress e a sua conta
-  Cloudflare.
 
 ## O que acontece depois de apontar o domínio?
 
@@ -73,7 +73,7 @@ Não. As duas rotas ficam abertas na etapa de publicação:
   registrador, enviado pelo próprio painel.
 - **Como fazer eu mesmo**: os tutoriais para executar cada item no seu ritmo.
 
-No Horizonte, a ajuda com a ativação está incluída durante os 100 dias de
+No Site Horizonte, a ajuda com a ativação está incluída durante os 100 dias de
 suporte, e o painel mostra até que data ela vale. Depois desse prazo, os
 tutoriais e o acesso por conta própria continuam disponíveis. O que o suporte
 cobre está detalhado em
