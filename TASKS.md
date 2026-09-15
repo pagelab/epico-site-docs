@@ -1451,3 +1451,7 @@
   `document.execCommand` no fallback, aceito porque o caminho primário é a
   Clipboard API.
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+- Produção confirmada na mesma sessão: push `983d57a` com Workers Build verde,
+  `scripts/probe-production.mjs` 16/16 e conferência HTTP do script servido em
+  `/scripts/anchor-link-copy.js`, da tag no HTML da página e do rótulo
+  "Copiar link da seção" renderizado no acervo público.

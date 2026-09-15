@@ -381,8 +381,11 @@
   `scripts/probe-anchor-copy.mjs` PASS contra `wrangler dev` com headers
   reais (clipboard byte a byte, sem hash na URL, feedback presente e
   restaurado, Ctrl+clique nativo, zero violações de CSP). `npm run verify`
-  exit 0. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-15: cópia do deep
-  link de títulos (DOCS-10)".
+  exit 0. Push `983d57a` com Workers Build de produção verde,
+  `scripts/probe-production.mjs` 16/16 e conferência HTTP em produção:
+  `/scripts/anchor-link-copy.js` servido, tag presente no HTML da página e
+  rótulo "Copiar link da seção" renderizado. Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-15: cópia do deep link de títulos (DOCS-10)".
 
 ## ▶ Próxima ação
 
