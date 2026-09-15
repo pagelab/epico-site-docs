@@ -25,9 +25,10 @@
 | 15 | `G-CONTENT` | P0 | Humano | Aceite factual, comercial e editorial do owner | aceito 2026-09-10 | `DOCS-07` |
 | 16 | `G-VISUAL` | P0 | Humano | Aceite visual e acessível do owner | aceito 2026-09-10 | `DOCS-07` |
 | 17 | `DOCS-08` | P1 | M | Repo remoto, Workers Builds, preview, produção, DNS e rollback | concluído | `G-CONTENT` ✅, `G-VISUAL` ✅, `G-CLOUDFLARE` |
-| 18 | `PANEL-01A` | P1 | M | `DocsSite`, cards, categorias, CSP e i18n no plugin | bloqueado | Docs em produção |
-| 19 | `PANEL-01B` | P1 | G | Busca defensiva e acessível em `shell.js` | bloqueado | `PANEL-01A` |
-| 20 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
+| 18 | `DOCS-09` | P1 | G | Tutoriais de operação do painel do kit `epico-base` | em andamento | ordem do owner de 2026-09-15 |
+| 19 | `PANEL-01A` | P1 | M | `DocsSite`, cards, categorias, CSP e i18n no plugin | bloqueado | Docs em produção |
+| 20 | `PANEL-01B` | P1 | G | Busca defensiva e acessível em `shell.js` | bloqueado | `PANEL-01A` |
+| 21 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
 
 ## Critérios por task
 
@@ -96,6 +97,18 @@
 - Produção só segue após `G-CONTENT` e `G-VISUAL`.
 - DNS/TLS, HTTP, CORS, cache, ETag, sitemap, robots, llms e CSP são verificados
   separadamente após o deploy.
+
+### `DOCS-09` — tutoriais do painel do kit
+
+- Cada seção do painel do kit `epico-base` no WordPress tem tutorial cobrindo
+  as opções disponíveis: nove abas, submenu Licença e telas de leads e iscas.
+- Os fatos vêm do código do kit em um commit de referência registrado na
+  proveniência, com rótulos pt_BR do catálogo de tradução do plugin.
+- Nenhuma escrita acontece no repositório do kit a partir deste acervo.
+- Os slugs da nova área `painel-epico-site` são ASCII e permanentes, porque o
+  painel do kit deve linkar as páginas correspondentes no futuro.
+- A política editorial vigente vale integralmente (vocabulário dos serviços,
+  pontuação, sem PII, escolha entre fazer sozinho e contratar).
 
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
@@ -1280,3 +1293,62 @@
   fontes históricas de proveniência, preço, escopo e CTA não foram alterados.
   Mudança segue pelo fluxo editorial na branch
   `codex/site-prefixo-servicos`, com merge e produção sujeitos ao PR.
+
+## Checkpoint de 2026-09-15: fechamento do PR #2 e tutoriais do painel do kit
+
+- O owner declarou as features e o QA verdes, sem pendências, e a sessão
+  fechou o fluxo previsto: PR #2 (`codex/site-prefixo-servicos`) integrado no
+  merge commit `83c66ed`, Workers Build de produção concluído com sucesso,
+  `scripts/probe-production.mjs` 16/16 e conferência por HTTP dos artigos
+  servidos: todos os seis com os nomes completos e zero formas históricas ou
+  incompletas (o artigo de domínio não cita serviços, como antes). O item
+  `codex/site-prefixo-servicos` do `▶ Próxima ação` anterior está cumprido.
+- `DOCS-09` aberto por ordem direta do owner: as categorias de tutoriais
+  passam a incluir a operação das seções do painel do kit `epico-base` no
+  WordPress. Nada existia sobre isso no acervo.
+- Análise do painel feita por leitura do código do kit (somente leitura,
+  nenhuma escrita em `Produto/Kits`): página unificada `epico-site` com nove
+  abas laterais (Branding, Publishing, Features, Lead Generation,
+  Integrations, Privacy, Custom Code, Management, Support), submenu Licença,
+  telas Todos os leads e Todas as iscas e atalho na admin bar. Inventário de
+  cada opção com rótulo pt_BR do catálogo `epico-base-pt_BR.po`, valor padrão,
+  efeito real (rota REST consumida pelo build, runtime ou inerte) e
+  motivação histórica (docblocks e histórico git do kit), consolidado por
+  cinco agentes de leitura contra o commit de referência
+  `8b7c7cdae1ed62d7332e10d1a9195af9e7a295b2` (plugin 1.24.1).
+- Nova área `painel-epico-site` ("Painel Épico Site") inserida em
+  `src/lib/topics.mjs` entre Editar seu site e Serviços e suporte: sidebar,
+  allowlist de `topic`, `/busca/` e índice passam a incluí-la pela fonte
+  única. O 404 deixou de citar "seis áreas" e passou a texto neutro em
+  contagem.
+- Doze artigos novos, um por seção do painel: visão geral do painel (index),
+  identidade visual, publicação do site, recursos do site, captura de leads,
+  iscas e notificações, gerência dos leads, integrações, privacidade e
+  consentimento, código extra, gerenciamento e suporte com licença. Geração
+  de leads foi dividida em três artigos por tamanho (captura, entrega e
+  telas de leads), e Suporte e Licença compartilham um artigo por afinidade.
+  Cada artigo cobre todas as opções da seção, com o que faz, o padrão e
+  quando o efeito aparece (publicação automática, efeito imediato ou painel
+  apenas). Slugs ASCII permanentes pensados para o link futuro do painel.
+- Decisões editoriais deliberadas: os campos restritos ao operador (endereço
+  de publicação da Cloudflare, acesso à Cloudflare) são descritos como
+  configuração da equipe Épico, sem passo a passo de credencial, seguindo o
+  desenho do próprio painel que os esconde do cliente. O tutorial de Turnstile
+  registra a ordem recomendada pelo painel (chaves, salvar, conferir, ativar).
+  Nenhum e-mail, caminho local ou endereço local entra no conteúdo, e a
+  cerca de código CSS do artigo de código extra é a única do acervo com ponto
+  e vírgula, dentro da cerca (exempta pelo lint por construção).
+- Proveniência ampliada com as doze linhas de conteúdo novo e o parágrafo da
+  origem factual (código do kit no commit de referência), guardada por
+  `tests/provenance.test.ts` verde.
+- Gate no runtime fixado Node `24.20.0` + npm `11.19.0`: `npm run verify`
+  exit 0, Astro Check sem diagnósticos, lint e política de conteúdo PASS,
+  187 testes, 32 pares de contraste PASS, build de 29 páginas (12 novas),
+  índice de busca com 27 entradas em 7,4 kB (tetos de 200 e 256 KiB
+  preservados), publicação PASS, zero vulnerabilidades e install scripts
+  PASS. O markdownlint exigiu converter os rótulos de grupo do pop-up e do
+  chat em títulos de nível 3 (MD036), corrigido na sessão.
+- Mudança segue pelo fluxo editorial na branch
+  `codex/tutoriais-painel-epico-site`, com merge e produção sujeitos ao PR.
+  Os links do painel do kit para estas páginas são trabalho futuro do lado
+  do kit, fora deste repositório.

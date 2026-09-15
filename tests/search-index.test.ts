@@ -136,7 +136,7 @@ describe('campos obrigatórios', () => {
 		expect(message).toContain('lastReviewed deve ser uma data YYYY-MM-DD válida');
 	});
 
-	it('rejeita topic fora da allowlist das seis áreas', () => {
+	it('rejeita topic fora da allowlist das áreas', () => {
 		expect(violationsOf([entry({ topic: 'assunto-inventado' })])).toContain(
 			'topic fora da allowlist: assunto-inventado',
 		);

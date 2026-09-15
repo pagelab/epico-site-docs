@@ -60,7 +60,7 @@ export default defineConfig({
 				}),
 			],
 			sidebar: [
-				// Os seis grupos vêm de topics.mjs, fonte única das áreas editoriais.
+				// Os grupos vêm de topics.mjs, fonte única das áreas editoriais.
 				// O link da /busca/ é utilitário, não é área do acervo.
 				...Object.entries(topicGroups).map(([directory, label]) => ({
 					label,
