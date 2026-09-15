@@ -30,6 +30,18 @@ texto voltado ao cliente. Nada além disso é reescrito sem registro.
 | (sem origem) | n/a | [`licencas-e-downloads/baixar-arquivos`](../src/content/docs/licencas-e-downloads/baixar-arquivos.md) | `DOCS-03D` | conteúdo novo em 2026-09-08 |
 | (sem origem) | n/a | [`dominio-e-publicacao/publique-seu-site-pela-primeira-vez`](../src/content/docs/dominio-e-publicacao/publique-seu-site-pela-primeira-vez.md) | `DOCS-03E` | conteúdo novo em 2026-09-08 |
 | (sem origem) | n/a | [`dominio-e-publicacao/conecte-seu-dominio`](../src/content/docs/dominio-e-publicacao/conecte-seu-dominio.md) | `DOCS-03E` | conteúdo novo em 2026-09-08 |
+| (sem origem) | n/a | [`painel-epico-site/index`](../src/content/docs/painel-epico-site/index.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/identidade-visual`](../src/content/docs/painel-epico-site/identidade-visual.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/publicacao-do-site`](../src/content/docs/painel-epico-site/publicacao-do-site.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/recursos-do-site`](../src/content/docs/painel-epico-site/recursos-do-site.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/captura-de-leads`](../src/content/docs/painel-epico-site/captura-de-leads.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/iscas-e-notificacoes`](../src/content/docs/painel-epico-site/iscas-e-notificacoes.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/gerencie-os-leads`](../src/content/docs/painel-epico-site/gerencie-os-leads.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/integracoes`](../src/content/docs/painel-epico-site/integracoes.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/privacidade-e-consentimento`](../src/content/docs/painel-epico-site/privacidade-e-consentimento.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/codigo-extra`](../src/content/docs/painel-epico-site/codigo-extra.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/gerenciamento`](../src/content/docs/painel-epico-site/gerenciamento.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/suporte-e-licenca`](../src/content/docs/painel-epico-site/suporte-e-licenca.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
 
 O slug de `01-entenda-o-novo-formato.md` perdeu a palavra "novo" porque slugs
 publicados são permanentes e não carregam referência temporal. O prefixo
@@ -79,3 +91,17 @@ ao seu registrador` (dados guardados criptografados e nunca enviados por
 e-mail) e a janela de propagação de até 48 horas com formulário de suporte
 como escape. A revisão factual de `G-CONTENT` compara esses dois artigos
 contra a ADR 0007 e o estado do painel, não contra a pasta de fontes semente.
+
+Os doze artigos de `DOCS-09` são conteúdo novo, sem fonte semente, e cobrem a
+operação das seções do painel do kit `epico-base` no WordPress (nove abas,
+submenu Licença e telas de leads e iscas). A origem factual é o código do kit
+em `Produto/Kits/epico-base`, lido por análise nesta sessão no commit de
+referência `8b7c7cdae1ed62d7332e10d1a9195af9e7a295b2` (plugin na versão
+1.24.1, 2026-09-14): as definições de campo de `wp/settings/` e
+`wp/includes/`, os catálogos de rótulos em `wp/languages/epico-base-pt_BR.po`,
+os manifestos do Switchboard, os consumidores REST que o build do site lê e o
+histórico de decisões do próprio repositório do kit. Os rótulos citados nos
+artigos são os pt_BR servidos ao cliente. A revisão factual de qualquer artigo
+desta área compara o texto contra esse commit do kit, e a motivação de cada
+opção vem dos docblocks e do histórico git registrados lá. Nada foi escrito
+no repositório do kit a partir deste acervo.

@@ -332,18 +332,39 @@
   nomes históricos, nomes novos sem o prefixo `Site` e listas/tabelas com os
   três serviços fora da ordem canônica. Dez provas de vocabulário, 187 testes
   no total; chaves internas, slugs, URLs e catálogo comercial externo seguem
-  intocados. Mudança na branch `codex/site-prefixo-servicos`, aguardando o
-  fluxo editorial. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14:
+  intocados. Narrativa no `TASKS.md` §"Checkpoint de 2026-09-14:
   prefixo Site e ordem canônica dos serviços".
+- Fechamento do prefixo em 2026-09-15: o owner declarou features e QA verdes
+  e a sessão integrou o PR #2 (merge `83c66ed`), com Workers Build verde,
+  sonda `probe-production.mjs` 16/16 e conferência HTTP dos seis artigos
+  servidos (nomes completos presentes, zero formas históricas ou
+  incompletas). A produção está no ar com o vocabulário final.
+- `DOCS-09` executado em 2026-09-15 por ordem direta do owner: tutoriais de
+  operação do painel do kit `epico-base` no WordPress. Análise do painel por
+  leitura do código do kit no commit de referência
+  `8b7c7cdae1ed62d7332e10d1a9195af9e7a295b2` (plugin 1.24.1, cinco agentes
+  de leitura, rótulos pt_BR do catálogo do plugin, motivações dos docblocks
+  e do histórico git do kit, nenhuma escrita no kit). Nova área
+  `painel-epico-site` como sétima entrada de `topics.mjs` e doze artigos
+  cobrindo todas as seções do painel: nove abas, submenu Licença e telas de
+  leads e iscas. Proveniência ampliada. Gate verde: `npm run verify` exit 0,
+  187 testes, build de 29 páginas, índice com 27 entradas em 7,4 kB, zero
+  vulnerabilidades. Mudança na branch `codex/tutoriais-painel-epico-site`
+  com PR aberto, aguardando o fluxo editorial. Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-15: fechamento do PR #2 e tutoriais do painel do
+  kit".
 
 ## ▶ Próxima ação
 
 Owner revisa e integra o PR editorial da branch
-`codex/site-prefixo-servicos`. Depois do merge, confirmar o Workers Build
-verde, executar `scripts/probe-production.mjs` e conferir nos seis artigos
-servidos que os nomes completos aparecem e nenhuma forma incompleta vazou.
-A conferência do dashboard do Web Analytics da zona `epico.site` continua
-como follow-up independente do owner.
+`codex/tutoriais-painel-epico-site` (doze artigos da área Painel Épico
+Site). Depois do merge, confirmar o Workers Build verde, executar
+`scripts/probe-production.mjs` e conferir em produção a nova área
+`/painel-epico-site/` no índice de busca, na sidebar e na navegação manual
+da `/busca/`. Depois disso, os links do painel do kit para estas páginas são
+trabalho futuro do lado do kit, em sessão própria no workspace dele. A
+conferência do dashboard do Web Analytics da zona `epico.site` continua como
+follow-up independente do owner.
 
 ## Gates vivos
 
@@ -392,9 +413,10 @@ como follow-up independente do owner.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-09-14 (refinamento para Site Núcleo, Site Horizonte e
-  Site Fronteira aplicado aos seis artigos, com ordem canônica em listas;
-  lint ampliado para dez provas de vocabulário e 187 testes no total; branch
-  `codex/site-prefixo-servicos` aguarda PR, sem mudança em produção).
+- Última sessão: 2026-09-15 (PR #2 integrado com build verde, sonda 16/16 e
+  conferência dos seis artigos; `DOCS-09` com a nova área `painel-epico-site`
+  e doze tutoriais do painel do kit `epico-base`, gate exit 0 com 187 testes
+  e build de 29 páginas; branch `codex/tutoriais-painel-epico-site` com PR
+  aberto, sem mudança em produção).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.
