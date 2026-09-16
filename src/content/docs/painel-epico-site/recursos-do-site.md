@@ -3,7 +3,7 @@ title: Ative e desative recursos do site
 description: Como operar a aba Recursos do painel Épico Site, com modo escuro, compartilhamento, leitura em voz alta, comentários, blocos e módulos do editor.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-09-16
 sidebar:
   order: 4
 ---
@@ -83,17 +83,35 @@ título e o endereço dela. Escolha uma página publicada.
 
 ## Módulos e blocos do editor
 
-- Em **Módulos de monetização**, o **Módulo de serviços** traz o tipo de
-  conteúdo Serviços com o seletor de ícones. Vem ligado por padrão.
-- Em **Blocos de seção**, os interruptores controlam as seções prontas
-  disponíveis no editor, como a seção de abertura **Hero** e a seção
-  **Depoimentos**.
-- Em **Blocos de posts**, os interruptores ativam blocos para usar dentro dos
-  posts: **Autoria**, **Breadcrumbs**, **Post Meta**, **Redes Sociais** e
-  **Tópicos**. Vêm desligados por padrão. Ative apenas os que for usar.
+Os três grupos a seguir decidem o que o editor de blocos oferece a quem
+escreve. Desligar um item remove o componente do editor. Páginas já
+publicadas que usam o componente continuam no ar até a próxima publicação
+do site.
 
-Desligar um bloco remove o componente do editor. Páginas já publicadas que
-usam o bloco continuam no ar até a próxima publicação do site.
+### Módulos de monetização
+
+Um módulo é maior do que um bloco: ele traz um tipo de conteúdo inteiro,
+com a tela de cadastro e os campos que aquele conteúdo precisa.
+
+O **Módulo de serviços** traz o tipo de conteúdo Serviços, com o seletor
+de ícones, e vem ligado por padrão. Desligue quando o site não vende
+serviços, e o menu do WordPress fica mais curto para quem edita.
+
+### Blocos de seção
+
+Os blocos de seção são as seções prontas que montam uma página inteira,
+como a seção de abertura **Hero** e a seção **Depoimentos**. Cada
+interruptor decide se a seção aparece na lista de blocos do editor.
+
+Cada seção é um bloco fechado, com os campos que o contrato dela prevê.
+Você preenche texto, mídia e links, sem mexer na estrutura.
+
+### Blocos de post
+
+Os blocos de post são componentes menores, para usar dentro do corpo de um
+post: **Autoria**, **Breadcrumbs**, **Post Meta**, **Redes Sociais** e
+**Tópicos**. Vêm desligados por padrão. Ative apenas os que for usar, para
+manter curta a lista que aparece na hora de escrever.
 
 ## Quando a alteração aparece no site
 

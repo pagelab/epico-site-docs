@@ -398,9 +398,25 @@
   alinhamento `start` no parágrafo e 20px/balance/inline-block no
   link-title, com screenshots inspecionados.
 
+- `DOCS-11` concluído em 2026-09-16, por pedido do owner vindo da sessão do
+  kit `epico-base`: o painel do kit volta a mostrar o botão de tutorial ao
+  lado de cada título de seção, e o botão aponta para o fragmento da seção,
+  não só para o artigo da aba. Seis seções do painel não tinham âncora
+  própria e passaram a ter, com explicação escrita e não apenas título:
+  Google Tag Manager, Google Analytics e Meta Pixel viraram subseções de
+  "Rastreamento e análise" em `integracoes.md` (incluindo a opção "Adicionar
+  o trecho de código da integração", que existia no painel sem documentação),
+  e módulos de monetização, blocos de seção e blocos de post viraram
+  subseções de "Módulos e blocos do editor" em `recursos-do-site.md`. As
+  referências ao Turnstile e ao Preferred Sources entraram no corpo das
+  seções correspondentes, porque o painel deixou de apontar direto para esses
+  dois endereços de terceiros. Nenhum slug de artigo mudou. `npm run verify`
+  exit 0 e as seis âncoras novas conferidas no `dist`. Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-16: DOCS-11".
+
 ## ▶ Próxima ação
 
-Fila local sem tasks abertos (`DOCS-00` a `DOCS-10` concluídos). A próxima
+Fila local sem tasks abertos (`DOCS-00` a `DOCS-11` concluídos). A próxima
 ação é do owner, fora deste workspace: abrir `PANEL-01A` em sessão própria
 no workspace Área de Clientes para linkar as seções do painel do kit às
 páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`

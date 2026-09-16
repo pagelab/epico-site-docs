@@ -3,7 +3,7 @@ title: Conecte ferramentas de marketing e análise
 description: Como operar a aba Integrações do painel Épico Site, com e-mail marketing, Google Tag Manager, Google Analytics, Meta Pixel e meta tags de verificação.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-09-16
 sidebar:
   order: 8
 ---
@@ -59,16 +59,64 @@ só ficam disponíveis quando o banner de consentimento está ativo na aba
 dessas ferramentas carregam apenas depois que o visitante aceita a categoria
 correspondente, em conformidade com as regras de privacidade.
 
-- **Google Tag Manager**: ative a integração e informe o **ID do contêiner**,
-  no formato `GTM-XXXXXX`, encontrado no espaço de trabalho da ferramenta.
-- **Google Analytics**: ative a integração e informe o **ID da propriedade**,
-  no formato `G-XXXXXXXXXX`, apenas o ID, sem o trecho de código inteiro. A
-  opção **Incluir dados sobre o uso dos formulários** envia eventos dos
-  formulários do site para o painel do Analytics. Se você já integrou o
-  Google Analytics pelo Tag Manager, deixe apenas um dos dois ativo para não
-  duplicar a coleta.
-- **Meta Pixel**: ative a integração do pixel e informe o **ID do pixel**,
-  apenas o número, sem o trecho de código.
+Cada ferramenta tem a sua própria seção logo abaixo, e as três podem
+conviver no mesmo site.
+
+### Google Tag Manager
+
+O Tag Manager é o gerenciador gratuito do Google que concentra tags de
+marketing em um único contêiner, sem precisar de um desenvolvedor a cada
+mudança de campanha.
+
+1. Ative **Ativar a integração com o GTM**.
+2. Informe o **ID do contêiner**, no formato `GTM-XXXXXX`.
+3. Salve o painel e publique o site.
+
+O ID aparece no espaço de trabalho (Workspace) da conta do Tag Manager,
+ao lado do nome do contêiner. O trecho de código completo não é usado
+aqui, apenas o ID.
+
+Com o Tag Manager ativo, as tags que você configurar lá dentro carregam
+junto com ele. Elas herdam o mesmo consentimento do contêiner, portanto
+evite colocar no contêiner uma tag de categoria diferente da que o
+visitante aceitou.
+
+### Google Analytics
+
+O Analytics reúne os dados de tráfego do site e é o que sustenta uma
+decisão de conteúdo baseada em número, não em impressão.
+
+1. Ative **Ativar a integração com o GA**.
+2. Informe o **ID da propriedade**, no formato `G-XXXXXXXXXX`. É apenas o
+   ID, nunca o trecho de código inteiro. Ele fica na seção de integração
+   do painel do Analytics.
+
+Duas opções ajustam o comportamento:
+
+- **Incluir dados sobre o uso dos formulários** envia ao Analytics os
+  eventos dos formulários de captura do site, o que permite medir a
+  conversão de cada ponto de captura.
+- **Adicionar o trecho de código da integração** vem ligada e é o que
+  injeta o Analytics no site. Desligue apenas quando o Analytics já entra
+  por outra ferramenta, como o próprio Tag Manager, e você ainda quer
+  enviar os eventos dos formulários. Visitantes conectados ao WordPress
+  não são medidos.
+
+Se você já integrou o Analytics pelo Tag Manager, mantenha apenas um dos
+dois caminhos ativo, senão a mesma visita é contada duas vezes.
+
+### Meta Pixel
+
+O pixel é o recurso de medição das plataformas de anúncio. Ele mede o
+resultado das campanhas, otimiza a entrega e alimenta a construção de
+públicos.
+
+1. Ative **Ativar a integração do pixel**.
+2. Informe o **ID do pixel**, apenas o número, sem o trecho de código.
+
+O ID fica na seção de integração do gerenciador de anúncios da Meta. O
+pixel é sempre da categoria de marketing, portanto ele só dispara para
+quem aceitou essa categoria no banner.
 
 ## Meta tags de verificação
 

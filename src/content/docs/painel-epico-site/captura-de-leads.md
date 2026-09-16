@@ -3,7 +3,7 @@ title: Capture leads com pop-up e chat
 description: Como operar a aba Geração de leads do painel Épico Site, com redirecionamento, verificação anti-robô, pop-up modal e janela de chat com WhatsApp e outras plataformas.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-09-16
 sidebar:
   order: 5
 ---
@@ -39,7 +39,9 @@ Cloudflare alternativo ao CAPTCHA:
 
 1. Ative **Exigir verificação ao enviar o formulário**.
 2. Cole a **Chave do site** e a **Chave secreta** do seu widget no painel da
-   Cloudflare.
+   Cloudflare. As duas chaves nascem quando você cria o widget, e o passo a
+   passo está na
+   [documentação do Turnstile](https://developers.cloudflare.com/turnstile/).
 3. Salve o painel e confirme que o widget aparece no site publicado.
 4. Só então mantenha o interruptor ativo.
 

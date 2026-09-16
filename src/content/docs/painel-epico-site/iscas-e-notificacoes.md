@@ -3,7 +3,7 @@ title: Entregue iscas e notifique novos leads
 description: Como operar em Geração de leads o registro de UTM, o convite do Google, a entrega de iscas digitais, as notificações por e-mail e o armazenamento dos leads.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-09-16
 sidebar:
   order: 6
 ---
@@ -31,6 +31,11 @@ site às fontes preferidas da conta Google dele. O convite é um link para as
 preferências do Google com o seu domínio, sem parâmetros de rastreamento e
 sem coleta de dados. A opção **Posição do convite no post** escolhe início,
 meio ou fim do post.
+
+Quem adiciona o site às fontes preferidas passa a ver o seu conteúdo com
+mais frequência nos resultados de notícias da conta dele. O critério de
+exibição é do Google e está descrito na
+[documentação do Preferred Sources](https://developers.google.com/search/docs/appearance/preferred-sources?hl=pt-br).
 
 ## Entrega da isca digital
 

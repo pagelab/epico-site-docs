@@ -123,6 +123,22 @@
   região live anuncia a cópia para leitores de tela.
 - Escreve no DOM apenas por APIs de texto, nunca `innerHTML`.
 
+### `DOCS-11` — âncoras por seção do painel do kit
+
+- Cada título de seção do painel do kit tem uma âncora própria neste acervo,
+  porque o botão de tutorial ao lado do título aponta para o fragmento e não
+  só para o artigo da aba.
+- Três temas viviam como item de lista dentro de uma seção maior e ganharam
+  subseção própria com explicação completa: Google Tag Manager, Google
+  Analytics e Meta Pixel na aba Integrações, e os três grupos do editor
+  (módulos de monetização, blocos de seção e blocos de post) na aba Recursos.
+- Os destinos de terceiros que o painel abria direto (Turnstile e Preferred
+  Sources) passam a ser referência dentro da seção correspondente, para o
+  leitor continuar alcançando a fonte oficial.
+- Slugs de artigo permanecem intactos. O que muda é a estrutura interna, e
+  âncoras antigas continuam válidas.
+- Nenhuma escrita acontece no repositório do kit a partir deste acervo.
+
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
 - Trabalho ocorre em sessão própria no workspace `Area-de-clientes`.
@@ -1462,3 +1478,32 @@
   `display: inline-block`. Estilos computados conferidos no dist (24px no
   ícone, italic/start no parágrafo, 20px/balance/inline-block no link-title)
   com screenshots inspecionados; `npm run verify` exit 0 nas três ordens.
+
+## Checkpoint de 2026-09-16: DOCS-11 — âncoras por seção do painel
+
+- Pedido do owner na sessão do kit `epico-base`: o painel volta a exibir, ao
+  lado de cada título de seção, o botão que abre o tutorial daquela seção.
+  O botão precisa de uma âncora por seção, e seis seções do painel não tinham
+  uma. Onde faltava explicação, ela foi escrita, não apenas titulada.
+- `painel-epico-site/integracoes.md`: a seção "Rastreamento e análise" tinha
+  Google Tag Manager, Google Analytics e Meta Pixel como três itens de lista.
+  Cada um virou subseção com passo a passo, onde encontrar o ID e o que a
+  opção faz. O Analytics ganhou a opção "Adicionar o trecho de código da
+  integração", que existe no painel e não estava documentada.
+- `painel-epico-site/recursos-do-site.md`: a seção "Módulos e blocos do
+  editor" tinha os três grupos como itens de lista. Cada um virou subseção,
+  com a distinção entre módulo (traz um tipo de conteúdo inteiro), bloco de
+  seção (seção pronta e fechada) e bloco de post (componente do corpo).
+- `painel-epico-site/captura-de-leads.md` e
+  `painel-epico-site/iscas-e-notificacoes.md`: as referências ao Turnstile e
+  ao Preferred Sources entraram no corpo das seções. O painel apontava direto
+  para esses dois endereços de terceiros e passa a apontar para o acervo,
+  então a fonte oficial precisava continuar alcançável em um clique.
+- Seis âncoras novas conferidas no `dist` após o build: `google-tag-manager`,
+  `google-analytics`, `meta-pixel`, `módulos-de-monetização`,
+  `blocos-de-seção` e `blocos-de-post`. Nenhum slug de artigo mudou, e as
+  âncoras que já existiam continuam nos mesmos títulos.
+- `lastReviewed` de 2026-09-16 nos quatro artigos tocados.
+- Gate: `npm run verify` exit 0 no runtime fixado (build de 29 páginas,
+  publicação PASS, zero vulnerabilidades, install scripts PASS).
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
