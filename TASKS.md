@@ -151,6 +151,22 @@
 - Nenhum slug de artigo muda. Nenhuma escrita acontece no repositório do kit a
   partir deste acervo.
 
+### `DOCS-13` — aba Recursos reorganizada em quatro sub-abas
+
+- Pedido direto do owner na sessão do kit `epico-base` (plugin 1.44.0): a aba
+  Recursos passou a ter quatro sub-abas (Geral, Interação, Experiência e
+  Módulos) e ganhou grupos novos. O artigo `recursos-do-site` não descrevia
+  vários grupos que já existiam no painel.
+- Grupos documentados pela primeira vez: Estrutura do post, Recursos adicionais
+  (antes "Recursos de leitura"), Imprimir, Barra de ferramentas do post,
+  Experiência de leitura (antes "Preferências de leitura"), Listagens de posts
+  e Rolar para o topo.
+- Os dois últimos já eram chamados pelo painel e a sonda do kit acusava a âncora
+  ausente. O botão Fixar barra de compartilhamento sai de Compartilhamento e vai
+  para a Barra de ferramentas do post.
+- Nenhum slug de artigo muda e as âncoras que já existiam continuam nos mesmos
+  títulos. Nenhuma escrita acontece no repositório do kit a partir deste acervo.
+
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
 - Trabalho ocorre em sessão própria no workspace `Area-de-clientes`.
@@ -1538,4 +1554,28 @@
 - Gate: `npm run verify` exit 0 no runtime fixado (Node 24.20.0, npm 11.19.0,
   198 testes, política de conteúdo, contraste, publicação e install scripts
   PASS).
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+
+## Checkpoint de 2026-09-28: DOCS-13 — aba Recursos reorganizada
+
+- `painel-epico-site/recursos-do-site.md` foi reorganizado pelas quatro
+  sub-abas do painel: **Geral**, **Interação**, **Experiência** e **Módulos e
+  blocos do editor**. Cada grupo virou subseção, e as âncoras que já existiam
+  (`modo-escuro`, `compartilhamento`, `leitura-em-voz-alta`,
+  `visualização-de-posts`, `comentários`, `conversa-nas-redes`,
+  `página-de-linha-do-tempo`, `módulos-de-monetização`, `blocos-de-seção` e
+  `blocos-de-post`) continuam nos mesmos títulos, porque o slug vem do texto do
+  título e não do nível dele.
+- Âncoras novas conferidas no `dist`: `estrutura-do-post`,
+  `recursos-adicionais`, `imprimir`, `barra-de-ferramentas-do-post`,
+  `experiência-de-leitura`, `listagens-de-posts` e `rolar-para-o-topo`. As duas
+  últimas já eram usadas pelo painel e a sonda `tutorials:probe` do kit as
+  reprovava como ausentes.
+- Texto conferido contra o painel real do wp-dev (rótulos, valores padrão,
+  faixas e regras de aparecimento), lido em português pelo próprio WordPress.
+  A opção Fixar barra de compartilhamento saiu de "Compartilhamento" e o texto
+  aponta para a Barra de ferramentas do post.
+- `lastReviewed` de 2026-09-28. Proveniência anotada em `docs/provenance.md`.
+- Gate: `npm run verify` exit 0 no runtime fixado (Node 24.20.0, 198 testes,
+  política de conteúdo, contraste, publicação e install scripts PASS).
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).

@@ -423,9 +423,19 @@
   `npm run verify` exit 0 (198 testes). Narrativa no `TASKS.md`
   §"Checkpoint de 2026-09-28: DOCS-12".
 
+- `DOCS-13` concluído em 2026-09-28, por ordem direta do owner vinda da
+  sessão do kit `epico-base` (plugin 1.44.0): o artigo `recursos-do-site`
+  passa a seguir as quatro sub-abas do painel (Geral, Interação, Experiência,
+  Módulos) e documenta os grupos que faltavam: Estrutura do post, Recursos
+  adicionais, Imprimir, Barra de ferramentas do post, Experiência de leitura,
+  Listagens de posts e Rolar para o topo. As duas últimas âncoras já eram
+  chamadas pelo painel e a sonda do kit as acusava ausentes. Nenhum slug
+  mudou. `npm run verify` exit 0 (198 testes). Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-28: DOCS-13".
+
 ## ▶ Próxima ação
 
-Fila local sem tasks abertos (`DOCS-00` a `DOCS-12` concluídos). A próxima
+Fila local sem tasks abertos (`DOCS-00` a `DOCS-13` concluídos). A próxima
 ação é do owner, fora deste workspace: abrir `PANEL-01A` em sessão própria
 no workspace Área de Clientes para linkar as seções do painel do kit às
 páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`
