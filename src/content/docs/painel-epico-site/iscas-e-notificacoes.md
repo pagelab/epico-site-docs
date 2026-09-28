@@ -3,7 +3,7 @@ title: Entregue iscas e notifique novos leads
 description: Como operar em Geração de leads o registro de UTM, o convite do Google, a entrega de iscas digitais, as notificações por e-mail e o armazenamento dos leads.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-16
+lastReviewed: 2026-09-28
 sidebar:
   order: 6
 ---
@@ -47,19 +47,30 @@ cada tipo de captura:
 - **Formulário do chat** atende a janela de chat.
 
 A entrega acontece depois que o serviço de marketing integrado confirma o
-envio, e o link de download aparece na confirmação. O RD Station não
-confirma a entrega, portanto não dispara isca. As iscas são criadas na tela
+envio. O RD Station não confirma a entrega, portanto não dispara isca. As
+iscas são criadas na tela
 [Todas as iscas](/painel-epico-site/gerencie-os-leads/).
 
-## Ocultar iscas dos mecanismos de busca
+Quando a isca é uma página ou um endereço externo, o visitante é levado até
+ela logo depois da confirmação.
 
-O interruptor **Ocultar o conteúdo das iscas digitais** pede a buscadores e
-rastreadores de inteligência artificial que não indexem os arquivos das
-iscas. O site publicado passa a enviar o cabeçalho de não indexação em cada
-arquivo materializado e inclui o diretório das iscas no arquivo de robôs do
-site. A opção reduz a descoberta, não controla acesso: quem tem o endereço
-consegue baixar. Ela não esconde páginas de destino e vale a partir da
-publicação seguinte.
+### Como o arquivo da isca fica protegido
+
+Quando a isca é um arquivo, ele nunca é publicado no site e o endereço dele
+não aparece em nenhuma página. Cada inscrição confirmada recebe um link de
+download temporário, que a confirmação mostra e inicia sozinho. O link deixa
+de funcionar depois de uma hora. Quem voltar mais tarde envia o formulário de
+novo para receber outro.
+
+Ao ser escolhido como isca, o arquivo sai do endereço comum da biblioteca de
+mídia e vai para uma pasta privada, com endereço secreto. Nos servidores
+Apache e LiteSpeed, o acesso direto a essa pasta é bloqueado, inclusive para
+quem administra o site. Para conferir o material, use o próprio formulário.
+Em servidores nginx, o bloqueio depende de uma regra na configuração da
+hospedagem, e sem ela a proteção é o endereço secreto.
+
+Trocar ou remover a isca invalida na hora os links já enviados. O arquivo que
+deixa de ser isca volta ao lugar de origem na biblioteca de mídia.
 
 ## Notificações por e-mail
 

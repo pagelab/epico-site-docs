@@ -139,6 +139,18 @@
   âncoras antigas continuam válidas.
 - Nenhuma escrita acontece no repositório do kit a partir deste acervo.
 
+### `DOCS-12` — entrega protegida das iscas digitais
+
+- Pedido direto do owner na sessão do kit `epico-base` (plugin 1.41.0 e 1.42.0):
+  o arquivo da isca deixou de ser publicado no site. Cada inscrição confirmada
+  recebe um link temporário de uma hora, e o arquivo vai para uma pasta
+  privada da biblioteca de mídia.
+- O interruptor "Ocultar o conteúdo das iscas digitais" saiu do painel, então
+  a seção correspondente sai do artigo `iscas-e-notificacoes`. O plugin
+  1.41.0 já não aponta para essa âncora.
+- Nenhum slug de artigo muda. Nenhuma escrita acontece no repositório do kit a
+  partir deste acervo.
+
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
 - Trabalho ocorre em sessão própria no workspace `Area-de-clientes`.
@@ -1506,4 +1518,24 @@
 - `lastReviewed` de 2026-09-16 nos quatro artigos tocados.
 - Gate: `npm run verify` exit 0 no runtime fixado (build de 29 páginas,
   publicação PASS, zero vulnerabilidades, install scripts PASS).
+- Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+
+## Checkpoint de 2026-09-28: DOCS-12 — entrega protegida das iscas digitais
+
+- `painel-epico-site/iscas-e-notificacoes.md`: a seção "Entrega da isca
+  digital" ganhou a subseção "Como o arquivo da isca fica protegido" (link
+  temporário de uma hora, arquivo fora do site, pasta privada com endereço
+  secreto, bloqueio em Apache e LiteSpeed, regra de hospedagem em nginx,
+  revogação ao trocar a isca). A seção "Ocultar iscas dos mecanismos de busca"
+  saiu, junto com o interruptor que ela descrevia.
+- `painel-epico-site/gerencie-os-leads.md`: o tipo "Arquivo para download"
+  aponta para a subseção nova.
+- Âncora nova conferida no `dist`: `como-o-arquivo-da-isca-fica-protegido`,
+  e o link cruzado resolve. A âncora `ocultar-iscas-dos-mecanismos-de-busca`
+  deixou de existir. Quem chegar por ela (painel anterior à 1.41.0) cai no topo
+  do mesmo artigo.
+- `lastReviewed` de 2026-09-28 nos dois artigos. Proveniência anotada.
+- Gate: `npm run verify` exit 0 no runtime fixado (Node 24.20.0, npm 11.19.0,
+  198 testes, política de conteúdo, contraste, publicação e install scripts
+  PASS).
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).

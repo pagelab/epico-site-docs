@@ -35,8 +35,8 @@ texto voltado ao cliente. Nada além disso é reescrito sem registro.
 | (sem origem) | n/a | [`painel-epico-site/publicacao-do-site`](../src/content/docs/painel-epico-site/publicacao-do-site.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
 | (sem origem) | n/a | [`painel-epico-site/recursos-do-site`](../src/content/docs/painel-epico-site/recursos-do-site.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
 | (sem origem) | n/a | [`painel-epico-site/captura-de-leads`](../src/content/docs/painel-epico-site/captura-de-leads.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
-| (sem origem) | n/a | [`painel-epico-site/iscas-e-notificacoes`](../src/content/docs/painel-epico-site/iscas-e-notificacoes.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
-| (sem origem) | n/a | [`painel-epico-site/gerencie-os-leads`](../src/content/docs/painel-epico-site/gerencie-os-leads.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/iscas-e-notificacoes`](../src/content/docs/painel-epico-site/iscas-e-notificacoes.md) | `DOCS-09` | conteúdo novo em 2026-09-15, revisado em 2026-09-28 (`DOCS-12`) |
+| (sem origem) | n/a | [`painel-epico-site/gerencie-os-leads`](../src/content/docs/painel-epico-site/gerencie-os-leads.md) | `DOCS-09` | conteúdo novo em 2026-09-15, revisado em 2026-09-28 (`DOCS-12`) |
 | (sem origem) | n/a | [`painel-epico-site/integracoes`](../src/content/docs/painel-epico-site/integracoes.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
 | (sem origem) | n/a | [`painel-epico-site/privacidade-e-consentimento`](../src/content/docs/painel-epico-site/privacidade-e-consentimento.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
 | (sem origem) | n/a | [`painel-epico-site/codigo-extra`](../src/content/docs/painel-epico-site/codigo-extra.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |

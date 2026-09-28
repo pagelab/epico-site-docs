@@ -3,7 +3,7 @@ title: Acompanhe e exporte os seus leads
 description: Como usar as telas Todos os leads e Todas as iscas do menu Épico Site, com edição, exportação em CSV e criação de iscas digitais.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-09-28
 sidebar:
   order: 7
 ---
@@ -48,7 +48,9 @@ entrega**:
 
 - **Arquivo para download** envia um anexo. Formatos aceitos: PDF, EPUB,
   ZIP, DOCX, XLSX, PPTX, TXT, CSV, PNG, JPEG e WebP, com tamanho máximo de
-  25 MB.
+  25 MB. O arquivo vai para uma pasta privada e só chega ao visitante por um
+  link temporário, depois da inscrição. Os detalhes estão em
+  [Como o arquivo da isca fica protegido](/painel-epico-site/iscas-e-notificacoes/#como-o-arquivo-da-isca-fica-protegido).
 - **Página do WordPress** encaminha para uma página do site.
 - **URL externa** encaminha para um endereço fora do site.
 

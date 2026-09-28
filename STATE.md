@@ -414,9 +414,18 @@
   exit 0 e as seis âncoras novas conferidas no `dist`. Narrativa no `TASKS.md`
   §"Checkpoint de 2026-09-16: DOCS-11".
 
+- `DOCS-12` concluído em 2026-09-28, por ordem direta do owner vinda da
+  sessão do kit `epico-base`: o artigo `iscas-e-notificacoes` passa a
+  explicar a entrega protegida do arquivo da isca (link temporário de uma
+  hora, pasta privada com endereço secreto, bloqueio em Apache e LiteSpeed,
+  regra de hospedagem em nginx) e perde a seção do interruptor removido do
+  painel. `gerencie-os-leads` aponta para a subseção nova. Nenhum slug mudou.
+  `npm run verify` exit 0 (198 testes). Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-09-28: DOCS-12".
+
 ## ▶ Próxima ação
 
-Fila local sem tasks abertos (`DOCS-00` a `DOCS-11` concluídos). A próxima
+Fila local sem tasks abertos (`DOCS-00` a `DOCS-12` concluídos). A próxima
 ação é do owner, fora deste workspace: abrir `PANEL-01A` em sessão própria
 no workspace Área de Clientes para linkar as seções do painel do kit às
 páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`
