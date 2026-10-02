@@ -31,6 +31,8 @@
 | 21 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
 | 22 | `DOCS-10` | P1 | P | Clique no ícone de corrente copia o deep link do título | concluído | ordem do owner de 2026-09-15 |
 
+| 23 | `DOCS-14` | P1 | G | QA de todas as opções e tutoriais do painel atual | concluído | ordem do owner de 2026-10-02 |
+
 ## Critérios por task
 
 ### `DOCS-00` — registro e governança
@@ -1579,3 +1581,23 @@
 - Gate: `npm run verify` exit 0 no runtime fixado (Node 24.20.0, 198 testes,
   política de conteúdo, contraste, publicação e install scripts PASS).
 - Commit e push cobertos pela autorização durável (verify exit 0 na sessão).
+
+## Checkpoint de 2026-10-02: DOCS-14 (QA dos tutoriais do painel)
+
+Pedido direto do owner na sessão do kit epico-base. Revisão das nove abas,
+222 definições de campos (uma legada fora do seletor), controles compostos,
+51 headings e guias complementares. Matriz e achados em
+`docs/qa-painel-tutoriais-2026-10-02.md`. Doze artigos revisados, seção nova de
+captura fixada e passos novos de compartilhar seleção, Zen manual e RD API.
+Slugs e âncoras anteriores preservados.
+
+A primeira execução de `npm run verify` passou check, lint, 198 testes,
+contraste, build e publicação, mas foi bloqueada no npm audit por dependências
+transitivas com gravidade high. Correção de dependências restrita à abertura
+desse gate, sem alterar comportamento editorial ou visual do acervo.
+
+Gate final `npm run verify` exit 0: 198 testes e 29 páginas, high/critical
+zerados, cinquenta destinos do painel no HTML e todos os títulos anteriores
+preservados. Wrangler 4.147.0, devalue 5.9.4, undici 7.29.1 e whitelist de
+workerd atualizados só para abrir o gate. Quatro avisos moderate anteriores
+permanecem fora do recorte. Publicação a conferir após push canônico.

@@ -433,9 +433,17 @@
   mudou. `npm run verify` exit 0 (198 testes). Narrativa no `TASKS.md`
   §"Checkpoint de 2026-09-28: DOCS-13".
 
+- `DOCS-14` concluído em 2026-10-02, por ordem direta do owner na sessão
+  epico-base: nove abas e 222 definições conferidas, doze guias revistos,
+  captura fixada, seleção, Zen manual, RD API e backup corrigidos. Matriz em
+  `docs/qa-painel-tutoriais-2026-10-02.md`. Slugs/títulos antigos preservados,
+  50 destinos do painel no build. `npm run verify` exit 0 (198 testes).
+  Dependências high corrigidas, quatro moderate fora do recorte. O botão
+  novo do plugin fica local, sem release sobre o gate PHP vermelho herdado.
+
 ## ▶ Próxima ação
 
-Fila local sem tasks abertos (`DOCS-00` a `DOCS-13` concluídos). A próxima
+Fila local sem tasks abertos (`DOCS-00` a `DOCS-14` concluídos). A próxima
 ação é do owner, fora deste workspace: abrir `PANEL-01A` em sessão própria
 no workspace Área de Clientes para linkar as seções do painel do kit às
 páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`

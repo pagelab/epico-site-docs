@@ -3,7 +3,7 @@ title: Aplique a identidade visual do site
 description: Como operar a aba Identidade visual do painel Épico Site, com cores da marca, tipografia, logotipo, ícone do site e animações.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-10-02
 sidebar:
   order: 2
 ---
@@ -47,14 +47,14 @@ título, texto, subtítulo e legenda. As personalidades disponíveis são:
 | Institucional | Serifada clássica, de tom sóbrio e formal |
 | Dinâmico | Títulos condensados em itálico, com muito contraste de largura |
 | Humanista | Serifada suave, de traço orgânico e acolhedor |
-| Mínimo contemporâneo | Neutra e compacta, sem ornamento, é o padrão de fábrica |
+| Mínimo contemporâneo | Neutra e compacta, sem ornamento |
 | Cultural premium | Serifada itálica no título, com corpo sem serifa |
 | Jornalístico | Serifada no título e sem serifa no corpo, como em jornal |
 | Casual | Traço solto, próximo da escrita à mão |
 | Épico clássico | Slab serif leve no título com corpo sem serifa |
 | Personalizado | Você escolhe a fonte de cada papel tipográfico |
 
-Duas opções complementam a personalidade:
+Três opções complementam a personalidade:
 
 - **Peso do título** escolhe o peso da fonte dos títulos, de extraleve a
   ultranegrito. Só vale para títulos. Um peso que a família escolhida não
@@ -63,7 +63,7 @@ Duas opções complementam a personalidade:
   degraus: menor, padrão e maior. A mudança é limitada de propósito para
   preservar a hierarquia de leitura e o layout.
 - **Tamanho do texto dos posts** aumenta o corpo dos posts em passos de 10%,
-  até 150% do padrão. Só o conteúdo dos posts muda. Menus, botões e o
+  até 150% do padrão. Títulos e texto do artigo ampliam juntos. Menus, botões e o
   restante do site mantêm o tamanho original.
 
 ## Fontes personalizadas
@@ -73,7 +73,17 @@ escolher a **Fonte dos títulos**, a **Fonte do texto**, a **Fonte dos
 subtítulos** e a **Fonte das legendas**. As listas trazem as fontes do catálogo
 Épico e as fontes instaladas na Biblioteca de Fontes do WordPress. O link
 **Gerenciar fontes na Biblioteca de Fontes do WordPress** abre a biblioteca
-para você instalar novas fontes no site.
+para você instalar novas fontes no site. As listas são filtradas por papel,
+então uma fonte de destaque pode aparecer nos títulos e não no texto.
+
+1. Escolha **Personalizado** em Personalidade tipográfica.
+2. Abra a Biblioteca de Fontes e instale a família que pretende usar.
+3. Volte ao painel e escolha a fonte de cada papel. Confira se a fonte dos
+   títulos oferece o peso selecionado em **Peso do título**.
+4. Salve e aguarde a publicação. As fontes são servidas pelo próprio site.
+
+A Biblioteca de Fontes fornece as famílias disponíveis. A escolha que vale
+no site publicado é a destes quatro campos do painel Épico Site.
 
 ## Identidade e comportamento
 
@@ -85,7 +95,8 @@ para você instalar novas fontes no site.
   ou WebP quadrado com pelo menos 512 pixels de cada lado. Imagens que não
   são quadradas são recortadas pelo centro.
 - **Ativar animações** liga microanimações, efeitos de hover e transições
-  suaves. Vem ligado por padrão.
+  suaves. Vem ligado por padrão. A preferência de reduzir movimento do aparelho
+  continua sendo respeitada.
 
 ## Quando a alteração aparece no site
 

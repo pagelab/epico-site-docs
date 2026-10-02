@@ -3,7 +3,7 @@ title: Conecte ferramentas de marketing e análise
 description: Como operar a aba Integrações do painel Épico Site, com e-mail marketing, Google Tag Manager, Google Analytics, Meta Pixel e meta tags de verificação.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-16
+lastReviewed: 2026-10-02
 sidebar:
   order: 8
 ---
@@ -22,13 +22,45 @@ para a ferramenta escolhida.
 
 ### RD Station
 
-O RD Station conecta por **script de monitoramento**. Cole no campo **Código
-de monitoramento do RD Station** o UUID ou a tag oficial completa copiada da
-sua conta, em Configurações e Código de Monitoramento. O painel extrai e
-guarda só o UUID, que é público. Um valor que não corresponde ao formato
-esperado é avisado depois de salvar, e o script não carrega no site até
-receber um valor válido. O script só é ativado após consentimento de
-marketing do visitante.
+No grupo RD Station, **Como os contatos são enviados** escolhe um de dois
+modos. O padrão é **Código de monitoramento**. Só o modo escolhido entra no
+site publicado, sem envio duplicado pelo outro caminho.
+
+#### Código de monitoramento
+
+1. Escolha **Código de monitoramento**.
+2. Cole no campo **Código de monitoramento do RD Station** o UUID ou a tag
+   oficial completa copiada da sua conta RD.
+3. Salve e aguarde a publicação.
+4. No site, aceite a categoria de marketing e confira a integração.
+
+O painel extrai e guarda só o UUID, que é público. Um valor inválido gera
+aviso e impede o carregamento do script. O script oficial captura o
+formulário no navegador após consentimento de marketing.
+
+Este modo não confirma ao Épico Site que o RD recebeu o contato. Por isso não
+dispara entrega de isca digital, ocultação das outras capturas nem liberação
+da conversa do chat após o envio. Uma mensagem de recebimento não é prova de
+entrega ao RD. Confira o contato na sua conta RD.
+
+#### Chave de API
+
+1. Escolha **Chave de API**.
+2. Crie uma chave dedicada para esta integração na sua conta RD Station e
+   cole no campo **Chave de API**. Ela é guardada criptografada no servidor.
+3. Salve o painel e use **Testar conexão**, dentro do grupo RD Station.
+4. Aguarde a publicação e faça um envio pelo endereço público do site.
+   Confira o contato recebido na sua conta RD.
+
+Neste modo, o servidor envia a conversão e recebe a confirmação do RD. Um
+envio confirmado pode entregar a isca, ocultar as outras capturas e liberar
+os links do chat. O script de monitoramento não é publicado neste modo. Se a
+chave estiver ausente ou ilegível, o painel avisa e a entrega não funciona.
+
+**Testar conexão** verifica a credencial salva sem criar um contato de teste.
+Ele não substitui a conferência de um envio real. Se trocar a chave, salve
+antes de testar. A opção Consentimento nos campos extras registra a escolha
+expressa pelo visitante e a envia junto da conversão quando marcada.
 
 ### MailChimp, Brevo e MailerLite
 
@@ -40,8 +72,8 @@ marketing do visitante.
 
 O botão **Testar conexão** faz a mesma consulta e confirma se a chave e a
 lista estão funcionando. Se você acabou de trocar a chave, salve a página
-antes de testar, porque o teste usa a chave salva. É possível digitar o ID da
-lista manualmente no campo correspondente.
+antes de testar, porque o teste usa a chave salva. No MailChimp e no
+MailerLite, também é possível digitar o ID da lista ou do grupo manualmente. No Brevo, escolha a lista carregada pelo painel.
 
 No Brevo, se os formulários apresentarem erro de envio, autorize o endereço
 de saída da sua hospedagem WordPress no painel do Brevo, em Segurança e IPs
@@ -96,11 +128,10 @@ Duas opções ajustam o comportamento:
 - **Incluir dados sobre o uso dos formulários** envia ao Analytics os
   eventos dos formulários de captura do site, o que permite medir a
   conversão de cada ponto de captura.
-- **Adicionar o trecho de código da integração** vem ligada e é o que
-  injeta o Analytics no site. Desligue apenas quando o Analytics já entra
-  por outra ferramenta, como o próprio Tag Manager, e você ainda quer
-  enviar os eventos dos formulários. Visitantes conectados ao WordPress
-  não são medidos.
+- **Adicionar o trecho de código da integração** vem ligada e injeta o
+  Analytics no site. Desligue quando ele já entra por outra ferramenta, como
+  o Tag Manager, e você ainda quer enviar os eventos dos formulários. Mesmo
+  neste caso, os eventos esperam o consentimento de análise do visitante.
 
 Se você já integrou o Analytics pelo Tag Manager, mantenha apenas um dos
 dois caminhos ativo, senão a mesma visita é contada duas vezes.
@@ -139,5 +170,5 @@ visitante.
 
 ## Relacionados
 
-- [Capture leads com pop-up e chat](/painel-epico-site/captura-de-leads/)
+- [Capture leads no conteúdo, no pop-up e no chat](/painel-epico-site/captura-de-leads/)
 - [Peça consentimento e cuide da privacidade](/painel-epico-site/privacidade-e-consentimento/)

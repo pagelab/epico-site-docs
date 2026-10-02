@@ -1,16 +1,17 @@
 ---
-title: Capture leads com pop-up e chat
-description: Como operar a aba Geração de leads do painel Épico Site, com redirecionamento, verificação anti-robô, pop-up modal e janela de chat com WhatsApp e outras plataformas.
+title: Capture leads no conteúdo, no pop-up e no chat
+description: Como configurar a captura automática no artigo, o Cartão de captura local, o pop-up e o chat, com proteção contra robôs e confirmação de envio.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-16
+lastReviewed: 2026-10-02
 sidebar:
   order: 5
 ---
 
 A aba **Geração de leads** configura como o site captura contatos. A captura
-flui pelos formulários das seções do site e por dois recursos opcionais: um
-pop-up modal e uma janela de chat flutuante com plataformas de mensagens.
+flui pelos formulários das seções do site, pelo cartão de captura dentro do
+artigo e por dois recursos flutuantes: pop-up e chat. Os três interruptores
+de captura vêm desligados, e você ativa os pontos que pretende usar.
 
 Abra **Épico Site → Configurações** e escolha a aba **Geração de leads**.
 
@@ -30,20 +31,26 @@ formulário** define o desfecho de um envio bem-sucedido:
 
 O interruptor **Ocultar outras capturas após um envio confirmado** esconde os
 outros pontos de captura do site no navegador de quem acabou de enviar. Só um
-sinal anônimo de conclusão é guardado, nunca os valores do formulário.
+sinal anônimo de conclusão é guardado, nunca os valores do formulário. Vem
+desligado. No RD Station, só o modo **Chave de API** confirma a entrega.
+**Código de monitoramento** não ativa essa ocultação.
+
+Quando existe uma isca associada à captura, a entrega dela prevalece sobre o
+redirecionamento geral. Veja
+[Entrega da isca digital](/painel-epico-site/iscas-e-notificacoes/#entrega-da-isca-digital).
 
 ## Proteção contra robôs
 
 A seção **Proteção contra bots** usa o Cloudflare Turnstile, o desafio da
 Cloudflare alternativo ao CAPTCHA:
 
-1. Ative **Exigir verificação ao enviar o formulário**.
-2. Cole a **Chave do site** e a **Chave secreta** do seu widget no painel da
+1. Cole a **Chave do site** e a **Chave secreta** do seu widget no painel da
    Cloudflare. As duas chaves nascem quando você cria o widget, e o passo a
    passo está na
    [documentação do Turnstile](https://developers.cloudflare.com/turnstile/).
-3. Salve o painel e confirme que o widget aparece no site publicado.
-4. Só então mantenha o interruptor ativo.
+2. Ative **Exigir verificação no envio do formulário**, que vem desligada.
+3. Salve, aguarde a publicação e confira o formulário no endereço público do
+   site. Use uma chave autorizada para esse domínio.
 
 A ordem acima importa. Com o interruptor ligado e as chaves ainda não
 utilizáveis, o painel avisa que as capturas continuam aceitando envios sem
@@ -54,12 +61,89 @@ Se o widget não carregar no site, quem administra a infraestrutura precisa
 autorizar o endereço `challenges.cloudflare.com` na política de conteúdo do
 site publicado.
 
+## Captura fixada por rolagem
+
+**Ativar a captura fixada por rolagem** insere automaticamente um cartão com
+formulário em posts e páginas que usam o modelo **Posts**. O cartão aparece
+na profundidade de leitura escolhida, sem você precisar inserir um bloco em
+cada artigo. Páginas com outros modelos ficam de fora.
+
+1. Desligue o pop-up, caso esteja ativo.
+2. Escolha **Sim** em Ativar a captura fixada por rolagem.
+3. Preencha os grupos **Configurações gerais**, **Estilo** e **Opções de
+   exibição** descritos abaixo.
+4. Salve e aguarde a publicação. Abra um conteúdo elegível no site e role
+   até o ponto escolhido.
+
+Em telas largas e com espaço suficiente, o cartão acompanha um trecho
+limitado da leitura, até o próximo subtítulo principal ou bloco de seção.
+Em telas estreitas ou sem espaço para fixar, ele permanece dentro do texto.
+
+### Conteúdo da captura fixada
+
+- **Título da captura fixada** aceita até 40 caracteres. O padrão é
+  "Receba novidades".
+- **Mensagem da captura fixada** é o convite abaixo do título. O padrão é
+  "Cadastre seu e-mail para receber novos conteúdos.".
+- **Texto do botão da captura fixada** muda o botão de envio. O padrão é
+  "Quero receber".
+- **Ativar campos extras do formulário** vem desligado e revela **Campos
+  adicionais do formulário**. Escolha Nome, Telefone e Consentimento
+  (LGPD/GDPR). E-mail sempre está incluído.
+
+### Imagem da captura fixada
+
+**Imagem de destaque** é opcional. **Aplicação da imagem** escolhe **Acima da
+captura** (o padrão) ou **Fundo da captura**. Sem imagem escolhida, essa área
+não aparece.
+
+### Exibição da captura fixada
+
+- **Profundidade de rolagem antes de exibir (percentual)** escolhe o ponto
+  do artigo, de 1 a 100. O padrão é 50%.
+- **Frequência de exibição** oferece **Em cada exibição de página**, **Uma
+  vez**, **Uma vez por dia** e **Uma vez por sessão de navegador** (o
+  padrão). Uma vez guarda a exibição neste navegador até seus dados serem
+  apagados. A frequência da captura automática é compartilhada entre os
+  artigos. Um bloco local tem frequência própria.
+- **Exibir a captura fixada em celulares** vem ligado. Em telas pequenas o
+  cartão fica no fluxo do texto.
+- **Selecione onde inserir** oferece **Todos os posts** (o padrão), **Todos,
+  exceto selecionados** e **Somente nos selecionados**. As duas últimas
+  opções revelam **Selecione os conteúdos**, que lista posts e páginas
+  publicadas com o modelo Posts.
+
+### Usar um Cartão de captura em um artigo específico
+
+O bloco **Cartão de captura (Épico Site)** permite escolher uma mensagem e
+uma posição próprias para aquele artigo. Ele usa o mesmo formulário e a
+mesma aparência da captura automática.
+
+1. Em **Recursos → Módulos → Blocos de seção**, mantenha **Cartão de captura**
+   habilitado.
+2. No editor do artigo, insira o bloco no ponto desejado.
+3. Preencha título, mensagem, texto do botão e campos extras em
+   **Configurações gerais**, e a imagem opcional em **Estilo**.
+4. Em **Opções de exibição**, ajuste **Fixar ao rolar**, **Frequência de
+   exibição** e **Exibir em celulares**. O bloco vem com fixação e exibição
+   em celulares ligadas, com frequência de uma vez por sessão.
+5. Salve o artigo e aguarde a publicação.
+
+Um bloco local substitui a captura automática apenas naquele artigo. Não
+precisa ligar a captura automática para usar o bloco. Desligar a automática
+não remove um bloco já inserido. A fixação só vale em conteúdo com modelo
+editorial e quando o pop-up está desligado.
+
 ## Escolha apenas um modo de captura
 
 O pop-up e o chat são mutuamente exclusivos. Ligar um desliga o outro no
 painel. Se uma instalação antiga chega com os dois ligados, nenhum dos dois
 funciona e o painel mostra o aviso **Escolha apenas um modo de captura**.
 Desligue um dos dois e salve.
+
+O chat pode conviver com a captura fixada por rolagem. O pop-up desliga e
+bloqueia a captura automática. Blocos locais continuam dentro do artigo,
+sem fixação, enquanto o pop-up estiver ativo.
 
 ## Pop-up de captura
 
@@ -90,7 +174,8 @@ opções ficam em três grupos:
   mouse move o ponteiro para fora pelo topo da janela. Vale só em computadores
   e respeita a frequência.
 - **Frequência de exibição** controla quantas vezes o pop-up aparece: uma vez
-  por sessão do navegador, uma vez por dia ou em cada visualização de página.
+  por sessão do navegador, uma vez por dia (o padrão) ou em cada
+  visualização de página.
 - **Exibir o pop-up em celulares** vem ligado por padrão.
 - **Selecione onde inserir** restringe as páginas onde o pop-up aparece, e as
   **Exceções** estreitam a lista para posts, páginas ou categorias
@@ -118,25 +203,37 @@ formulário do chat registra os dados de quem contatou.
   padrão.
 - **Texto de saudação** e **Mensagem principal** compõem a conversa
   apresentada antes do formulário.
-- **Campos adicionais do formulário** seguem o mesmo modelo do pop-up.
+- **Ativar campos extras do formulário** revela **Campos adicionais do
+  formulário**, seguindo o mesmo modelo do pop-up. E-mail sempre está
+  incluído, e o interruptor vem desligado.
 - **Mensagem pré-preenchida do WhatsApp** define o texto da conversa quando
-  o lead continua no WhatsApp, com espaços para nome, e-mail e telefone.
+  o lead continua no WhatsApp. Use `[nome]`, `[email]` e `[telefone]`, com até
+  500 caracteres. Um campo ausente no formulário deixa seu marcador vazio.
+  Em branco, o texto usa uma linha por dado enviado. A conversa só é
+  liberada depois de uma entrega confirmada. No RD Station, isso exige o
+  modo Chave de API.
 
 ### Estilo
 
-- **Posição do chat no layout do site** escolhe o canto do botão flutuante.
+O botão do chat fica no canto inferior direito. A posição é fixa e não há
+campo de escolha no painel.
+
 - **Cores da captura chat** definem o destaque a partir de uma cor da marca
-  ou personalizada, com fundo e texto herdando a Identidade visual.
+  ou personalizada, com fundo e texto herdando a Identidade visual. O padrão
+  usa **Destaque**. **Personalizar** revela **Cor de destaque do chat**, **Cor
+  de fundo do chat** e **Cor do texto do chat**.
 - **Imagem de fundo do conteúdo do chat** é opcional, com recomendação de
   430 por 430 pixels.
 - **Personalizar botão** escolhe entre o ícone padrão, o ícone do WhatsApp e
-  uma **imagem personalizada** recortada em círculo.
+  uma **Imagem personalizada do botão de ativação do chat**, recortada em
+  círculo. O padrão é **Ícone padrão do chat**.
 
 ### Opções de exibição
 
 - **Exibir nos seguintes dias da semana** e os intervalos **antes do
   meio-dia** e **depois do meio-dia** definem a janela de atendimento, usando
-  o fuso horário configurado no WordPress.
+  o fuso horário configurado no WordPress. O padrão é de terça a sábado,
+  das 9h às 12h e das 12h às 17h. Ajuste os dias e horários do seu atendimento.
 - **Selecione onde inserir** e as **Exceções** seguem o modelo do pop-up.
 
 O painel avisa que as alterações do chat aparecem após a publicação do site.

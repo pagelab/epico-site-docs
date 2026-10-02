@@ -3,7 +3,7 @@ title: Use o suporte e ative a licença do plugin
 description: Como usar a aba Suporte do painel Épico Site e ativar a chave de licença que libera os avisos de atualização do plugin e do tema.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-10-02
 sidebar:
   order: 12
 ---

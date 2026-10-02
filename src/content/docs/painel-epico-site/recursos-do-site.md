@@ -3,7 +3,7 @@ title: Ative e desative recursos do site
 description: Como operar a aba Recursos do painel Épico Site, organizada em quatro sub-abas, com estrutura do post, recursos de leitura, impressão, compartilhamento, comentários, experiência do visitante e blocos do editor.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-28
+lastReviewed: 2026-10-02
 sidebar:
   order: 4
 ---
@@ -21,8 +21,12 @@ quatro sub-abas, e cada seção deste artigo diz em qual delas o recurso mora:
 - **Experiência** reúne o que muda a forma de ler e navegar pelo site.
 - **Módulos** reúne os módulos de monetização e os blocos do editor.
 
-Vários recursos das sub-abas Geral e Experiência valem para o site inteiro e
-podem ser ajustados em cada post, no menu **Épico Site** da lateral do editor.
+A estrutura e as ferramentas do artigo também valem para páginas que usam o
+modelo **Posts**, inclusive uma página inicial com esse modelo. Páginas com
+outros modelos não ganham essas ferramentas automaticamente.
+
+Vários recursos das sub-abas Geral e Experiência podem ser ajustados em cada
+conteúdo editorial, no menu **Épico Site** da lateral do editor.
 Lá, cada opção oferece **Padrão do painel**, **Ativado** e **Desativado**.
 Escolher Ativado ou Desativado vale só para aquele post.
 
@@ -56,8 +60,9 @@ valem para todos os posts, e a maioria vem ligada por padrão:
   cabeçalho, com posição, tamanho, repetição e fixação. Ela não fica visível
   quando a imagem destacada do artigo já é posicionada como fundo do
   cabeçalho.
-- **Cor de fundo do cabeçalho** pinta a faixa do título nos dois layouts que
-  têm faixa, **Imagem no topo** e **Texto primeiro**. As opções são as cores
+- **Cor de fundo do cabeçalho** pinta a faixa do título nos layouts que têm
+  faixa, **Imagem no topo**, **Texto primeiro** e **Lado a lado**. As opções
+  são as cores
   principal, secundária e terciária da aba Identidade visual, ou **Sem cor de
   fundo** (transparente). O texto da faixa se ajusta sozinho para continuar
   legível.
@@ -120,7 +125,7 @@ compartilhar, ouvir, imprimir e o contador de visualizações. Este grupo não
 tem interruptor próprio e só aparece quando pelo menos uma dessas quatro
 ferramentas está ligada, porque fixar uma barra vazia não faz sentido.
 
-- **Fixar barra de compartilhamento** mantém a barra fixa na tela enquanto o
+- **Fixar barra** mantém a barra fixa na tela enquanto o
   visitante rola a página. A barra inteira fica fixa, com todos os botões
   dentro dela, e não só os de compartilhar. Com os botões de
   compartilhamento só abaixo do conteúdo, não existe barra acima para fixar,
@@ -135,18 +140,38 @@ ferramentas está ligada, porque fixar uma barra vazia não faz sentido.
 
 ### Compartilhamento
 
-O interruptor **Botões de compartilhamento** ativa os botões de
-compartilhamento junto ao conteúdo dos posts:
+O interruptor **Botões de compartilhamento** vem desligado e ativa os botões
+junto ao conteúdo editorial:
 
 - **Plataformas disponíveis** escolhe as redes oferecidas, como WhatsApp,
-  Copiar link, X, Facebook, LinkedIn, Telegram, Threads, Pinterest e o
+  Copiar link, X, Facebook, LinkedIn, Telegram, Threads, Pinterest, Viber e o
   compartilhamento nativo do aparelho. Uma lista vazia é uma escolha válida e
-  remove os botões.
+  remove os botões. O padrão é WhatsApp e Copiar link. O WhatsApp aparece
+  como botão principal e as outras escolhas ficam no menu. Pinterest exige
+  imagem destacada, Viber aparece em dispositivos móveis e o menu nativo
+  depende do suporte do aparelho.
 - **Selecione onde inserir** posiciona os botões acima, abaixo ou nas duas
   posições do conteúdo.
 
 Para manter a barra de compartilhamento fixa na tela, use o grupo **Barra de
 ferramentas do post**, na sub-aba Geral.
+
+#### Compartilhar seleção
+
+O interruptor **Compartilhar seleção** mostra um pequeno menu quando o leitor
+seleciona um trecho do conteúdo. É independente dos Botões de compartilhamento
+e vem ligado quando ainda não existe uma escolha salva.
+
+1. Abra **Recursos → Interação** e escolha **Sim** em Compartilhar seleção.
+2. Salve e aguarde a publicação.
+3. No site, selecione um trecho do artigo e use **Compartilhar** ou **Copiar**.
+
+Compartilhar abre o menu nativo quando disponível. Caso contrário, oferece
+WhatsApp, X e Telegram para o trecho. Copiar inclui o texto entre aspas, a atribuição ao site e o endereço público do artigo com
+parâmetros de origem. Os campos de formulário, links, menus e blocos de código
+ficam fora dessa seleção. Em celulares e aparelhos cujo controle principal é
+o toque, o menu próprio do aparelho continua sendo usado. No menu do site,
+Tab alcança os botões e Escape fecha o menu.
 
 ### Comentários
 
@@ -176,8 +201,8 @@ site oferece o componente.
 
 ### Experiência de leitura
 
-Controles pensados para quem lê textos longos. Aparecem só nos posts, e todos
-vêm desligados por padrão:
+Controles pensados para quem lê textos longos, em posts e páginas com o
+modelo Posts. Todos vêm desligados por padrão:
 
 - **Painel de Ajustes** mostra ao lado do post uma aba chamada **Ajustes**,
   que abre o painel **Ajustes de leitura**. Nele o leitor escolhe o tamanho
@@ -187,9 +212,16 @@ vêm desligados por padrão:
   painel fica na lateral, em tablets vira uma gaveta, e no celular o menu não
   aparece e o texto segue o padrão do site. O menu surge depois que a página
   termina de carregar.
-- **Zen mode** esconde os controles flutuantes do post depois de 4 segundos
-  sem movimento do mouse, rolagem ou teclado, para deixar só o texto na tela.
-  Eles voltam no primeiro movimento. Vale apenas para aparelhos com mouse.
+- **Modo “Zen”** esconde os controles flutuantes durante a leitura. Com o
+  interruptor ligado, **Retirar os controles** escolhe entre **Após
+  inatividade** e **Ativando manualmente**. A primeira opção, que é o padrão,
+  retira os controles depois de 4 segundos sem mouse, rolagem ou teclado e
+  os devolve no primeiro movimento. Na segunda, o leitor abre **Ajustes de
+  leitura** e liga **Modo sem distrações**. Para oferecer essa opção manual,
+  ligue também **Painel de Ajustes**. O painel continua acessível para
+  desligar o modo, e a captura dentro do texto permanece no fluxo da leitura.
+  A escolha manual não é lembrada na próxima visita. Os dois modos valem
+  apenas para aparelhos com mouse.
 - **Painel do Sumário** monta um sumário automático a partir dos cabeçalhos do
   conteúdo. Em telas largas ele fica ao lado do texto, e nas mais estreitas
   recolhe numa aba **Sumário** na aresta direita. Artigos com menos de dois
@@ -201,7 +233,7 @@ vêm desligados por padrão:
   ferramentas do artigo quando ela está fixa).
 
 O sumário e a barra de progresso também podem ser decididos post a post, no
-menu **Épico Site** do editor. O **Painel de Ajustes** e o **Zen mode** valem
+menu **Épico Site** do editor. O **Painel de Ajustes** e o **Modo “Zen”** valem
 para o site todo.
 
 ### Página de linha do tempo
@@ -246,11 +278,15 @@ serviços, e o menu do WordPress fica mais curto para quem edita.
 ### Blocos de seção
 
 Os blocos de seção são as seções prontas que montam uma página inteira,
-como a seção de abertura **Hero** e a seção **Depoimentos**. Cada
+como a seção de abertura **Hero**, **Depoimentos** e **Cartão de captura**.
+Cada
 interruptor decide se a seção aparece na lista de blocos do editor.
 
 Cada seção é um bloco fechado, com os campos que o contrato dela prevê.
-Você preenche texto, mídia e links, sem mexer na estrutura.
+Você preenche texto, mídia e links, sem mexer na estrutura. As três seções
+vêm habilitadas no editor. O Cartão de captura é a opção local para inserir
+um formulário em um ponto específico do conteúdo. Veja
+[Captura fixada por rolagem](/painel-epico-site/captura-de-leads/#captura-fixada-por-rolagem).
 
 ### Blocos de post
 
@@ -262,5 +298,5 @@ manter curta a lista que aparece na hora de escrever.
 ## Quando a alteração aparece no site
 
 Salve com o botão **Salvar** e aguarde a publicação indicada na barra
-superior do WordPress. Os efeitos desta aba aparecem no site publicado e no
-editor depois dessa publicação.
+superior do WordPress. As ferramentas de leitura aparecem no site publicado
+depois dessa publicação. As mudanças na lista de blocos valem ao reabrir o editor.

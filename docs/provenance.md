@@ -105,3 +105,13 @@ artigos são os pt_BR servidos ao cliente. A revisão factual de qualquer artigo
 desta área compara o texto contra esse commit do kit, e a motivação de cada
 opção vem dos docblocks e do histórico git registrados lá. Nada foi escrito
 no repositório do kit a partir deste acervo.
+
+## Revisão de 2026-10-02 (DOCS-14)
+
+Os doze guias do painel foram cruzados com as definições atuais das nove
+abas do kit epico-base em WordPress/pt_BR, seus consumidores e a fonte Git
+`36f63d6b8e47248c6a27197d1dfe543423b37a99`. A fonte canônica já tinha alterações
+locais de QA do owner. A matriz de campos, os limites dessa fotografia e as
+correções factuais ficam em `qa-painel-tutoriais-2026-10-02.md`. A revisão
+substitui a referência antiga de DOCS-09 para os guias revistos, sem prometer
+que o código local já foi promovido a um pacote de plugin.

@@ -29,7 +29,7 @@
     "markdownlint-cli2": "0.23.2",
     "typescript": "6.0.3",
     "vitest": "5.0.0",
-    "wrangler": "4.129.1"
+    "wrangler": "4.147.0"
   },
   "overrides": {
     "sharp": "^0.35.4",
@@ -38,7 +38,7 @@
   "allowScripts": {
     "esbuild@0.28.2": true,
     "esbuild@0.28.1": true,
-    "workerd@1.20260907.1": true,
-    "fsevents": false
+    "fsevents": false,
+    "workerd@1.20261001.1": true
   }
 }

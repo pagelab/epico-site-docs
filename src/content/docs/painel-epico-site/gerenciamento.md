@@ -3,7 +3,7 @@ title: Gerencie dados, segurança e backup do plugin
 description: Como operar a aba Gerenciamento do painel Épico Site, com exclusão de dados na desinstalação, bloqueio da instalação WordPress e backup das configurações.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-10-02
 sidebar:
   order: 11
 ---
@@ -15,8 +15,8 @@ Abra **Épico Site → Configurações** e escolha a aba **Gerenciamento**.
 
 ## Excluir todos os dados ao desinstalar
 
-O interruptor **Excluir todos os dados ao desinstalar** vem desligado. Ligar é
-um ato deliberado e irreversível: ao **desinstalar** o plugin, o WordPress
+O interruptor **Excluir todos os dados ao desinstalar** vem desligado. Ao
+ligar e depois **desinstalar** o plugin, o WordPress
 apagará as configurações do painel, as chaves de API das integrações, os
 registros de leads, os dados de licença e o cofre de credenciais.
 
@@ -53,9 +53,13 @@ configurações do painel em um texto que você copia e guarda:
    com as configurações atuais do banco de dados.
 2. Copie o texto do campo e guarde em local seguro.
 
-O texto exportado inclui segredos, como as chaves de API das integrações.
-Trate o backup como um segredo, sem compartilhar em repositórios públicos. A
-chave de licença não entra no backup, porque é guardada separadamente.
+A exportação substitui as credenciais por marcadores, incluindo as chaves de
+API, a chave secreta do Turnstile e os acessos à Cloudflare. O e-mail do
+administrador usado nas notificações também é omitido. A chave de licença
+fica fora do backup, porque é guardada separadamente.
+
+Este backup cobre as configurações do painel. Ele não substitui o backup do
+conteúdo, da biblioteca de mídia, dos leads ou dos arquivos do WordPress.
 
 ## Restaurar de um backup
 

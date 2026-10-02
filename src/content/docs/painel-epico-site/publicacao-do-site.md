@@ -3,7 +3,7 @@ title: Controle o que o site publica
 description: Como operar a aba Publicação do painel Épico Site, com endereço público, política de publicação, listas de conteúdo e o estado da publicação.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-10-02
 sidebar:
   order: 3
 ---
@@ -19,8 +19,10 @@ Abra **Épico Site → Configurações** e escolha a aba **Publicação**.
 
 O campo **Endereço público do site (origem)** informa o endereço que os
 visitantes acessam, como o domínio próprio do site. Não é o endereço do
-WordPress. Ele alimenta o link **Ver no site** do editor e restringe quais
-origens podem enviar o formulário de captura de leads.
+WordPress. Ele alimenta o link **Ver no site** e os links **Ver** do editor,
+da barra superior e das listas de posts e páginas. Também restringe quais origens
+podem enviar o formulário de captura de leads. Os links públicos preservam o
+endereço de cada conteúdo, e as prévias continuam sendo do WordPress.
 
 Enquanto estiver vazio, os formulários aceitam envios de qualquer origem e o
 link **Ver no site** não aparece. Preencha com o endereço completo, começando
@@ -70,7 +72,7 @@ site. Você acompanha o andamento em três lugares:
   "Não foi possível atualizar o site". Clicar nele abre a aba Publicação.
 - No **editor de conteúdo**, um aviso informa quando o site está sendo
   atualizado e confirma quando as alterações estão no ar.
-- No fim da aba **Publicação**, o cartão **Estado da publicação** traz a
+- No fim da aba **Publicação**, a seção **Registros de publicação** traz a
   frase de apoio e a tabela **Publicações recentes**, com data, desfecho e
   duração de cada publicação.
 
@@ -80,11 +82,20 @@ site continua servindo a versão anterior.
 
 ## Dados da Cloudflare
 
-Os campos **Endereço de publicação da Cloudflare** e **Acesso à Cloudflare**
-ligam o WordPress à geração do site na Cloudflare. Eles são configurados pela
-equipe Épico durante a ativação do site e, depois de preenchidos, ficam
-ocultos para administradores do site, para não serem apagados sem querer. Se
-precisar revisá-los, fale com o suporte.
+A seção reúne quatro campos técnicos, configurados pela equipe Épico:
+
+- **Endereço de publicação da Cloudflare** é o endereço que recebe o pedido
+  de gerar uma nova versão do site.
+- **Token de API da Cloudflare** permite consultar o resultado da publicação.
+- **ID da conta Cloudflare** identifica a conta consultada.
+- **Nome do site na Cloudflare** identifica o site cujo resultado aparece no
+  painel.
+
+O endereço de publicação fica oculto para administradores comuns depois de
+configurado. Os campos de consulta são reservados a quem opera a
+infraestrutura. Sem esse acesso, o painel pode indicar que pediu uma
+publicação, mas não confirmar que ela terminou. Para revisá-los, fale com o
+suporte.
 
 O endereço de publicação vazio significa que mudanças de conteúdo param de
 publicar sozinhas, e o site só muda quando o endereço for configurado de novo.
@@ -93,4 +104,4 @@ publicar sozinhas, e o site só muda quando o endereço for configurado de novo.
 
 - [Publique seu site pela primeira vez](/dominio-e-publicacao/publique-seu-site-pela-primeira-vez/)
 - [Conecte seu domínio com segurança](/dominio-e-publicacao/conecte-seu-dominio/)
-- [Capture leads com pop-up e chat](/painel-epico-site/captura-de-leads/)
+- [Capture leads no conteúdo, no pop-up e no chat](/painel-epico-site/captura-de-leads/)

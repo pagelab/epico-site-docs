@@ -3,7 +3,7 @@ title: Conheça o painel Épico Site
 description: Onde encontrar o painel do seu site no WordPress, o que cada seção controla e como as alterações chegam ao site publicado.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-10-02
 sidebar:
   order: 1
 ---
@@ -36,7 +36,7 @@ O painel reúne as configurações em abas laterais, nesta ordem:
    [Ative e desative recursos do site](/painel-epico-site/recursos-do-site/).
 4. **Geração de leads** configura a captura de contatos por formulário,
    pop-up e chat. Veja
-   [Capture leads com pop-up e chat](/painel-epico-site/captura-de-leads/)
+   [Capture leads no conteúdo, no pop-up e no chat](/painel-epico-site/captura-de-leads/)
    e [Entregue iscas e notifique novos leads](/painel-epico-site/iscas-e-notificacoes/).
 5. **Integrações** conecta ferramentas de e-mail marketing e de análise. Veja
    [Conecte ferramentas de marketing e análise](/painel-epico-site/integracoes/).
@@ -57,6 +57,10 @@ capturados. Veja
 [Acompanhe e exporte os seus leads](/painel-epico-site/gerencie-os-leads/).
 
 ## Salvar publica o site de novo
+
+O atalho **Cmd+K** no Mac ou **Ctrl+K** nos demais computadores abre a busca
+do painel. Digite o nome de uma seção ou opção para chegar diretamente ao
+grupo correspondente.
 
 Depois de ajustar qualquer aba, use o botão **Salvar**. A alteração é gravada
 no WordPress e, em seguida, o painel pede à Cloudflare uma nova publicação do

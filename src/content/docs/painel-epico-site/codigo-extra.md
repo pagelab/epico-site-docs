@@ -3,7 +3,7 @@ title: Adicione código personalizado ao site
 description: Como operar a aba Código extra do painel Épico Site, com CSS e JavaScript globais, local de aplicação, carregamento por consentimento e código por página.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-15
+lastReviewed: 2026-10-02
 sidebar:
   order: 10
 ---
@@ -43,11 +43,11 @@ recomendado para scripts não críticos.
 
 **Selecione quando carregar** controla o momento da execução:
 
-- **Imediata (todos os visitantes)** entrega o script para todos.
+- **Imediatamente (todos os visitantes)** entrega o script para todos.
 - **Após consentimento de analytics** mantém o script inerte até o visitante
   aceitar a categoria de análise.
 - **Após consentimento de marketing** faz o mesmo com a categoria de
-marketing.
+  marketing.
 
 Use as opções de consentimento para rastreadores e pixels, como exige a aba
 [Privacidade](/painel-epico-site/privacidade-e-consentimento/). Quando um
@@ -69,6 +69,10 @@ aba mostra um aviso sugerindo a opção de consentimento adequada.
 | Desktop | Apenas telas de computador |
 | Celular | Apenas telas de celular |
 | Página "não encontrado" (404) | A página de erro do site |
+| Página de resultados de busca | A página de busca, quando o site oferece essa rota |
+
+O padrão é **Em todo o site** e, no JavaScript, **Imediatamente**. Campos
+vazios não acrescentam código.
 
 As **Exceções** aparecem conforme a localização escolhida e estreitam a lista
 para itens específicos. Deixe em branco para aplicar a todos os endereços do

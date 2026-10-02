@@ -3,7 +3,7 @@ title: Acompanhe e exporte os seus leads
 description: Como usar as telas Todos os leads e Todas as iscas do menu Épico Site, com edição, exportação em CSV e criação de iscas digitais.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-09-28
+lastReviewed: 2026-10-02
 sidebar:
   order: 7
 ---
@@ -65,5 +65,5 @@ entrega, como descrito em
 
 ## Relacionados
 
-- [Capture leads com pop-up e chat](/painel-epico-site/captura-de-leads/)
+- [Capture leads no conteúdo, no pop-up e no chat](/painel-epico-site/captura-de-leads/)
 - [Entregue iscas e notifique novos leads](/painel-epico-site/iscas-e-notificacoes/)
