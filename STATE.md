@@ -438,6 +438,7 @@
   captura fixada, seleção, Zen manual, RD API e backup corrigidos. Matriz em
   `docs/qa-painel-tutoriais-2026-10-02.md`. Slugs/títulos antigos preservados,
   50 destinos do painel no build. `npm run verify` exit 0 (198 testes).
+  Fonte `993ab83` no ar, produção 16/16 e 50 âncoras públicas PASS.
   Dependências high corrigidas, quatro moderate fora do recorte. O botão
   novo do plugin fica local, sem release sobre o gate PHP vermelho herdado.
 

@@ -354,4 +354,8 @@ Tutorial aponta para a explicação do grupo que cobre o campo.
 - Navegador do painel sem sessão autenticada nesta execução. Conferência do
   heading e rótulos feita pelas funções reais em WordPress/pt_BR. Não se
   salvou opção, não se criou contato e não se acionou teste externo.
-- Publicação do Docs será conferida após o push pelo ciclo canônico.
+- Fonte editorial `993ab83` enviada a `origin/main` e publicada pelo Workers
+  Builds. HTTP 200, título novo e seção de captura fixa confirmados no domínio
+  público. `probe-production.mjs`: 16/16 PASS, índice/llms/sitemap servidos
+  iguais ao build local. `tutorial-links-probe.mjs`: 50 âncoras em 10 artigos
+  PASS. Os guias complementares completam os doze artigos revistos.

@@ -1600,4 +1600,6 @@ Gate final `npm run verify` exit 0: 198 testes e 29 páginas, high/critical
 zerados, cinquenta destinos do painel no HTML e todos os títulos anteriores
 preservados. Wrangler 4.147.0, devalue 5.9.4, undici 7.29.1 e whitelist de
 workerd atualizados só para abrir o gate. Quatro avisos moderate anteriores
-permanecem fora do recorte. Publicação a conferir após push canônico.
+permanecem fora do recorte. Fonte `993ab83` pushada e publicada pelo Workers
+Builds. Sonda de produção 16/16 PASS, cinquenta âncoras do painel em dez
+artigos PASS. Título e seção novos da captura confirmados no acervo público.
