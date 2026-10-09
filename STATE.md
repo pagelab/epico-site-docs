@@ -483,20 +483,24 @@
 Nada pendente neste repositório: fila local sem tasks abertos (`DOCS-00` a
 `DOCS-15` concluídos) e o build canônico de produção a cada push no `main`
 segue automático. O que resta é da sessão do workspace Área de Clientes (não
-editar daqui): quando o código do `PANEL-01B` (hoje só no worktree
-`dreamy-germain-9cd360` de lá) chegar ao `main` do plugin, rodar `studio wp
---path=/Users/mac/Studio/app-epico-site eval-file tests/docs-links-probe.php`
-e conferir que a seção 5 imprime OK onde registrou o WARN de ACAO. O índice já
-passa em todas as verificações dela, reproduzidas aqui contra a produção.
+editar daqui): quando o código do `PANEL-01B` chegar ao `main` do plugin,
+rodar `studio wp --path=/Users/mac/Studio/app-epico-site eval-file
+tests/docs-links-probe.php` e conferir que a seção 5 imprime OK onde registrou
+o WARN de ACAO. O índice já passa em todas as verificações dela, reproduzidas
+aqui contra a produção. Conferência de 2026-10-09 (somente leitura): o commit
+`fad1c2f` do `PANEL-01B` segue fora do `main` do plugin, só no worktree
+`dreamy-germain-9cd360`. Teste de pronto: `git merge-base --is-ancestor
+fad1c2f main` no repositório da Área de Clientes (ou commit equivalente com
+`PANEL-01B` no `git log main`).
 
 Dívida com validade, herdada do PR #4: a exceção do `braces` em
 `allowedAdvisories` sai quando `npm view braces versions` listar versão acima de
 3.0.3 ou quando o gate falhar com "expirou" (passos no checkpoint do
-`TASKS.md`).
+`TASKS.md`). Em 2026-10-09 a última versão publicada segue 3.0.3.
 
-Fora deste workspace, o owner pode abrir `PANEL-01A` em sessão própria no
-workspace Área de Clientes para linkar as seções do painel do kit às páginas
-publicadas de `/painel-epico-site/`, liberado pelo `G-PANEL`. A conferência do
+O `PANEL-01A` já foi integrado no `main` do plugin (commit `8dfc6e9`, "Tutorials
+hub returns as a closed map of the archive"), então não é mais follow-up
+aberto daqui. A conferência do
 dashboard do Web Analytics da zona `epico.site` (dataset do `siteTag` zerado no
 GraphQL desde 2026-09-14) continua como follow-up independente do owner.
 
@@ -516,7 +520,7 @@ GraphQL desde 2026-09-14) continua como follow-up independente do owner.
 - `G-PANEL`: liberado em 2026-09-15. A condição "Docs publicado e conferido"
   está satisfeita (merge `52cce8e`, sonda 16/16 e conferência da área
   `/painel-epico-site/` em produção). A integração no plugin (`PANEL-01A`)
-  abre por ordem do owner em sessão própria no workspace Área de Clientes.
+  foi feita na sessão da Área de Clientes e está no `main` do plugin (`8dfc6e9`).
 
 ## Decisões confirmadas pelo owner
 
