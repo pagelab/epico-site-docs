@@ -7,7 +7,8 @@
 //   servidos (nem faltando, nem órfão), sem `unsafe-inline` em script-src,
 //   headers de segurança globais, cache imutável só para assets com hash no
 //   nome e `X-Robots-Tag: noindex` APENAS na origem `workers.dev`, deixando
-//   o custom domain indexável;
+//   o custom domain indexável; `Access-Control-Allow-Origin` somente em
+//   `/search-index.json`, exatamente `https://app.epico.site`;
 // - `robots.txt`: permite o rastreamento e aponta o sitemap canônico;
 // - sitemap: toda URL listada é uma página real do `dist`;
 // - 404 custom servido e fora do índice de busca;
@@ -29,6 +30,11 @@ const securityHeaderNames = [
 	'Referrer-Policy',
 	'Permissions-Policy',
 ];
+
+// Única exceção de CORS do acervo (PANEL-01B): o painel em app.epico.site lê o
+// índice de busca cross-origin. Origem fixa, nunca `*` nem refletida.
+const corsIndexPath = '/search-index.json';
+const corsPanelOrigin = 'https://app.epico.site';
 
 /**
  * @typedef {Object} HeaderRule
@@ -358,6 +364,31 @@ export async function checkPublishing(root = repoRoot) {
 				violations.push(`_headers: ${name} só pode existir na regra /* (união de valores duplicados): ${rule.source}`);
 			}
 		}
+	}
+
+	// --- CORS: nenhuma política aberta, só o índice para o painel ---
+	for (const rule of rules) {
+		const corsNames = [...rule.headers.keys()].filter((name) => name.toLowerCase().startsWith('access-control-'));
+
+		if (corsNames.length === 0) {
+			continue;
+		}
+
+		if (rule.source !== corsIndexPath) {
+			violations.push(`_headers: CORS só é permitido em ${corsIndexPath}: ${rule.source}`);
+			continue;
+		}
+
+		for (const name of corsNames.filter((name) => name.toLowerCase() !== 'access-control-allow-origin')) {
+			violations.push(`_headers: ${corsIndexPath} só pode ter Access-Control-Allow-Origin (sem credenciais, métodos ou headers): ${name}`);
+		}
+	}
+
+	const corsIndexRule = rules.find((rule) => rule.source === corsIndexPath);
+	const corsAllowOrigin = [...(corsIndexRule?.headers ?? [])].find(([name]) => name.toLowerCase() === 'access-control-allow-origin')?.[1];
+
+	if (corsAllowOrigin !== corsPanelOrigin) {
+		violations.push(`_headers: ${corsIndexPath} deve ter Access-Control-Allow-Origin: ${corsPanelOrigin} (a busca do painel lê o índice cross-origin), nunca * nem outra origem`);
 	}
 
 	// --- noindex: só na origem workers.dev, nunca global ---

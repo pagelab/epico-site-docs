@@ -458,26 +458,57 @@
   `probe-production.mjs` deu 16/16. Narrativa no `TASKS.md` §"Checkpoint de
   2026-10-09: gate de audit reaberto com exceção nomeada do `braces`".
 
+- `DOCS-15` implementado em 2026-10-09, a pedido da sessão Área de Clientes
+  (`PANEL-01B`), com gate verde e AINDA NÃO integrado no `main` nem em
+  produção: o painel em `https://app.epico.site` lê `/search-index.json`
+  cross-origin e o navegador bloqueava por falta de
+  `Access-Control-Allow-Origin`. `public/_headers` ganhou a regra do caminho
+  único `/search-index.json` com `Access-Control-Allow-Origin:
+  https://app.epico.site` (nunca `*`, sem credenciais, sem preflight). A regra
+  de CORS do acervo passou a ser: nenhum caminho com ACAO, exceto esse, com a
+  origem exata do painel. Isso substitui o "CORS sem ACAO aberto" dos
+  checkpoints antigos, que seguem como registro de sua data. O gate
+  `check-publishing.mjs` guarda a regra (oito casos de teste novos) e
+  `probe-production.mjs` confere em produção, incluindo que o valor não é
+  refletido da origem pedida. Prova local contra `wrangler dev`: ACAO só no
+  índice, headers globais preservados, nenhum outro caminho com
+  `access-control-*`. Sonda de produção antes do deploy: 15/16, falhando só no
+  CORS, como esperado. A primeira rodada do `verify` parou no `npm audit`; a
+  outra sessão resolveu isso no PR #4 e, depois do sync com o `main`
+  (`36cccc3`) e `npm ci`, `npm run verify` deu exit 0 (231 testes, 29
+  páginas, audit PASS com a exceção nomeada do `braces`, install scripts
+  PASS). Narrativa no `TASKS.md` §"Checkpoint de 2026-10-09: DOCS-15".
+
 ## ▶ Próxima ação
 
-O gate de audit está aberto e em produção (merge `58d80b8`). A sessão do
-`DOCS-15` (CORS do `/search-index.json`, pronto e sem commit em worktree
-irmão) deve fazer rebase ou merge do `main` na sua branch, rodar `npm run
-verify` (esperado exit 0, sem o passo de audit falhando) e só então commitar
-e integrar. A exceção do `braces` é dívida com validade: remover
-`allowedAdvisories` quando `npm view braces versions` listar versão acima de
+Integrar o `DOCS-15` e conferir em produção, com o go-ahead do owner (o merge
+no `main` dispara o deploy). A mudança está commitada na branch
+`claude/sharp-lewin-a5e21d` com `npm run verify` exit 0, sem push. Sequência:
+
+1. Enviar a branch, abrir o PR e conferir o check do preview do Workers Builds
+   (`npm ci && npm run verify`). Depois do merge no `main`, o build canônico de
+   produção é automático.
+2. Depois do deploy: `curl -sI -H 'Origin: https://app.epico.site'
+   https://tutoriais.epico.site/search-index.json` deve mostrar
+   `access-control-allow-origin: https://app.epico.site`, `node
+   scripts/probe-production.mjs` deve dar 16/16 (hoje 15/16, só no CORS), e os
+   outros caminhos seguem sem `access-control-*`.
+3. No workspace Área de Clientes (não editar daqui): `wp eval-file
+   tests/docs-links-probe.php`, seção 5, que hoje imprime um WARN de ACAO e
+   deve virar OK.
+
+Dívida com validade, herdada do PR #4: a exceção do `braces` em
+`allowedAdvisories` sai quando `npm view braces versions` listar versão acima de
 3.0.3 ou quando o gate falhar com "expirou" (passos no checkpoint do
 `TASKS.md`).
 
-Fila local sem outros tasks abertos (`DOCS-00` a `DOCS-14` concluídos). Fora
-deste workspace, o owner pode abrir `PANEL-01A` em sessão própria
-no workspace Área de Clientes para linkar as seções do painel do kit às
-páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`
-(verificar o registro da abertura no `STATE.md` daquele workspace). A
+Fora disso, a fila local não tem outros tasks abertos (`DOCS-00` a `DOCS-14`
+concluídos). Fora deste workspace, o owner pode abrir `PANEL-01A` em sessão
+própria no workspace Área de Clientes para linkar as seções do painel do kit às
+páginas publicadas de `/painel-epico-site/`, liberado pelo `G-PANEL`. A
 conferência do dashboard do Web Analytics da zona `epico.site` (dataset do
 `siteTag` zerado no GraphQL desde 2026-09-14) continua como follow-up
-independente do owner. Este repositório só volta a agir por novo task do
-owner; o build canônico de produção a cada push no `main` segue automático.
+independente do owner.
 
 ## Gates vivos
 
@@ -530,10 +561,11 @@ owner; o build canônico de produção a cada push no `main` segue automático.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-10-09 (gate de audit: 11 high reduzidos a 6 por bumps
-  mínimos de dependências e o `braces`, sem versão corrigida, tratado pela
-  opção A do owner com exceção nomeada em `scripts/check-audit.mjs`; `npm run
-  verify` exit 0 com 223 testes; PR #4 integrado no `main` por ordem do
-  owner, produção 16/16).
+- Última sessão: 2026-10-09 (`DOCS-15`, CORS estreito do `/search-index.json`
+  para o painel, pedido pela sessão Área de Clientes: implementado, provado
+  localmente e integrado com o `main` do PR #4, `npm run verify` exit 0 com 231
+  testes, commitado na branch da sessão e aguardando o go-ahead do owner para
+  PR, merge e deploy). Antes dela, 2026-10-09: gate de audit reaberto com a
+  exceção nomeada do `braces` (PR #4, produção 16/16).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

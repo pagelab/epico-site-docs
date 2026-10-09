@@ -37,6 +37,9 @@ function fixtureHeaders(hash = fixtureHash()) {
 		'/_astro/*',
 		'  Cache-Control: public, max-age=31556952, immutable',
 		'',
+		'/search-index.json',
+		'  Access-Control-Allow-Origin: https://app.epico.site',
+		'',
 		'https://:script.:account.workers.dev/*',
 		'  X-Robots-Tag: noindex',
 		'',
@@ -257,6 +260,79 @@ describe('publishing: gate sobre fixture válida e mutações', () => {
 
 		expect(await checkPublishing(root)).toContainEqual(
 			expect.stringMatching(/X-Frame-Options só pode existir na regra \/\*/),
+		);
+	});
+
+	it('índice sem Access-Control-Allow-Origin quebra a busca do painel (PANEL-01B)', async () => {
+		const root = await makeFixture();
+		const broken = fixtureHeaders().replace(
+			'/search-index.json\n  Access-Control-Allow-Origin: https://app.epico.site\n\n',
+			'',
+		);
+		await writeFile(join(root, 'public/_headers'), broken);
+		await writeFile(join(root, 'dist/_headers'), broken);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/deve ter Access-Control-Allow-Origin: https:\/\/app\.epico\.site/),
+		);
+	});
+
+	it.each(['*', 'https://example.com', 'https://app.epico.site/', 'null'])(
+		'ACAO do índice com "%s" em vez da origem exata do painel é violação',
+		async (origin) => {
+			const root = await makeFixture();
+			const broken = fixtureHeaders().replace(
+				'Access-Control-Allow-Origin: https://app.epico.site',
+				`Access-Control-Allow-Origin: ${origin}`,
+			);
+			await writeFile(join(root, 'public/_headers'), broken);
+			await writeFile(join(root, 'dist/_headers'), broken);
+
+			expect(await checkPublishing(root)).toContainEqual(
+				expect.stringMatching(/deve ter Access-Control-Allow-Origin: https:\/\/app\.epico\.site/),
+			);
+		},
+	);
+
+	it('CORS na regra global abriria todo o acervo', async () => {
+		const root = await makeFixture();
+		const broken = fixtureHeaders().replace(
+			'  X-Frame-Options: DENY',
+			'  X-Frame-Options: DENY\n  Access-Control-Allow-Origin: https://app.epico.site',
+		);
+		await writeFile(join(root, 'public/_headers'), broken);
+		await writeFile(join(root, 'dist/_headers'), broken);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/CORS só é permitido em \/search-index\.json: \/\*/),
+		);
+	});
+
+	it('CORS em outro caminho além do índice é violação, mesmo com a origem do painel', async () => {
+		const root = await makeFixture();
+		const broken = fixtureHeaders().replace(
+			'  Cache-Control: public, max-age=31556952, immutable',
+			'  Cache-Control: public, max-age=31556952, immutable\n  access-control-allow-origin: https://app.epico.site',
+		);
+		await writeFile(join(root, 'public/_headers'), broken);
+		await writeFile(join(root, 'dist/_headers'), broken);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/CORS só é permitido em \/search-index\.json: \/_astro\/\*/),
+		);
+	});
+
+	it('credenciais, métodos ou headers extras de CORS no índice são violação', async () => {
+		const root = await makeFixture();
+		const broken = fixtureHeaders().replace(
+			'  Access-Control-Allow-Origin: https://app.epico.site',
+			'  Access-Control-Allow-Origin: https://app.epico.site\n  Access-Control-Allow-Credentials: true',
+		);
+		await writeFile(join(root, 'public/_headers'), broken);
+		await writeFile(join(root, 'dist/_headers'), broken);
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/só pode ter Access-Control-Allow-Origin.*Access-Control-Allow-Credentials/),
 		);
 	});
 
