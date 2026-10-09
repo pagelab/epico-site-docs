@@ -1603,3 +1603,95 @@ workerd atualizados só para abrir o gate. Quatro avisos moderate anteriores
 permanecem fora do recorte. Fonte `993ab83` pushada e publicada pelo Workers
 Builds. Sonda de produção 16/16 PASS, cinquenta âncoras do painel em dez
 artigos PASS. Título e seção novos da captura confirmados no acervo público.
+
+## Checkpoint de 2026-10-09: gate de audit reaberto com exceção nomeada do `braces`
+
+Medição no runtime fixado (Node 24.20.0, npm 11.19.0): `npm run verify` passava
+check, lint, testes, contraste, build e publicação, e falhava só em
+`npm run audit` com 11 advisories high, publicados depois do verify verde de
+2026-10-02. Mesmo recorte do `DOCS-14`: abrir o gate, sem mudança editorial ou
+visual, com o menor conjunto de dependências.
+
+Corrigido (11 high caem para 6):
+
+- `wrangler` 4.147.0 para 4.149.0, que traz `miniflare` 5.20261006.1-alpha,
+  `workerd` 1.20261006.1 e `sharp` 0.35.5.
+- Override `sharp` de `^0.35.4` para `^0.35.5` (GHSA-wq5f-xc86-pv6w, librsvg).
+  Cobre também a cópia usada pelo Astro.
+- `markdownlint-cli2` 0.23.2 para 0.23.3 (globby 16.2.4, markdown-it 15).
+- `http-cache-semantics` 4.2.0 para 4.3.0 e `source-map-js` 1.2.1 para 1.2.2,
+  por `npm update` direcionado. `npm audit fix` cheio não foi usado para não
+  alterar os moderate, que seguem fora do recorte.
+- `allowScripts`: `workerd@1.20261001.1` trocado por `workerd@1.20261006.1` via
+  `npm install-scripts approve`. A entrada `esbuild@0.28.1` ficou sem pacote
+  instalado (o esbuild do wrangler foi deduplicado para 0.28.2) e permanece
+  inofensiva na lista. `check-install-scripts.mjs` PASS.
+
+Remanescente: os seis high que sobram têm uma única raiz, GHSA-vfj7-8cjw-p6xm
+(`braces` até 3.0.3, CVSS 7.5, estouro de pilha com padrões aninhados). O
+advisory foi atualizado em 2026-10-02T22:36Z, depois do verify do `DOCS-14`.
+Não existe versão corrigida: 3.0.3 é a última publicada e o advisory não
+informa versão patched, então nenhum override exato resolve. A cadeia é
+`braces` de `micromatch` 4.0.8 (também a última), que vem de `fast-glob` e
+`globby` (`markdownlint-cli2`, dependência direta, inclusive no 0.23.3) e de
+`starlight-llms-txt` (dependência de produção, inclusive no 0.12.0).
+
+Descartado:
+
+- O único fix que o npm oferece é o downgrade major para `starlight-llms-txt`
+  0.1.2 (e `markdownlint-cli2` 0.21.0), destrutivo. Não aplicado.
+- `npm audit --omit=dev` continua vermelho, porque `starlight-llms-txt` está em
+  `dependencies`.
+- Alias de `braces` para fork não verificado: troca a cadeia de suprimentos por
+  um risco maior que o do advisory.
+
+Exposição prática: os padrões de glob vêm de configuração do mantenedor
+(`exclude: ['404']` do llms-txt e os globs do script `lint`), sem entrada remota
+em runtime. O efeito possível é derrubar o processo de build ou lint, não o site
+publicado.
+
+Decisão do owner em 2026-10-09: opção A. As alternativas ficaram descartadas:
+aguardar o `braces` (B) manteria todo push no `main` sem chegar à produção, e
+remover `markdownlint-cli2` e `starlight-llms-txt` (C) trocaria o lint de
+Markdown e a geração dos `llms*.txt`, tarefa de porte G para um advisory sem
+exposição prática.
+
+Implementação da opção A:
+
+- `scripts/check-audit.mjs` substitui `npm audit --audit-level=high` no script
+  `audit` (o `verify` não mudou, ainda chama `npm run audit` antes de
+  `check-install-scripts.mjs`). Lê `npm audit --json` e exige que todo
+  advisory high ou critical esteja em `allowedAdvisories`, por id GHSA E nome
+  do pacote. Hoje a lista tem uma entrada: GHSA-vfj7-8cjw-p6xm (`braces`),
+  decidida pelo owner em 2026-10-09. Um advisory novo, inclusive no próprio
+  `braces`, falha.
+- Expira sozinha: se o npm passar a indicar correção sem quebra de major para o
+  `braces` (`fixAvailable` verdadeiro ou `isSemVerMajor: false`), o gate falha
+  mandando rodar `npm audit fix` e remover a entrada. O downgrade major que o
+  npm hoje sugere não conta.
+- Falha fechada: relatório que não é JSON, erro do npm, timeout, formato fora de
+  `auditReportVersion` 2, metadata com high ou critical que o relatório não
+  detalha e nó high sem advisory raiz alcançável bloqueiam.
+- A exceção vigente é impressa em todo `verify`, para aparecer nos logs do
+  Workers Builds.
+- `tests/audit-gate.test.ts`: 25 testes sobre relatórios sintéticos, sem rede.
+  Dez provas por mutação (exceção sem checagem, nome do pacote ignorado, sem
+  expiração, critical fora do bloqueio, major contando como correção, nó órfão,
+  metadata, erro do npm, versão do relatório e ciclo em `via`) derrubaram
+  testes, com restauração por checksum. A mutação do critical sobreviveu na
+  primeira rodada porque o teste passava pela mensagem do cruzamento com a
+  metadata, e a asserção foi apertada para exigir pacote e GHSA.
+- Sonda sobre o relatório real do npm: com a lista de exceções vazia, o gate
+  reprova só o `braces` (cadeia de seis nós); com a lista vigente, PASS.
+
+Como remover a exceção: quando `npm view braces versions` listar versão acima
+de 3.0.3 ou o gate falhar com "expirou", rodar `npm audit fix`, apagar a
+entrada de `allowedAdvisories` e ajustar o teste que fixa a lista em uma
+entrada.
+
+Gate: `npm run verify` exit 0 no runtime fixado (Node 24.20.0, npm 11.19.0):
+check sem diagnósticos, lint, 223 testes (os 198 anteriores mais 25 novos),
+contraste, build de 29 páginas, publicação estática, audit com a exceção
+nomeada e install scripts PASS. A contagem de 206 testes citada no pedido não
+bate com esta árvore (198 antes), provavelmente por incluir o `DOCS-15` do
+worktree irmão.
