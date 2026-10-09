@@ -32,7 +32,7 @@
 | 22 | `DOCS-10` | P1 | P | Clique no ícone de corrente copia o deep link do título | concluído | ordem do owner de 2026-09-15 |
 
 | 23 | `DOCS-14` | P1 | G | QA de todas as opções e tutoriais do painel atual | concluído | ordem do owner de 2026-10-02 |
-| 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | gate verde, aguardando integração no `main` e conferência em produção | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
+| 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | concluído em 2026-10-09 (PR #5, merge `1a3d44b`, produção 16/16) | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
 
 ## Critérios por task
 
@@ -1797,9 +1797,39 @@ https://tutoriais.epico.site/search-index.json` devolvia 200 sem nenhum header
   audit PASS com a exceção vigente do `braces` impressa e install scripts PASS.
   Os conflitos do sync ficaram só nos registros (`STATE.md` e `TASKS.md`),
   resolvidos mantendo as duas narrativas.
-- Fica para depois do deploy: `curl -sI -H 'Origin: https://app.epico.site'
-  https://tutoriais.epico.site/search-index.json` deve mostrar
-  `access-control-allow-origin: https://app.epico.site`, `node
-  scripts/probe-production.mjs` deve dar 16/16 e, no workspace Área de
-  Clientes, `wp eval-file tests/docs-links-probe.php` (seção 5) deve trocar o
-  único WARN de ACAO por OK.
+- Integração (por escolha do owner na sessão, "PR, merge e conferir produção"):
+  PR #5 aberto com a cabeça `a1b5770`, check do preview do Workers Builds
+  SUCCESS, merge commit `1a3d44b` no `main` em 2026-10-09T20:38:33Z. O Workers
+  Build de produção terminou com sucesso e publicou a versão
+  `0c099e23-0fe8-4274-9ca4-e6c3fe8c9f33` (deployment de 20:39:50Z, conferido
+  em `wrangler deployments list`).
+- Conferência em produção:
+  - `curl -sI -H 'Origin: https://app.epico.site'
+    https://tutoriais.epico.site/search-index.json` devolve
+    `access-control-allow-origin: https://app.epico.site`, sem
+    `Allow-Credentials`. Com `Origin: https://example.com` e sem `Origin` o
+    valor é o mesmo, ou seja, fixo e não refletido. Os seis headers globais
+    seguem no índice.
+  - `/`, `/busca/`, `/llms.txt`, `/llms-full.txt`, `/sitemap-index.xml`,
+    `/robots.txt`, `/pagefind/pagefind.js` e `/painel-epico-site/` com zero
+    `access-control-*`.
+  - `scripts/probe-production.mjs` 16/16, com o check de CORS novo em PASS.
+  - Navegador real (browser embutido do app, mesmos parâmetros do `shell.js`:
+    `mode: 'cors'`, `credentials: 'omit'`, `redirect: 'error'`,
+    `referrerPolicy: 'no-referrer'`): em `https://app.epico.site` o `fetch`
+    devolve 200, versão 1 e 27 entradas. Em `https://example.com` falha com
+    `TypeError: Failed to fetch` e o `no-cors` volta opaco, que é a medição
+    original do problema.
+- Lado da Área de Clientes: o `wp eval-file tests/docs-links-probe.php` do
+  `main` do plugin (via `studio wp --path=/Users/mac/Studio/app-epico-site`)
+  passa nas seções 1 a 4 (os 21 destinos em 200), mas NÃO tem a seção 5: ela
+  existe só no worktree `dreamy-germain-9cd360` da Área de Clientes (branch
+  `claude/state-md-continuation-3d86fa`, ainda fora do `main` do plugin) e
+  depende de `DocsSite::searchIndexUrl()`, que o plugin instalado não tem.
+  As verificações da seção 5 foram reproduzidas à parte contra o índice vivo,
+  todas OK: 200 sem redirect, `Access-Control-Allow-Origin` igual à origem do
+  painel, `application/json`, 7.579 bytes sob o teto de 262.144, versão 1 com
+  27 entradas, cinco chaves por entrada e caminho canônico, e todo `topic`
+  entre as sete áreas. Nada foi escrito no workspace Área de Clientes. Resta
+  àquela sessão rodar a seção 5 de verdade quando o código dela chegar ao
+  `main`, e o WARN de ACAO que ela registrou deve vir OK.
