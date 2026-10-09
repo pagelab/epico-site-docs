@@ -1695,3 +1695,13 @@ contraste, build de 29 páginas, publicação estática, audit com a exceção
 nomeada e install scripts PASS. A contagem de 206 testes citada no pedido não
 bate com esta árvore (198 antes), provavelmente por incluir o `DOCS-15` do
 worktree irmão.
+
+Integração (por ordem do owner, que autorizou PR, merge e deploy): PR #4
+integrado no `main` por merge commit `58d80b8` em 2026-10-09T20:13:23Z. O check
+do preview do Workers Builds (`npm ci && npm run verify`) já estava verde no PR.
+O Workers Builds de produção publicou a versão
+`3d19530f-17cd-44a9-bd45-8dc8f3c15500` às 20:14:43Z (conferido em
+`wrangler deployments list`). `scripts/probe-production.mjs` 16/16 em verde
+contra `tutoriais.epico.site` e o canary `workers.dev`. Nenhuma mudança de
+conteúdo ou de comportamento do site: só dependências de build e o gate de
+audit.
