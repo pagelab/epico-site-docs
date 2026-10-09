@@ -442,10 +442,34 @@
   Dependências high corrigidas, quatro moderate fora do recorte. O botão
   novo do plugin fica local, sem release sobre o gate PHP vermelho herdado.
 
+- Gate de audit reaberto e fechado em 2026-10-09: `npm run verify` falhava no
+  `npm run audit` com 11 high novos. Wrangler 4.149.0, override `sharp
+  ^0.35.5`, markdownlint-cli2 0.23.3, `http-cache-semantics` 4.3.0,
+  `source-map-js` 1.2.2 e `allowScripts` do workerd derrubaram para 6 high,
+  todos com a raiz GHSA-vfj7-8cjw-p6xm (`braces` até 3.0.3), sem versão
+  corrigida publicada. O owner escolheu a opção A: `scripts/check-audit.mjs`
+  substitui `npm audit --audit-level=high` e aceita high ou critical somente
+  se o advisory estiver nomeado em `allowedAdvisories` (hoje só o do
+  `braces`, por id e pacote), expira sozinho se o npm indicar correção
+  não-major e falha fechado em relatório fora do formato. 25 testes novos e
+  dez provas por mutação. `npm run verify` exit 0 (223 testes, 29 páginas,
+  install scripts PASS). Narrativa no `TASKS.md` §"Checkpoint de 2026-10-09:
+  gate de audit reaberto com exceção nomeada do `braces`".
+
 ## ▶ Próxima ação
 
-Fila local sem tasks abertos (`DOCS-00` a `DOCS-14` concluídos). A próxima
-ação é do owner, fora deste workspace: abrir `PANEL-01A` em sessão própria
+Integrar a branch `claude/focused-noyce-960d9f` (dependências e gate de audit
+de 2026-10-09) no `main` por PR e conferir o Workers Build de produção verde.
+Enquanto não estiver no `main`, todo push no `main` continua falhando no
+`npm run audit`. Com a integração feita, a sessão do `DOCS-15` (CORS do
+`/search-index.json`, pronto e sem commit em worktree irmão) faz rebase sobre o
+`main` e roda `npm run verify` antes de seguir. A exceção do `braces` é dívida
+com validade: remover `allowedAdvisories` quando `npm view braces versions`
+listar versão acima de 3.0.3 ou quando o gate falhar com "expirou" (passos no
+checkpoint do `TASKS.md`).
+
+Fila local sem outros tasks abertos (`DOCS-00` a `DOCS-14` concluídos). Fora
+deste workspace, o owner pode abrir `PANEL-01A` em sessão própria
 no workspace Área de Clientes para linkar as seções do painel do kit às
 páginas publicadas de `/painel-epico-site/`, agora liberado pelo `G-PANEL`
 (verificar o registro da abertura no `STATE.md` daquele workspace). A
@@ -505,10 +529,10 @@ owner; o build canônico de produção a cada push no `main` segue automático.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-09-15 (`DOCS-10` por ordem direta do owner: clique no
-  ícone de corrente dos títulos copia o deep link da seção, com `npm run
-  verify` exit 0 na sessão — 198 testes —, três provas por mutação e sonda
-  `probe-anchor-copy.mjs` PASS contra `wrangler dev`; fila local sem tasks
-  abertos).
+- Última sessão: 2026-10-09 (gate de audit: 11 high reduzidos a 6 por bumps
+  mínimos de dependências e o `braces`, sem versão corrigida, tratado pela
+  opção A do owner com exceção nomeada em `scripts/check-audit.mjs`; `npm run
+  verify` exit 0 com 223 testes; commit e push na branch
+  `claude/focused-noyce-960d9f`).
 - Andamento do Docs vive SOMENTE neste workspace (ordem do owner em
   2026-09-08): o `STATE.md` da Área de Clientes apenas redireciona para cá.

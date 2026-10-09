@@ -15,7 +15,7 @@
     "test": "vitest run",
     "build": "astro build",
     "preview": "astro preview",
-    "audit": "npm audit --audit-level=high",
+    "audit": "node scripts/check-audit.mjs",
     "verify": "npm run check && npm run lint && npm test && node scripts/check-theme-contrast.mjs && npm run build && node scripts/check-publishing.mjs && npm run audit && node scripts/check-install-scripts.mjs"
   },
   "dependencies": {
@@ -26,19 +26,19 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@types/node": "24.13.3",
-    "markdownlint-cli2": "0.23.2",
+    "markdownlint-cli2": "0.23.3",
     "typescript": "6.0.3",
     "vitest": "5.0.0",
-    "wrangler": "4.147.0"
+    "wrangler": "4.149.0"
   },
   "overrides": {
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "smol-toml": "1.8.0"
   },
   "allowScripts": {
     "esbuild@0.28.2": true,
     "esbuild@0.28.1": true,
     "fsevents": false,
-    "workerd@1.20261001.1": true
+    "workerd@1.20261006.1": true
   }
 }
