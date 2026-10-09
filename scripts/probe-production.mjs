@@ -178,16 +178,44 @@ async function main() {
 		return 'nosniff, DENY, referrer, HSTS e permissions presentes';
 	});
 
-	await check('CORS: nenhum Access-Control-Allow-Origin aberto', async () => {
-		for (const path of ['/', '/search-index.json']) {
-			const response = await get(path);
+	// Política de CORS (PANEL-01B, 2026-10-09): nenhum caminho tem
+	// Access-Control-Allow-Origin, EXCETO /search-index.json, que o painel em
+	// app.epico.site lê cross-origin e precisa devolver exatamente essa origem.
+	// Nunca `*`, nunca outra origem, nunca Allow-Credentials.
+	const CORS_PANEL_ORIGIN = 'https://app.epico.site';
+	await check(
+		'CORS: sem ACAO aberto, só /search-index.json para o painel',
+		async () => {
+			for (const path of ['/', '/busca/', '/llms.txt', '/sitemap-index.xml']) {
+				const response = await get(path);
+				assert(
+					!response.headers.has('access-control-allow-origin'),
+					`${path} responde ACAO ${header(response.headers, 'access-control-allow-origin')}`,
+				);
+			}
+			const index = await fetch(`${ORIGIN}/search-index.json`, {
+				headers: { origin: CORS_PANEL_ORIGIN },
+			});
+			assert(index.status === 200, `/search-index.json status ${index.status}`);
+			const allowed = index.headers.get('access-control-allow-origin');
 			assert(
-				!response.headers.has('access-control-allow-origin'),
-				`${path} responde ${header(response.headers, 'access-control-allow-origin')}`,
+				allowed === CORS_PANEL_ORIGIN,
+				`/search-index.json ACAO "${allowed ?? 'ausente'}" em vez de ${CORS_PANEL_ORIGIN}`,
 			);
-		}
-		return 'home e search-index.json sem ACAO';
-	});
+			assert(
+				!index.headers.has('access-control-allow-credentials'),
+				'/search-index.json responde Access-Control-Allow-Credentials',
+			);
+			const foreign = await fetch(`${ORIGIN}/search-index.json`, {
+				headers: { origin: 'https://example.com' },
+			});
+			assert(
+				foreign.headers.get('access-control-allow-origin') === CORS_PANEL_ORIGIN,
+				'ACAO do índice deve ser fixo (a origem pedida não pode ser refletida)',
+			);
+			return `ACAO ${CORS_PANEL_ORIGIN} só em /search-index.json; demais caminhos sem ACAO`;
+		},
+	);
 
 	await check('HTTP: /busca/ 200 e /busca redireciona', async () => {
 		const page = await get('/busca/');

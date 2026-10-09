@@ -32,6 +32,7 @@
 | 22 | `DOCS-10` | P1 | P | Clique no ícone de corrente copia o deep link do título | concluído | ordem do owner de 2026-09-15 |
 
 | 23 | `DOCS-14` | P1 | G | QA de todas as opções e tutoriais do painel atual | concluído | ordem do owner de 2026-10-02 |
+| 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | gate verde, aguardando integração no `main` e conferência em produção | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
 
 ## Critérios por task
 
@@ -99,7 +100,10 @@
 - Repo/branch, least privilege, checks, preview e rollback são explícitos.
 - Produção só segue após `G-CONTENT` e `G-VISUAL`.
 - DNS/TLS, HTTP, CORS, cache, ETag, sitemap, robots, llms e CSP são verificados
-  separadamente após o deploy.
+  separadamente após o deploy. A regra de CORS vigente é a do `DOCS-15`
+  (2026-10-09): sem `Access-Control-Allow-Origin` em nenhum caminho, exceto
+  `/search-index.json`. Os checkpoints abaixo que dizem "CORS sem ACAO"
+  registram a regra de sua data.
 
 ### `DOCS-09` — tutoriais do painel do kit
 
@@ -169,9 +173,37 @@
 - Nenhum slug de artigo muda e as âncoras que já existiam continuam nos mesmos
   títulos. Nenhuma escrita acontece no repositório do kit a partir deste acervo.
 
+### `DOCS-15` — CORS estreito para a busca do painel
+
+- Pedido da sessão do workspace Área de Clientes (`PANEL-01B`, medido em
+  2026-10-09): o navegador em `https://app.epico.site` lê
+  `https://tutoriais.epico.site/search-index.json` com `fetch` cross-origin
+  (`mode: 'cors'`, `credentials: 'omit'`, `redirect: 'error'`). A resposta não
+  trazia `Access-Control-Allow-Origin`, então o navegador bloqueava a leitura e
+  o painel caía no mapa fechado com a mensagem de indisponível.
+- `public/_headers` ganha a regra do caminho único `/search-index.json` com
+  `Access-Control-Allow-Origin: https://app.epico.site`. Nunca `*`, nunca
+  outra origem, sem `Access-Control-Allow-Credentials`, sem tratamento de
+  preflight (o pedido é um GET simples). Os headers da regra global `/*`
+  continuam valendo para o caminho porque o Cloudflare une as regras que casam.
+- Nenhum outro caminho recebe CORS. A origem de dev local do Studio
+  (`http://localhost:8890`) fica bloqueada de propósito e a busca mostra a
+  mensagem de indisponível em dev local, o que é aceito.
+- A política passa a ser guardada por duas camadas: o gate
+  `scripts/check-publishing.mjs` (no `verify`) falha se o índice perder a
+  regra, se o valor não for exatamente a origem do painel, se houver qualquer
+  header `Access-Control-*` fora do `/search-index.json` ou qualquer
+  header de CORS além do Allow-Origin nele; a sonda
+  `scripts/probe-production.mjs` confere o mesmo em produção, incluindo que o
+  valor é fixo e não refletido da origem pedida.
+- Fecha o lado do acervo da dependência de `PANEL-01B`. O lado do plugin já
+  está implementado no workspace Área de Clientes e nenhum arquivo dele é
+  escrito a partir daqui.
+
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
 - Trabalho ocorre em sessão própria no workspace `Area-de-clientes`.
+- A regra de CORS do índice no lado do acervo é o `DOCS-15`.
 - O plugin mantém mapa fechado de URLs e não hospeda conteúdo.
 - Índice remoto é não confiável, limitado, validado e renderizado sem HTML.
 - `connect-src` recebe apenas o host necessário e `form-action 'self'` permanece.
@@ -1705,3 +1737,69 @@ O Workers Builds de produção publicou a versão
 contra `tutoriais.epico.site` e o canary `workers.dev`. Nenhuma mudança de
 conteúdo ou de comportamento do site: só dependências de build e o gate de
 audit.
+
+## Checkpoint de 2026-10-09: DOCS-15 (CORS estreito para a busca do painel)
+
+Pedido da sessão Área de Clientes (`PANEL-01B`). A busca do painel em
+`https://app.epico.site` lê o índice cross-origin e o navegador bloqueava a
+leitura por falta de `Access-Control-Allow-Origin`. Medido antes de mexer:
+`curl -sI -H 'Origin: https://app.epico.site'
+https://tutoriais.epico.site/search-index.json` devolvia 200 sem nenhum header
+`access-control-*`.
+
+- Regra nova em `public/_headers` para `/search-index.json` apenas, com
+  `Access-Control-Allow-Origin: https://app.epico.site`.
+- Regra de CORS do acervo, vigente desde esta data: nenhum caminho tem
+  `Access-Control-Allow-Origin`, exceto `/search-index.json`, onde o valor é
+  exatamente `https://app.epico.site`. Isso substitui o "CORS sem ACAO aberto"
+  dos checkpoints de 2026-09-10 e 2026-09-15. O motivo é o consumo cross-origin
+  do índice pelo painel. A intenção da sonda se mantém: nenhuma política aberta
+  em lugar nenhum.
+- `scripts/check-publishing.mjs` passou a guardar a regra no `verify`. Oito
+  casos de teste novos em `tests/publishing.test.ts` (fixture válida
+  atualizada): índice sem a regra, valores `*`, outra origem, origem com barra
+  final e `null` (os quatro valores em um `it.each`), CORS na regra global,
+  CORS em outro caminho (inclusive com a origem do painel e nome de header em
+  minúsculas) e `Allow-Credentials` no índice.
+- `scripts/probe-production.mjs`: o check de CORS virou "sem ACAO aberto, só
+  /search-index.json para o painel". Confere que `/`, `/busca/`, `/llms.txt` e
+  `/sitemap-index.xml` seguem sem ACAO, que o índice responde exatamente a
+  origem do painel, sem `Allow-Credentials`, e que o valor é fixo (pedindo com
+  `Origin: https://example.com` a resposta continua com a origem do painel, não
+  reflete). A sonda não tem teste unitário próprio no repositório, como as
+  demais sondas de sessão, então a guarda testada é a do gate.
+- Prova local contra `wrangler dev` servindo o `dist/` construído: o índice
+  responde `Access-Control-Allow-Origin: https://app.epico.site` junto com os
+  headers globais (CSP, nosniff, X-Frame-Options, HSTS), com origem estranha o
+  valor continua o mesmo, e `/`, `/busca/`, `/llms.txt`, `/sitemap-index.xml`,
+  `/robots.txt` e `/pagefind/pagefind.js` não têm nenhum `access-control-*`.
+  `dist/_headers` idêntico a `public/_headers`.
+- Sonda de produção ANTES do deploy: 15/16, falhando só no check de CORS com
+  `/search-index.json ACAO "ausente"`, que é o estado esperado. Depois do
+  deploy ela precisa fechar 16/16.
+- Primeira rodada do gate, na base antiga (`774f412`): check (0 erros), lint e
+  política de conteúdo, 205 testes (mais 1 `skipIf` de `anchor-copy`),
+  contraste, build e publicação estática PASS. O passo `npm run audit` falhou
+  com 11 advisories high publicados depois do verde de 2026-10-02. Nada foi
+  commitado nem enviado, e nenhum arquivo de dependência foi alterado por
+  esta mudança. Foi aberta uma sessão própria para as dependências.
+- Essa outra sessão tratou o audit antes da integração desta: o PR #4 (merge
+  `58d80b8`, no `main` e em produção 16/16) subiu wrangler 4.149.0, o override
+  `sharp ^0.35.5`, markdownlint-cli2 0.23.3 e dois bumps pontuais, e reduziu
+  os 11 high a 6 com raiz única no `braces` (GHSA-vfj7-8cjw-p6xm, sem versão
+  corrigida). Por decisão do owner (opção A, checkpoint acima),
+  `scripts/check-audit.mjs` aceita só esse advisory, nomeado. Não foi aberta
+  nova sessão de dependências e nenhuma dependência foi tocada aqui.
+- Segunda rodada, depois de `sync` com o `main` (`36cccc3`) e `npm ci` no
+  runtime fixado (Node 24.20.0, npm 11.19.0): `npm run verify` exit 0. Check
+  sem diagnósticos, lint e política PASS, 231 testes (os 223 do `main` mais os
+  oito do `DOCS-15`), contraste, build de 29 páginas, publicação estática PASS,
+  audit PASS com a exceção vigente do `braces` impressa e install scripts PASS.
+  Os conflitos do sync ficaram só nos registros (`STATE.md` e `TASKS.md`),
+  resolvidos mantendo as duas narrativas.
+- Fica para depois do deploy: `curl -sI -H 'Origin: https://app.epico.site'
+  https://tutoriais.epico.site/search-index.json` deve mostrar
+  `access-control-allow-origin: https://app.epico.site`, `node
+  scripts/probe-production.mjs` deve dar 16/16 e, no workspace Área de
+  Clientes, `wp eval-file tests/docs-links-probe.php` (seção 5) deve trocar o
+  único WARN de ACAO por OK.
