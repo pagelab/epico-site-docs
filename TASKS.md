@@ -33,7 +33,7 @@
 | 23 | `DOCS-14` | P1 | G | QA de todas as opções e tutoriais do painel atual | concluído | ordem do owner de 2026-10-02 |
 | 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | concluído em 2026-10-09 (PR #5, merge `1a3d44b`, produção 16/16) | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
 | 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | concluído em 2026-10-10 (PR #6, merge `ed1999a`, produção 16/16) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
-| 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | PR #7 aberto, gate local verde, aguardando ordem de merge | ordem do owner de 2026-10-10, depois do `DOCS-16` |
+| 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | concluído em 2026-10-10 (PR #7, merge `bd4a186`, produção 16/16) | ordem do owner de 2026-10-10, depois do `DOCS-16` |
 
 ## Critérios por task
 
@@ -2039,3 +2039,17 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
 - `npm run verify` exit 0: check sem diagnósticos, lint e política PASS, 339
   testes, contraste, build de 29 páginas, publicação estática PASS, audit PASS
   com a exceção nomeada do `braces` e install scripts PASS.
+- Integração por ordem do owner ("merge it and confirm production"): check do
+  preview do Workers Builds PASS, base igual ao `main` (`a6dc9c3`), merge
+  commit `bd4a186` em 2026-10-11T02:21:52Z (UTC, ainda 2026-10-10 no horário
+  local). O Workers Build de produção terminou com sucesso às 02:27:09Z e
+  publicou a versão `85209917-eaf5-4180-a1c5-e85a6c73db46`, conferida em
+  `wrangler deployments list`. O build levou cerca de cinco minutos para
+  aparecer no commit, mais que os dois minutos do `DOCS-16`.
+- `scripts/probe-production.mjs` 16/16, com o índice em versão 2 e bytes 1:1
+  com o `dist`.
+- Navegador real em `https://tutoriais.epico.site/busca/`: "como aponto meu
+  dominoi" dá 5 resultados com `/dominio-e-publicacao/conecte-seu-dominio/` em
+  segundo lugar, atrás do índice da área. "my site is down" dá 4 resultados
+  com o mesmo guia em segundo. "boleto" responde "Nenhum resultado" e mostra as
+  áreas. Nenhum erro de console.

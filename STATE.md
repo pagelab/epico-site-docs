@@ -498,22 +498,24 @@
   guides carry editorial keywords", sem WARN. Narrativa no `TASKS.md`
   §"Checkpoint de 2026-10-10: DOCS-16".
 
-- `DOCS-17` em integração em 2026-10-10, por ordem do owner: a `/busca/`
-  deixa de ser literal e usa o mesmo ranking tolerante do painel (palavras de
-  ligação, plural, palavra pela metade, erro de digitação, raridade). Paridade
-  medida contra o código do painel em 727 consultas sobre o índice real, todas
-  com a mesma lista na mesma ordem. As 33 consultas de aceite ficam no top
-  três. `npm run verify` exit 0 (339 testes), dezesseis provas por mutação
-  derrubadas e navegador real sem erro de console. PR #7 aberto. Narrativa no
-  `TASKS.md` §"Checkpoint de 2026-10-10: DOCS-17".
+- `DOCS-17` concluído em 2026-10-10, por ordem do owner: a `/busca/` deixa de
+  ser literal e usa o mesmo ranking tolerante do painel (palavras de ligação,
+  plural, palavra pela metade, erro de digitação, raridade). Paridade medida
+  contra o código do painel em 727 consultas sobre o índice real, todas com a
+  mesma lista na mesma ordem, e as 33 consultas de aceite no top três.
+  `npm run verify` exit 0 (339 testes) e dezesseis provas por mutação
+  derrubadas. PR #7 integrado (merge `bd4a186`), versão de produção
+  `85209917`, `probe-production.mjs` 16/16 e a `/busca/` ao vivo achando o guia
+  de domínio para "como aponto meu dominoi". Falsos positivos compartilhados
+  com o painel ("parcelamento" ~ "cancelamento", "pix" ~ "pixel") ficam para a
+  sessão do painel. Narrativa no `TASKS.md` §"Checkpoint de 2026-10-10:
+  DOCS-17".
 
 ## ▶ Próxima ação
 
-Integrar o PR #7 (`DOCS-17`) quando o owner mandar: merge no `main`, conferir
-o Workers Build de produção, rodar `node scripts/probe-production.mjs` (16/16)
-e abrir `https://tutoriais.epico.site/busca/?q=como%20aponto%20meu%20dominoi`,
-que precisa listar `/dominio-e-publicacao/conecte-seu-dominio/` entre os três
-primeiros. Depois, atualizar a linha do `DOCS-17` no `TASKS.md` para concluído.
+Nada técnico pendente neste repositório: fila local sem tasks abertos
+(`DOCS-00` a `DOCS-17` concluídos) e o build canônico de produção a cada push
+no `main` segue automático.
 
 Decisões de conteúdo do owner, abertas pelo `DOCS-16` (nenhuma vira keyword de
 guia vizinho): (1) lacunas sem guia: pagamento por boleto, Pix, cartão ou
@@ -596,8 +598,8 @@ GraphQL desde 2026-09-14) continua como follow-up independente do owner.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-10-10 (`DOCS-17` com PR #7 aberto e gate verde, 339
-  testes. Antes, na mesma sessão, `DOCS-16`, vocabulário editorial e índice versão
+- Última sessão: 2026-10-10 (`DOCS-17`, busca `/busca/` tolerante: PR #7
+  integrado, produção 16/16 na versão `85209917`, 339 testes. Antes, na mesma sessão, `DOCS-16`, vocabulário editorial e índice versão
   2: PR #6 integrado, produção 16/16 na versão `6e5fa55e`, sonda do painel com
   a seção 5 em versão 2 e 27 de 27 guias com keywords, `npm run verify` exit 0
   na sessão). Antes dela, 2026-10-09 (`DOCS-15`, CORS estreito do `/search-index.json`
