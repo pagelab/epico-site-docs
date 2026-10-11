@@ -33,6 +33,7 @@
 | 23 | `DOCS-14` | P1 | G | QA de todas as opções e tutoriais do painel atual | concluído | ordem do owner de 2026-10-02 |
 | 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | concluído em 2026-10-09 (PR #5, merge `1a3d44b`, produção 16/16) | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
 | 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | concluído em 2026-10-10 (PR #6, merge `ed1999a`, produção 16/16) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
+| 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | PR #7 aberto, gate local verde, aguardando ordem de merge | ordem do owner de 2026-10-10, depois do `DOCS-16` |
 
 ## Critérios por task
 
@@ -235,6 +236,27 @@
   decisão de conteúdo do owner.
 - Nenhuma escrita no repositório da Área de Clientes. A conferência do lado
   do painel é somente leitura (`tests/docs-links-probe.php`, seção 5).
+
+### `DOCS-17` — busca `/busca/` tolerante como a do painel
+
+- Ordem do owner em 2026-10-10, logo depois do `DOCS-16`: a `/busca/` usava
+  substring literal com todas as palavras obrigatórias, então "como aponto meu
+  domínio", "my site is down" ou "dominoi" não achavam nada no acervo e
+  achavam no painel.
+- `filterSearchEntries` em `src/lib/search-client.mjs` passa a espelhar regra
+  por regra o ranking do painel (`assets/js/shell.js` do plugin, 0.137.0):
+  palavras inteiras dobradas, palavras de ligação em português, inglês e
+  espanhol, redução leve de plural, escada de encontro (igual 1, raiz por
+  plural 0,95, prefixo 0,8, raiz comum de seis letras 0,7, erro de digitação
+  com transposição 0,6, palavra dentro de palavra 0,5), raridade da palavra no
+  acervo, limiar de metade do peso das palavras conhecidas e bônus de título.
+  O teto de 30 resultados e de 12 palavras continua, e a consulta é lida até
+  100 caracteres como no painel.
+- Critério de pronto: as duas buscas devolvem a mesma lista, na mesma ordem,
+  sobre o índice real. O conjunto de aceite do vocabulário (33 consultas) põe o
+  guia certo entre os três primeiros, e as lacunas seguem sem resultado.
+- Fora do recorte: mudar o ranking do painel. Falso positivo compartilhado
+  fica registrado para a sessão do painel decidir, sem divergir daqui.
 
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
@@ -1977,3 +1999,43 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   `integracoes` já casava pelo resumo, que cita o Pixel. `codigo-extra` casa só
   pela keyword "pixel", que é legítima (o guia trata o consentimento de
   rastreadores e pixels).
+
+## Checkpoint de 2026-10-10: DOCS-17 (busca `/busca/` tolerante como a do painel)
+
+- `src/lib/search-client.mjs`: o filtro literal saiu. Entraram as funções puras
+  do ranking do painel, copiadas regra por regra (`tokenizeQuery` com palavras
+  de ligação e teto de 100 caracteres, `stemSearch`, `withinEdits` com
+  transposição, `sharedPrefix`, `wordMatch` exportado para teste e a
+  pontuação por raridade com limiar e bônus de título). Os campos de cada
+  entrada são preparados uma vez por objeto validado (`WeakMap`), porque a
+  página filtra a cada tecla sobre o mesmo índice. Nenhuma regex é construída
+  a partir da consulta e o resultado renderizado continua sem keywords.
+- Paridade medida por ferramenta de sessão: o trecho do `shell.js` do painel
+  rodou num `vm` contra o `filterSearchEntries` do acervo, sobre o índice
+  real, em 727 consultas (as 33 do conjunto de aceite, as lacunas, todos os
+  497 termos de keywords, cada palavra de título e variações com plural, letra
+  a menos e letras trocadas). As 727 devolveram a mesma lista na mesma ordem.
+  Os rótulos de área que o painel usa em pt_BR são idênticos aos de
+  `topics.mjs`. Num painel em inglês só o campo de área (peso 1) mudaria.
+- Testes (339, eram 301): `tests/search-client.test.ts` cobre palavras de
+  ligação nas três línguas com volta, letra solta, teto de caracteres, a
+  escada de encontro em doze pares, tolerância a plural, metade, erro e
+  ligação, palavra desconhecida que não esconde a resposta, palavra comum que
+  não decide nem lista tudo, metacaracteres como separadores e bônus de
+  título. `tests/search-adversarial.test.ts` roda as 33 consultas do conjunto
+  de aceite sobre o artefato real (top três), nove consultas de lacunas sem
+  resultado e um pior caso de 12 palavras longas quase iguais contra 200
+  entradas com 40 keywords de 80 caracteres dentro do teto de um segundo.
+- Dezesseis provas por mutação, todas derrubadas depois de um teste novo para
+  o bônus de título, que tinha sobrevivido. Restauração conferida por SHA-256.
+- Navegador real contra `wrangler dev` servindo o `dist/` com os headers de
+  produção: "como aponto meu dominoi" lista 5 guias com os de domínio no topo,
+  "how much does it cost" põe preços e hospedagem em primeiro, e não há erro de
+  console, CSP incluída.
+- Falsos positivos compartilhados com o painel, mantidos para as buscas
+  concordarem e registrados para a sessão do painel: "parcelamento" está a
+  duas edições de "cancelamento" e mostra os guias de cancelamento, e "pix" é
+  prefixo de "pixel".
+- `npm run verify` exit 0: check sem diagnósticos, lint e política PASS, 339
+  testes, contraste, build de 29 páginas, publicação estática PASS, audit PASS
+  com a exceção nomeada do `braces` e install scripts PASS.
