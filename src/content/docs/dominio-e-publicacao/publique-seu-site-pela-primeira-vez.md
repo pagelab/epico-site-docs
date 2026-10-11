@@ -4,6 +4,24 @@ description: Da revisão final ao site no ar, com a checklist de publicação.
 topic: dominio-e-publicacao
 draft: false
 lastReviewed: 2026-09-14
+keywords:
+  - "publicar"
+  - "publicação"
+  - "lançar o site"
+  - "colocar o site no ar"
+  - "site no ar"
+  - "go live"
+  - "launch"
+  - "publish"
+  - "publicar sitio"
+  - "checklist"
+  - "lista de verificação"
+  - "revisão final"
+  - "primeira publicação"
+  - "quando o site fica pronto"
+  - "site fora do ar"
+  - "voltar atrás"
+  - "rollback"
 sidebar:
   order: 2
 ---

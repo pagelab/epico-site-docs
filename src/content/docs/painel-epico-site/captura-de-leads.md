@@ -4,6 +4,31 @@ description: Como configurar a captura automática no artigo, o Cartão de captu
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "leads"
+  - "captura"
+  - "capturar e-mails"
+  - "formulário"
+  - "form"
+  - "formulário de contato"
+  - "newsletter"
+  - "inscrição"
+  - "cadastro"
+  - "opt-in"
+  - "pop-up"
+  - "popup"
+  - "janela"
+  - "chat"
+  - "WhatsApp"
+  - "lead capture"
+  - "capturar contactos"
+  - "anti-spam"
+  - "robôs"
+  - "spam"
+  - "Turnstile"
+  - "captcha"
+  - "LGPD"
+  - "cartão de captura"
 sidebar:
   order: 5
 ---

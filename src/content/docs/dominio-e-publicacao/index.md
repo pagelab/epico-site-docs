@@ -4,6 +4,18 @@ description: Prepare o domínio, revise a publicação e mantenha um caminho de 
 topic: dominio-e-publicacao
 draft: false
 lastReviewed: 2026-09-07
+keywords:
+  - "domínio"
+  - "domain"
+  - "dominio propio"
+  - "publicar"
+  - "publish"
+  - "colocar no ar"
+  - "site no ar"
+  - "go live"
+  - "lançamento"
+  - "DNS"
+  - "endereço do site"
 sidebar:
   order: 1
 ---

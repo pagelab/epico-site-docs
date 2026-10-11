@@ -4,6 +4,35 @@ description: Onde ver a chave de licença, o que significam Suporte até e Atual
 topic: licencas-e-downloads
 draft: false
 lastReviewed: 2026-09-08
+keywords:
+  - "licença"
+  - "license"
+  - "licencia"
+  - "chave de licença"
+  - "license key"
+  - "serial"
+  - "código de ativação"
+  - "prazo"
+  - "validade"
+  - "vencimento"
+  - "expira"
+  - "expirou"
+  - "venceu"
+  - "licença vencida"
+  - "expiration"
+  - "expired"
+  - "renovar"
+  - "renovação"
+  - "renew"
+  - "suporte até"
+  - "atualizações até"
+  - "sites conectados"
+  - "trocar site da licença"
+  - "remover domínio"
+  - "licença não aparece"
+  - "uso permanente"
+  - "vitalício"
+  - "lifetime"
 sidebar:
   order: 2
 ---

@@ -4,6 +4,27 @@ description: Como usar as telas Todos os leads e Todas as iscas do menu Épico S
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "leads"
+  - "contatos"
+  - "contacts"
+  - "contactos"
+  - "lista de leads"
+  - "exportar"
+  - "export"
+  - "CSV"
+  - "planilha"
+  - "Excel"
+  - "spreadsheet"
+  - "baixar leads"
+  - "editar lead"
+  - "iscas"
+  - "isca digital"
+  - "lead magnet"
+  - "e-book"
+  - "material rico"
+  - "assinantes"
+  - "subscribers"
 sidebar:
   order: 7
 ---

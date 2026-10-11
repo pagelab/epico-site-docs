@@ -4,6 +4,21 @@ description: Onde encontrar o painel do seu site no WordPress, o que cada seçã
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "painel"
+  - "dashboard"
+  - "panel"
+  - "configurações"
+  - "settings"
+  - "ajustes"
+  - "onde fica"
+  - "menu Épico Site"
+  - "wp-admin"
+  - "WordPress"
+  - "salvar"
+  - "save"
+  - "publicar alterações"
+  - "admin"
 sidebar:
   order: 1
 ---

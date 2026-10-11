@@ -4,6 +4,26 @@ description: Como usar a aba Suporte do painel Épico Site e ativar a chave de l
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "ativar licença"
+  - "activate license"
+  - "chave de licença"
+  - "license key"
+  - "licença do plugin"
+  - "licença do tema"
+  - "trocar domínio da licença"
+  - "desativar licença"
+  - "aviso de atualização"
+  - "atualização do plugin"
+  - "update plugin"
+  - "atualizar tema"
+  - "suporte"
+  - "support"
+  - "soporte"
+  - "pedir ajuda"
+  - "abrir chamado"
+  - "ticket"
+  - "serviços adicionais"
 sidebar:
   order: 12
 ---

@@ -30,9 +30,9 @@
 | 20 | `PANEL-01B` | P1 | G | Busca defensiva e acessível em `shell.js` | bloqueado | `PANEL-01A` |
 | 21 | `PANEL-02` | P1 | G | Smokes, mutações, suíte, release e verificação do plugin | bloqueado | `PANEL-01B`, aceite separado |
 | 22 | `DOCS-10` | P1 | P | Clique no ícone de corrente copia o deep link do título | concluído | ordem do owner de 2026-09-15 |
-
 | 23 | `DOCS-14` | P1 | G | QA de todas as opções e tutoriais do painel atual | concluído | ordem do owner de 2026-10-02 |
 | 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | concluído em 2026-10-09 (PR #5, merge `1a3d44b`, produção 16/16) | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
+| 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | em integração (gate local verde, PR aberto) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
 
 ## Critérios por task
 
@@ -199,6 +199,42 @@
 - Fecha o lado do acervo da dependência de `PANEL-01B`. O lado do plugin já
   está implementado no workspace Área de Clientes e nenhum arquivo dele é
   escrito a partir daqui.
+
+### `DOCS-16` — vocabulário editorial e índice de busca versão 2
+
+- Origem: QA do owner em 2026-10-10 na busca de tutoriais do painel em
+  `app.epico.site`. A busca só achava palavras exatas e 14 de 20 perguntas
+  comuns ficaram sem resultado ("domain", "dns", "boleto", "renovar
+  licença"...). O owner escolheu "vocabulário + tolerância", não busca por IA:
+  o sentido mora no acervo, como keywords editoriais por guia, e o painel
+  (plugin 0.137.0, já em produção) tolera digitação e já aceita o índice
+  versão 2. O leitor do painel recusa chaves desconhecidas, por isso o painel
+  foi publicado primeiro.
+- Contrato v2 de `/search-index.json` (`src/lib/search-index.mjs`):
+  `version: 2` e toda entrada com exatamente `url`, `title`, `description`,
+  `topic`, `lastReviewed` e `keywords`. `keywords` é uma lista, que pode ser
+  vazia, de no máximo 40 termos. Cada termo é aparado, não vazio, tem até 80
+  caracteres, não tem caractere de controle nem bidirecional e passa pela
+  mesma varredura de PII dos outros campos (e-mail, caminho local,
+  localhost). Entrada que viola qualquer regra falha o BUILD (barreira do
+  produtor). Tetos de 256 KiB e 200 entradas mantidos. Entrada ou chave da
+  versão 1 não se mistura.
+- Barreiras do produtor além do contrato, todas no build: termo repetido
+  (comparação sem acento e sem caixa), termo com espaço nas pontas (nunca
+  aparado em silêncio) e caractere de controle ou bidi também em `title` e
+  `description`, porque o leitor do painel descarta a entrada inteira nesses
+  casos e o produtor nunca pode gerar o que o painel recusa.
+- Frontmatter: campo opcional `keywords`, lista em bloco com um termo por
+  linha, padrão lista vazia no schema da coleção. Os termos não aparecem na
+  página nem no resultado renderizado, servem só para achar o guia.
+- Busca `/busca/`: o consumidor aceita só a versão 2 e pontua keywords com os
+  pesos do painel (título 4, keywords 3, descrição 2, área 1). Ela continua
+  literal (substring, todos os tokens obrigatórios), sem a tolerância a erro
+  de digitação do painel.
+- Pergunta que nenhum guia responde não vira keyword do guia mais próximo. É
+  decisão de conteúdo do owner.
+- Nenhuma escrita no repositório da Área de Clientes. A conferência do lado
+  do painel é somente leitura (`tests/docs-links-probe.php`, seção 5).
 
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
@@ -1833,3 +1869,88 @@ https://tutoriais.epico.site/search-index.json` devolvia 200 sem nenhum header
   entre as sete áreas. Nada foi escrito no workspace Área de Clientes. Resta
   àquela sessão rodar a seção 5 de verdade quando o código dela chegar ao
   `main`, e o WARN de ACAO que ela registrou deve vir OK.
+
+## Checkpoint de 2026-10-10: DOCS-16 (vocabulário editorial e índice versão 2)
+
+QA do owner na busca de tutoriais do painel: 14 de 20 perguntas comuns sem
+resultado, porque a busca só achava palavras exatas do título e do resumo. O
+owner escolheu "vocabulário + tolerância". O painel 0.137.0 já está em
+produção com a busca tolerante e o leitor das versões 1 e 2. Este task publica
+o lado do acervo: o vocabulário de cada guia e o índice versão 2.
+
+- `src/lib/search-index.mjs`: `SEARCH_INDEX_VERSION = 2`, tetos novos
+  `SEARCH_INDEX_MAX_KEYWORDS = 40` e `SEARCH_INDEX_MAX_KEYWORD_CHARS = 80`,
+  barreira `keywordsViolations` compartilhada por produtor e consumidor,
+  assinatura de entrada com seis chaves e barreira de caractere de controle
+  ou bidi em todo campo de texto (mesmo conjunto que o leitor do painel
+  recusa). Só o produtor cobra termo repetido sem acento e sem caixa. O
+  consumidor desta página aceita só a versão 2: entrada v1 dentro de payload
+  v2 é descartada, payload v1 é rejeitado inteiro.
+- `src/content.config.ts`: `keywords: z.array(z.string()).default([])`. O
+  schema apenas tipa e os tetos ficam no gerador, que falha o build com
+  mensagem própria. `src/pages/search-index.json.ts` repassa a lista.
+- `src/lib/search-client.mjs`: keywords entram na pontuação com peso 3, entre
+  título (4) e descrição (2), como no painel. O resultado renderizado segue
+  sem os termos.
+- `scripts/probe-production.mjs`: o check do índice compara com
+  `SEARCH_INDEX_VERSION`, roda o validador do consumidor sobre o índice vivo
+  (zero descartes exigidos) e informa quantas entradas têm keywords.
+  `scripts/check-publishing.mjs` não dependia da versão e não mudou.
+- Vocabulário: o rascunho revisado pelo owner na sessão Área de Clientes
+  (`tests/fixtures/docs-search-vocabulary-draft-2026-10-10.json` daquele
+  workspace, só lido daqui) foi para o frontmatter dos 27 guias publicados,
+  497 termos no total. Cada termo do rascunho foi conferido contra o texto do
+  guia. Correções aplicadas:
+  - `recursos-do-site`: saem "anúncios" e "AdSense". O grupo "Módulos de
+    monetização" do guia é o tipo de conteúdo Serviços, não publicidade. Quem
+    procura anúncios cairia num guia que não responde.
+  - `gerenciamento`: sai "migrar", porque o guia não trata migração e diz que
+    o backup cobre só as configurações do painel. Sai também "reset", que
+    puxaria a lacuna "trocar a senha do painel" para o guia mais próximo.
+  - `formatos-de-publicacao`: os três serviços na ordem canônica Site Núcleo,
+    Site Horizonte, Site Fronteira (o lint de conteúdo também cobra).
+  - `identidade-visual` e `suporte-e-propriedade`: saem "tipografía" e
+    "garantía", iguais a "tipografia" e "garantia" sem acento. A barreira de
+    duplicata do produtor teria falhado o build.
+- `/painel-epico-site/configuracoes-do-blog/` (no rascunho, fora do índice
+  vivo): o arquivo nunca foi commitado. Existe só como arquivo NÃO RASTREADO
+  no checkout principal (`Produto/Docs`, data 2026-10-06), junto de uma edição
+  também não commitada em `painel-epico-site/index.md` que insere a aba Blog
+  como item 3 da lista. Por isso nunca chegou ao `main` nem à produção. Não foi
+  publicado daqui: é trabalho de outra sessão, sem proveniência registrada, e
+  depende da aba Blog estar no plugin do kit lançado. Quando entrar, a lista
+  do rascunho para esse guia pode ir junto no frontmatter.
+- Lacunas, não apontadas para guia nenhum (decisão de conteúdo do owner):
+  pagamento por boleto, Pix, cartão ou parcelamento; SSL, HTTPS e certificado;
+  esqueci a senha ou trocar a senha do painel; site lento, velocidade e
+  desempenho; e-mail profissional no domínio do cliente. A revisão somou mais
+  uma: anúncios e AdSense.
+- Testes (301 no total, eram 231): `tests/search-index.test.ts` cobre o
+  produtor (lista ausente ou não lista, tetos inclusivos de 40 termos e 80
+  caracteres, termo vazio ou não texto, espaço nas pontas, sete casos de
+  controle ou bidi, PII em termo nos quatro padrões, duplicata e a barreira
+  nova em title e description) e o consumidor (entrada descartada inteira em
+  14 formas hostis, versão 1 não se mistura nos dois sentidos).
+  `tests/search-adversarial.test.ts` lê as keywords do frontmatter real e
+  prova: artefato versão 2 com seis chaves por entrada, keywords 1:1 com o
+  frontmatter, tetos e PII por termo, round-trip com zero descartes, todos os
+  prefixos truncados rejeitados, orçamento de bytes com o vocabulário inteiro
+  (14.932 bytes para 27 entradas, projeção linear para 200 entradas abaixo de
+  256 KiB) e vocabulário no teto em 200 entradas estourando o serializador. A
+  busca `/busca/` sobre o artefato real acha o guia certo para 14 consultas
+  do conjunto de aceite e não acha nada para sete consultas das lacunas.
+  `tests/search-client.test.ts` prova o peso 3 entre título e descrição.
+- Catorze provas por mutação: treze derrubaram testes. A sobrevivente
+  (juntar os termos com espaço antes do `includes`) é equivalente, porque
+  token de consulta nunca tem espaço. A asserção que fingia cobrir isso saiu.
+  Restauração conferida por SHA-256.
+- Provas empíricas no build real (Astro): um guia com
+  `"fale com equipe@epico.site"` nas keywords falha `astro build` com
+  `keywords[3] contém possível PII (e-mail)`. Um guia com 49 termos falha com
+  `keywords excede o teto de 40 termos: 49`. Os dois arquivos foram
+  restaurados por checksum. O `dist/search-index.json` do build é idêntico
+  byte a byte ao artefato que a suíte deriva do frontmatter.
+- Sonda do painel ANTES do deploy (somente leitura, `studio wp eval-file
+  .../Area-de-clientes/tests/docs-links-probe.php` em
+  `/Users/mac/Studio/app-epico-site`): seção 5 com "version 1 with 27
+  entries", "five version-1 contract keys" e o INFO de versão 1 sem keywords.

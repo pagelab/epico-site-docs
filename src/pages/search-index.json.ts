@@ -9,7 +9,7 @@ export const prerender = true;
 /**
  * Endpoint estático do índice público de busca. Roda no build: qualquer
  * violação do gerador (rascunho, slug duplicado, URL externa, campo vazio,
- * teto de quantidade ou bytes) falha o `astro build`.
+ * keywords fora do contrato, teto de quantidade ou bytes) falha o `astro build`.
  */
 export async function GET(): Promise<Response> {
 	// O 404 é página utilitária, não resultado de busca: não tem área
@@ -32,5 +32,6 @@ function toIndexEntry(entry: CollectionEntry<'docs'>) {
 		topic: entry.data.topic ?? '',
 		draft: entry.data.draft === true,
 		lastReviewed: entry.data.lastReviewed?.toISOString().slice(0, 10) ?? '',
+		keywords: entry.data.keywords,
 	};
 }

@@ -4,6 +4,31 @@ description: Como operar a aba Integrações do painel Épico Site, com e-mail m
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "integrações"
+  - "integrations"
+  - "integraciones"
+  - "Google Analytics"
+  - "GA4"
+  - "analytics"
+  - "Google Tag Manager"
+  - "GTM"
+  - "Meta Pixel"
+  - "Facebook Pixel"
+  - "pixel do Facebook"
+  - "RD Station"
+  - "MailChimp"
+  - "Brevo"
+  - "MailerLite"
+  - "e-mail marketing"
+  - "email marketing"
+  - "newsletter"
+  - "verificação do Google"
+  - "Search Console"
+  - "meta tag de verificação"
+  - "rastreamento"
+  - "tracking"
+  - "métricas"
 sidebar:
   order: 8
 ---

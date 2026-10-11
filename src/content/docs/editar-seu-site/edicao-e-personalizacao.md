@@ -4,6 +4,27 @@ description: Para quem é o Épico Site, o que você pode personalizar e como ca
 topic: editar-seu-site
 draft: false
 lastReviewed: 2026-09-14
+keywords:
+  - "personalizar"
+  - "customizar"
+  - "customize"
+  - "design"
+  - "layout"
+  - "alterar design"
+  - "mudar textos"
+  - "páginas personalizadas"
+  - "recriar páginas"
+  - "Elementor"
+  - "construtor de páginas"
+  - "page builder"
+  - "nicho"
+  - "para quem é"
+  - "who is it for"
+  - "posts"
+  - "blog"
+  - "headless"
+  - "Site Núcleo"
+  - "editar contenido"
 sidebar:
   order: 2
 ---

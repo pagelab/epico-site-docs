@@ -4,6 +4,19 @@ description: Entenda escopos, prazos de suporte e formas de pedir ajuda.
 topic: servicos-e-suporte
 draft: false
 lastReviewed: 2026-09-07
+keywords:
+  - "serviços"
+  - "services"
+  - "servicios"
+  - "suporte"
+  - "support"
+  - "soporte"
+  - "ajuda"
+  - "help"
+  - "escopo"
+  - "o que está incluído"
+  - "prazos"
+  - "pedir ajuda"
 sidebar:
   order: 1
 ---

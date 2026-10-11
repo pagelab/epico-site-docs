@@ -4,6 +4,31 @@ description: Como operar a aba Identidade visual do painel Épico Site, com core
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "cores"
+  - "cor"
+  - "colors"
+  - "colores"
+  - "logo"
+  - "logotipo"
+  - "logomarca"
+  - "marca"
+  - "brand"
+  - "branding"
+  - "fonte"
+  - "fontes"
+  - "tipografia"
+  - "typography"
+  - "fonts"
+  - "ícone do site"
+  - "favicon"
+  - "site icon"
+  - "animações"
+  - "animations"
+  - "identidade visual"
+  - "visual"
+  - "aparência"
+  - "look"
 sidebar:
   order: 2
 ---

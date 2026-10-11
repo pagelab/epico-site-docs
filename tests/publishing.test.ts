@@ -122,7 +122,7 @@ async function makeFixture() {
 	await writeFile(join(root, 'dist/llms-small.txt'), 'conteúdo reduzido\n');
 	await writeFile(
 		join(root, 'dist/search-index.json'),
-		JSON.stringify({ version: 1, entries: [{ url: '/', title: 'Início', description: 'd', topic: 'x', lastReviewed: '2026-09-08' }] }),
+		JSON.stringify({ version: 2, entries: [{ url: '/', title: 'Início', description: 'd', topic: 'x', lastReviewed: '2026-09-08', keywords: [] }] }),
 	);
 
 	return root;
@@ -444,7 +444,7 @@ describe('publishing: gate sobre fixture válida e mutações', () => {
 		const root = await makeFixture();
 		await writeFile(
 			join(root, 'dist/search-index.json'),
-			JSON.stringify({ version: 1, entries: [{ url: '/404/', title: '404', description: 'd', topic: 'x', lastReviewed: '2026-09-08' }] }),
+			JSON.stringify({ version: 2, entries: [{ url: '/404/', title: '404', description: 'd', topic: 'x', lastReviewed: '2026-09-08', keywords: [] }] }),
 		);
 
 		expect(await checkPublishing(root)).toContainEqual(

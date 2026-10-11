@@ -4,6 +4,22 @@ description: Como operar a aba Gerenciamento do painel Épico Site, com exclusã
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "backup"
+  - "cópia de segurança"
+  - "copia de seguridad"
+  - "exportar configurações"
+  - "importar configurações"
+  - "restaurar"
+  - "restore"
+  - "desinstalar"
+  - "uninstall"
+  - "apagar dados"
+  - "excluir dados"
+  - "delete data"
+  - "bloquear instalação"
+  - "segurança"
+  - "security"
 sidebar:
   order: 11
 ---
