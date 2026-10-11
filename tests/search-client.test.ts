@@ -16,6 +16,7 @@ function indexEntry(overrides: Record<string, unknown> = {}) {
 		description: 'Como escolher entre página, post e projeto na prática.',
 		topic: 'primeiros-passos',
 		lastReviewed: '2026-09-08',
+		keywords: [] as string[],
 		...overrides,
 	};
 }
@@ -121,6 +122,26 @@ describe('filtro do browser', () => {
 		expect(filterSearchEntries(many, 'publicacao', { limit: 2 })).toHaveLength(2);
 	});
 
+	it('keywords entram na busca com peso 3, entre título e descrição, sem aparecer no resultado', () => {
+		const ranked = [
+			indexEntry({ url: '/a/', title: 'Registros DNS', description: 'Outra coisa.', topic: 'dominio-e-publicacao' }),
+			indexEntry({ url: '/b/', title: 'Outra coisa', description: 'Fala de DNS.', topic: 'dominio-e-publicacao' }),
+			indexEntry({ url: '/c/', title: 'Outra coisa', description: 'Nada aqui.', topic: 'dominio-e-publicacao', keywords: ['DNS'] }),
+		];
+		const results = filterSearchEntries(ranked, 'dns');
+
+		expect(results.map((result) => result.url)).toEqual(['/a/', '/c/', '/b/']);
+		expect(Object.keys(results[1] ?? {})).not.toContain('keywords');
+		expect(JSON.stringify(results)).not.toContain('"keywords"');
+	});
+
+	it('termo do vocabulário satisfaz o AND junto com o título', () => {
+		const vocab = [indexEntry({ url: '/a/', title: 'Conecte seu domínio', keywords: ['nameserver', 'registro.br'] })];
+
+		expect(filterSearchEntries(vocab, 'nameserver dominio')).toHaveLength(1);
+		expect(filterSearchEntries(vocab, 'nameserver godaddy')).toHaveLength(0);
+	});
+
 	it('é determinístico: mesma consulta e índice produzem a mesma lista', () => {
 		const first = JSON.stringify(filterSearchEntries(corpus, 'site'));
 		const second = JSON.stringify(filterSearchEntries(corpus, 'site'));
@@ -132,7 +153,7 @@ describe('filtro do browser', () => {
 describe('fetch defensivo do índice', () => {
 	it('entrega entradas validadas quando o payload cumpre o contrato', async () => {
 		const entries = await fetchSearchIndex({
-			fetchImpl: (async () => responseOf(JSON.stringify({ version: 1, entries: corpus }))) as unknown as typeof fetch,
+			fetchImpl: (async () => responseOf(JSON.stringify({ version: 2, entries: corpus }))) as unknown as typeof fetch,
 		});
 
 		expect(entries).toHaveLength(3);
@@ -143,7 +164,7 @@ describe('fetch defensivo do índice', () => {
 			fetchImpl: (async () =>
 				responseOf(
 					JSON.stringify({
-						version: 1,
+						version: 2,
 						entries: [corpus[0]!, { ...corpus[1]!, url: 'javascript:alert(1)' }],
 					}),
 				)) as unknown as typeof fetch,
@@ -240,7 +261,7 @@ describe('fetch defensivo do índice', () => {
 
 		try {
 			const entries = await fetchSearchIndex({
-				fetchImpl: (async () => responseOf(JSON.stringify({ version: 1, entries: [corpus[0]] }))) as unknown as typeof fetch,
+				fetchImpl: (async () => responseOf(JSON.stringify({ version: 2, entries: [corpus[0]] }))) as unknown as typeof fetch,
 				timeoutMs: SEARCH_FETCH_TIMEOUT_MS,
 			});
 
@@ -297,7 +318,7 @@ describe('fetch defensivo do índice', () => {
 	});
 
 	it('aceita Content-Length dentro do teto e ignora valor não numérico', async () => {
-		const body = JSON.stringify({ version: 1, entries: [corpus[0]] });
+		const body = JSON.stringify({ version: 2, entries: [corpus[0]] });
 
 		for (const declared of [String(body.length), 'banana', null]) {
 			const entries = await fetchSearchIndex({

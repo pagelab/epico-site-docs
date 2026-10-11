@@ -4,6 +4,29 @@ description: O que o suporte cobre, quem fica com arquivos e contas e como funci
 topic: servicos-e-suporte
 draft: false
 lastReviewed: 2026-09-14
+keywords:
+  - "suporte"
+  - "support"
+  - "soporte"
+  - "garantia"
+  - "warranty"
+  - "reembolso"
+  - "refund"
+  - "devolução"
+  - "dinheiro de volta"
+  - "cancelar"
+  - "cancelamento"
+  - "cancel"
+  - "desistir"
+  - "arrependimento"
+  - "dono do site"
+  - "propriedade"
+  - "ownership"
+  - "quem é dono"
+  - "minhas contas"
+  - "meus arquivos"
+  - "configuram tudo"
+  - "o que o suporte cobre"
 sidebar:
   order: 3
 ---

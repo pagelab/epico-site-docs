@@ -19,6 +19,12 @@ export const collections = {
 					topic: z.enum(topics).optional(),
 					draft: z.boolean().optional(),
 					lastReviewed: z.coerce.date().optional(),
+					// Vocabulário editorial do guia para as buscas (índice versão 2,
+					// DOCS-16): sinônimos, termos leigos e palavras em inglês e
+					// espanhol que o texto não usa. Os tetos e a varredura de PII
+					// ficam no gerador do índice, que falha o build com mensagem
+					// própria; o schema apenas tipa e garante a lista vazia.
+					keywords: z.array(z.string()).default([]),
 				}),
 			}),
 		}),

@@ -4,6 +4,22 @@ description: Como operar a aba Publicação do painel Épico Site, com endereço
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "publicação"
+  - "publish"
+  - "publicar alterações"
+  - "endereço público"
+  - "URL do site"
+  - "estado da publicação"
+  - "status da publicação"
+  - "não atualizou"
+  - "alteração não aparece"
+  - "site não atualiza"
+  - "Cloudflare"
+  - "rebuild"
+  - "deploy"
+  - "o que vai para o site"
+  - "política de publicação"
 sidebar:
   order: 3
 ---

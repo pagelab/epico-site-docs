@@ -4,6 +4,25 @@ description: Respostas diretas sobre o andamento do serviço, posts, e-commerce,
 topic: perguntas-frequentes
 draft: false
 lastReviewed: 2026-09-14
+keywords:
+  - "dúvidas"
+  - "perguntas"
+  - "FAQ"
+  - "questions"
+  - "preguntas"
+  - "loja virtual"
+  - "e-commerce"
+  - "ecommerce"
+  - "WooCommerce"
+  - "vender online"
+  - "posts preservados"
+  - "perder posts"
+  - "meu site durante o trabalho"
+  - "acessos"
+  - "quem controla as contas"
+  - "área de clientes"
+  - "cancelamento"
+  - "reembolso"
 sidebar:
   order: 1
 ---

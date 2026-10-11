@@ -4,6 +4,19 @@ description: Aprenda a configurar, editar, publicar e manter seu site com guias 
 topic: primeiros-passos
 draft: false
 lastReviewed: 2026-09-07
+keywords:
+  - "começar"
+  - "início"
+  - "por onde começar"
+  - "ajuda"
+  - "help"
+  - "tutorial"
+  - "guia"
+  - "manual"
+  - "documentação"
+  - "documentation"
+  - "getting started"
+  - "ayuda"
 template: splash
 hero:
   tagline: Guias claros para cuidar do seu site com autonomia.

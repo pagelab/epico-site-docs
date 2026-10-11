@@ -4,6 +4,32 @@ description: Investimento de cada serviço de implantação, onde o site públic
 topic: servicos-e-suporte
 draft: false
 lastReviewed: 2026-09-14
+keywords:
+  - "preço"
+  - "preços"
+  - "price"
+  - "pricing"
+  - "precio"
+  - "quanto custa"
+  - "how much"
+  - "valor"
+  - "investimento"
+  - "custo"
+  - "assinatura"
+  - "mensalidade"
+  - "subscription"
+  - "pagamento único"
+  - "hospedagem"
+  - "hosting"
+  - "hospedaje"
+  - "servidor"
+  - "trocar hospedagem"
+  - "onde hospedar"
+  - "Cloudflare"
+  - "Site Núcleo"
+  - "Site Horizonte"
+  - "Site Fronteira"
+  - "qual serviço escolher"
 sidebar:
   order: 2
 ---

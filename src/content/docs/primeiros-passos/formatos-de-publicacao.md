@@ -4,6 +4,24 @@ description: O que é o modelo headless, o que cada serviço entrega e o que aco
 topic: primeiros-passos
 draft: false
 lastReviewed: 2026-09-14
+keywords:
+  - "headless"
+  - "WordPress headless"
+  - "site estático"
+  - "static site"
+  - "Astro"
+  - "arquitetura"
+  - "como funciona"
+  - "how it works"
+  - "plugins"
+  - "meus plugins"
+  - "plugins que já uso"
+  - "substitui meu site"
+  - "Site Núcleo"
+  - "Site Horizonte"
+  - "Site Fronteira"
+  - "formatos"
+  - "diferença entre serviços"
 sidebar:
   order: 2
 ---

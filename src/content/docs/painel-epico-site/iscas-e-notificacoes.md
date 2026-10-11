@@ -4,6 +4,25 @@ description: Como operar em Geração de leads o registro de UTM, o convite do G
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "isca digital"
+  - "lead magnet"
+  - "e-book"
+  - "ebook"
+  - "PDF"
+  - "material gratuito"
+  - "entrega de arquivo"
+  - "notificação"
+  - "notificações"
+  - "aviso de novo lead"
+  - "notification"
+  - "e-mail de aviso"
+  - "UTM"
+  - "parâmetros UTM"
+  - "origem do lead"
+  - "Google Preferred Sources"
+  - "armazenamento dos leads"
+  - "imán de leads"
 sidebar:
   order: 6
 ---

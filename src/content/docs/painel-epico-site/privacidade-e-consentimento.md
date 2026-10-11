@@ -4,6 +4,25 @@ description: Como operar a aba Privacidade do painel Épico Site, com página de
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "privacidade"
+  - "privacy"
+  - "privacidad"
+  - "LGPD"
+  - "GDPR"
+  - "RGPD"
+  - "cookies"
+  - "banner de cookies"
+  - "cookie banner"
+  - "consentimento"
+  - "consent"
+  - "consentimiento"
+  - "política de privacidade"
+  - "privacy policy"
+  - "aviso de cookies"
+  - "vídeos do YouTube"
+  - "incorporações"
+  - "embeds"
 sidebar:
   order: 9
 ---

@@ -57,10 +57,12 @@ export function tokenizeQuery(query) {
 
 /**
  * Filtra e ordena as entradas do índice para uma consulta.
- * Todos os tokens precisam aparecer (AND) em título, descrição ou área.
- * Pontuação por ocorrência (título 4, descrição 2, área 1) com bônus quando o
- * título cobre a consulta inteira; empate decide pela URL, em ordem alfabética,
- * para o resultado ser determinístico.
+ * Todos os tokens precisam aparecer (AND) em título, keywords, descrição ou
+ * área. Pontuação por ocorrência com os mesmos pesos da busca do painel
+ * (título 4, keywords 3, descrição 2, área 1) e bônus quando o título cobre a
+ * consulta inteira; empate decide pela URL, em ordem alfabética, para o
+ * resultado ser determinístico. As keywords entram na pontuação e nunca no
+ * resultado renderizado.
  *
  * @typedef {Object} SearchResult
  * @property {string} url
@@ -87,21 +89,23 @@ export function filterSearchEntries(entries, query, options = {}) {
 	for (const entry of entries) {
 		const title = normalizeForSearch(entry.title);
 		const description = normalizeForSearch(entry.description);
+		const keywords = Array.isArray(entry.keywords) ? entry.keywords.map(normalizeForSearch) : [];
 		const label = normalizeForSearch(topicLabel.get(entry.topic) ?? entry.topic);
 		let score = 0;
 		let matches = true;
 
 		for (const token of tokens) {
 			const inTitle = title.includes(token);
+			const inKeywords = keywords.some((keyword) => keyword.includes(token));
 			const inDescription = description.includes(token);
 			const inLabel = label.includes(token);
 
-			if (!inTitle && !inDescription && !inLabel) {
+			if (!inTitle && !inKeywords && !inDescription && !inLabel) {
 				matches = false;
 				break;
 			}
 
-			score += (inTitle ? 4 : 0) + (inDescription ? 2 : 0) + (inLabel ? 1 : 0);
+			score += (inTitle ? 4 : 0) + (inKeywords ? 3 : 0) + (inDescription ? 2 : 0) + (inLabel ? 1 : 0);
 		}
 
 		if (!matches) {

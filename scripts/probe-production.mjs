@@ -13,6 +13,10 @@
 import { readFile } from 'node:fs/promises';
 import { lookup } from 'node:dns/promises';
 import { connect as tlsConnect } from 'node:tls';
+import {
+	SEARCH_INDEX_VERSION,
+	validateSearchIndexPayload,
+} from '../src/lib/search-index.mjs';
 
 const ORIGIN = process.argv[2] ?? 'https://tutoriais.epico.site';
 // Subdomínio workers.dev real da conta, confirmado via API em 2026-09-10 (o
@@ -359,9 +363,17 @@ async function main() {
 		);
 		const live = await response.text();
 		const payload = JSON.parse(live);
-		assert(payload.version === 1, `version ${payload.version}`);
-		assert(Array.isArray(payload.entries), 'entries não é lista');
-		let detail = `${payload.entries.length} entradas`;
+		assert(
+			payload.version === SEARCH_INDEX_VERSION,
+			`version ${payload.version} (esperada ${SEARCH_INDEX_VERSION})`,
+		);
+		// O contrato inteiro, com o validador do consumidor: nenhuma entrada
+		// servida pode ser descartada (simetria produtor → consumidor ao vivo).
+		const validated = validateSearchIndexPayload(payload);
+		assert(validated.ok, `fora do contrato: ${validated.ok ? '' : validated.reason}`);
+		assert(validated.discarded === 0, `${validated.discarded} entradas descartadas pelo validador`);
+		const withKeywords = payload.entries.filter((entry) => entry.keywords.length > 0).length;
+		let detail = `versão ${payload.version}, ${payload.entries.length} entradas, ${withKeywords} com keywords`;
 		try {
 			const local = await readFile('dist/search-index.json', 'utf8');
 			assert(

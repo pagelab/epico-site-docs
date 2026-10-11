@@ -11,7 +11,11 @@
  * - slugs distintos que resolvem para a MESMA URL são duplicados;
  * - campos obrigatórios vazios, topic fora da allowlist e data inválida;
  * - quantidade, bytes do payload serializado e caracteres por campo têm teto;
- * - nenhum campo carrega corpo de artigo e texto livre é varrido por PII.
+ * - nenhum campo carrega corpo de artigo e texto livre é varrido por PII e por
+ *   caracteres de controle ou bidirecionais;
+ * - `keywords` (versão 2) é o vocabulário editorial do guia: lista de no máximo
+ *   40 termos, cada um aparado, não vazio, com até 80 caracteres, sem termo
+ *   repetido (comparação sem acento e sem caixa) e com a mesma varredura de PII.
  *
  * O produtor também valida a URL já RESOLVIDA com a barreira do consumidor
  * (`entryUrlViolations`), então nenhum índice gerado aqui pode ser rejeitado
@@ -20,13 +24,21 @@
  * `validateSearchIndexPayload` aplica as mesmas barreiras no CONSUMIDOR do
  * payload, que é entrada remota não confiável no browser, e descarta URLs
  * repetidas (a primeira ocorrência vence), porque o gerador nunca as produz.
+ *
+ * Versão 2 (DOCS-16): cada entrada tem exatamente `url`, `title`,
+ * `description`, `topic`, `lastReviewed` e `keywords`. A versão fixa a
+ * assinatura da entrada: o consumidor deste acervo aceita só a versão 2 e
+ * descarta entrada da versão 1 (sem `keywords`). O leitor do painel em
+ * `app.epico.site` aceita as versões 1 e 2 com os mesmos tetos.
  */
 import { topics } from './topics.mjs';
 
-export const SEARCH_INDEX_VERSION = 1;
+export const SEARCH_INDEX_VERSION = 2;
 export const SEARCH_INDEX_MAX_ENTRIES = 200;
 export const SEARCH_INDEX_MAX_BYTES = 256 * 1024;
 export const SEARCH_INDEX_MAX_FIELD_CHARS = 500;
+export const SEARCH_INDEX_MAX_KEYWORDS = 40;
+export const SEARCH_INDEX_MAX_KEYWORD_CHARS = 80;
 
 /**
  * @typedef {Object} SearchIndexEntryInput
@@ -36,6 +48,7 @@ export const SEARCH_INDEX_MAX_FIELD_CHARS = 500;
  * @property {string} topic
  * @property {boolean} draft Precisa ser exatamente `false`.
  * @property {string} lastReviewed Data YYYY-MM-DD.
+ * @property {string[]} keywords Vocabulário editorial do guia (pode ser vazio).
  */
 
 /**
@@ -45,6 +58,7 @@ export const SEARCH_INDEX_MAX_FIELD_CHARS = 500;
  * @property {string} description
  * @property {string} topic
  * @property {string} lastReviewed
+ * @property {string[]} keywords
  */
 
 /**
@@ -56,6 +70,9 @@ export const SEARCH_INDEX_MAX_FIELD_CHARS = 500;
 const canonicalSegment = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const isoDate = /^\d{4}-\d{2}-\d{2}$/u;
 const allowedTopics = new Set(topics);
+// Controles C0/C1 e overrides bidirecionais: nada que um texto editorial
+// precise. Mesmo conjunto que o leitor do painel recusa.
+const unsafeText = /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/u;
 const piiPatterns = [
   [/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/iu, 'e-mail'],
   [/\/Users\/[A-Za-z0-9._-]+\//u, 'caminho local'],
@@ -152,6 +169,10 @@ function textViolations(input, field) {
     return [`${field} excede o teto de ${SEARCH_INDEX_MAX_FIELD_CHARS} caracteres: ${input.length}`];
   }
 
+  if (unsafeText.test(input)) {
+    return [`${field} contém caractere de controle ou bidirecional`];
+  }
+
   const pii = findPii(input);
 
   if (pii !== null) {
@@ -159,6 +180,69 @@ function textViolations(input, field) {
   }
 
   return [];
+}
+
+/**
+ * Barreiras da lista `keywords`, iguais no produtor e no consumidor: lista
+ * real, no máximo 40 termos, cada termo texto aparado e não vazio com até 80
+ * caracteres, sem controle, bidi ou PII.
+ *
+ * @param {unknown} input
+ * @returns {string[]}
+ */
+function keywordsViolations(input) {
+  if (!Array.isArray(input)) {
+    return ['keywords precisa ser uma lista (vazia quando o guia não tem vocabulário)'];
+  }
+
+  if (input.length > SEARCH_INDEX_MAX_KEYWORDS) {
+    return [`keywords excede o teto de ${SEARCH_INDEX_MAX_KEYWORDS} termos: ${input.length}`];
+  }
+
+  const violations = [];
+
+  input.forEach((term, index) => {
+    const field = `keywords[${index}]`;
+
+    if (typeof term === 'string' && term.trim() !== '' && term !== term.trim()) {
+      violations.push(`${field} tem espaço nas pontas: ${JSON.stringify(term)}`);
+      return;
+    }
+
+    if (typeof term === 'string' && term.length > SEARCH_INDEX_MAX_KEYWORD_CHARS) {
+      violations.push(`${field} excede o teto de ${SEARCH_INDEX_MAX_KEYWORD_CHARS} caracteres: ${term.length}`);
+      return;
+    }
+
+    violations.push(...textViolations(term, field));
+  });
+
+  return violations;
+}
+
+/**
+ * Termos repetidos na lista, comparados sem acento e sem caixa. Só o produtor
+ * cobra: é higiene editorial (o termo repetido não muda o resultado da busca),
+ * não segurança do consumidor.
+ *
+ * @param {string[]} keywords
+ * @returns {string[]}
+ */
+function duplicateKeywordViolations(keywords) {
+  const seen = new Map();
+  const violations = [];
+
+  for (const term of keywords) {
+    const folded = term.normalize('NFD').replace(/[\u0300-\u036f]/gu, '').toLowerCase();
+
+    if (seen.has(folded)) {
+      violations.push(`keywords repete o termo ${JSON.stringify(term)} (igual a ${JSON.stringify(seen.get(folded))} sem acento e sem caixa)`);
+    } else {
+      seen.set(folded, term);
+    }
+  }
+
+  return violations;
 }
 
 /**
@@ -199,7 +283,7 @@ function entryUrlViolations(url) {
 }
 
 /** Chaves exatas de uma entrada, em ordem alfabética para comparação com Object.keys. */
-const entryKeySignature = ['description', 'lastReviewed', 'title', 'topic', 'url'].join(',');
+const entryKeySignature = ['description', 'keywords', 'lastReviewed', 'title', 'topic', 'url'].join(',');
 
 /**
  * Diz se uma entrada candidata satisfaz integralmente o contrato do índice.
@@ -227,7 +311,8 @@ function isSearchIndexEntry(candidate) {
     && textViolations(entry.title, 'title').length === 0
     && textViolations(entry.description, 'description').length === 0
     && typeof entry.topic === 'string' && allowedTopics.has(entry.topic)
-    && typeof entry.lastReviewed === 'string' && isRealDate(entry.lastReviewed);
+    && typeof entry.lastReviewed === 'string' && isRealDate(entry.lastReviewed)
+    && keywordsViolations(entry.keywords).length === 0;
 }
 
 /**
@@ -332,7 +417,12 @@ export function generateSearchIndex(inputs) {
       ...entryUrlViolations(url),
       ...textViolations(input?.title, 'title'),
       ...textViolations(input?.description, 'description'),
+      ...keywordsViolations(input?.keywords),
     ];
+
+    if (Array.isArray(input?.keywords) && input.keywords.every((term) => typeof term === 'string')) {
+      entryViolations.push(...duplicateKeywordViolations(input.keywords));
+    }
 
     if (input?.draft !== false) {
       entryViolations.push('draft precisa ser exatamente false no acervo público');
@@ -370,6 +460,7 @@ export function generateSearchIndex(inputs) {
       description: /** @type {string} */ (input.description).trim(),
       topic: /** @type {string} */ (input.topic),
       lastReviewed: /** @type {string} */ (input.lastReviewed),
+      keywords: [...input.keywords],
     };
   });
 

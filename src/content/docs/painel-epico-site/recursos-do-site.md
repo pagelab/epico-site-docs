@@ -4,6 +4,32 @@ description: Como operar a aba Recursos do painel Épico Site, organizada em qua
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "recursos"
+  - "features"
+  - "funcionalidades"
+  - "ativar recurso"
+  - "desativar recurso"
+  - "comentários"
+  - "comments"
+  - "compartilhamento"
+  - "compartilhar"
+  - "share"
+  - "botões sociais"
+  - "redes sociais"
+  - "WhatsApp"
+  - "modo escuro"
+  - "dark mode"
+  - "leitura em voz alta"
+  - "text to speech"
+  - "imprimir"
+  - "print"
+  - "voltar ao topo"
+  - "monetização"
+  - "blocos"
+  - "blocks"
+  - "editor"
+  - "linha do tempo"
 sidebar:
   order: 4
 ---

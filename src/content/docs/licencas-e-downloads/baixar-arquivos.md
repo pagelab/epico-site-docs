@@ -4,6 +4,28 @@ description: Como baixar a versão disponível para a sua licença, qual versão
 topic: licencas-e-downloads
 draft: false
 lastReviewed: 2026-09-08
+keywords:
+  - "baixar"
+  - "download"
+  - "descargar"
+  - "arquivo zip"
+  - "zip"
+  - "instalar plugin"
+  - "instalar tema"
+  - "versão"
+  - "última versão"
+  - "latest version"
+  - "atualizar"
+  - "update"
+  - "downloads vazio"
+  - "não aparece download"
+  - "renovar"
+  - "renew"
+  - "parou de funcionar"
+  - "deixa de funcionar"
+  - "expirou"
+  - "expired"
+  - "fim do suporte"
 sidebar:
   order: 3
 ---

@@ -4,6 +4,25 @@ description: Como operar a aba Código extra do painel Épico Site, com CSS e Ja
 topic: painel-epico-site
 draft: false
 lastReviewed: 2026-10-02
+keywords:
+  - "código"
+  - "code"
+  - "código personalizado"
+  - "custom code"
+  - "CSS"
+  - "JavaScript"
+  - "JS"
+  - "script"
+  - "pixel"
+  - "snippet"
+  - "head"
+  - "rodapé"
+  - "footer"
+  - "inserir código"
+  - "add code"
+  - "código por página"
+  - "código inválido"
+  - "código personalizado propio"
 sidebar:
   order: 10
 ---

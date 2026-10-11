@@ -14,6 +14,10 @@ import { join, relative, resolve } from 'node:path';
 import {
 	SEARCH_INDEX_MAX_BYTES,
 	SEARCH_INDEX_MAX_ENTRIES,
+	SEARCH_INDEX_MAX_FIELD_CHARS,
+	SEARCH_INDEX_MAX_KEYWORD_CHARS,
+	SEARCH_INDEX_MAX_KEYWORDS,
+	SEARCH_INDEX_VERSION,
 	findPii,
 	generateSearchIndex,
 	serializeSearchIndex,
@@ -31,6 +35,7 @@ type CorpusFile = {
 	topic: string;
 	draft: boolean;
 	lastReviewed: string;
+	keywords: string[];
 	body: string;
 };
 
@@ -49,9 +54,10 @@ function corpusFiles(directory = CONTENT_ROOT): string[] {
 
 /**
  * Parser do subconjunto de frontmatter que o acervo usa: chaves planas
- * `chave: valor` na raiz do bloco. Linhas indentadas (sidebar, hero) pertencem
- * a outras chaves e são ignoradas. É propositalmente mínimo: a sonda precisa
- * da fonte editorial tal como é, não de YAML genérico.
+ * `chave: valor` na raiz do bloco e a lista em bloco de `keywords` (itens
+ * `  - "termo"`, um por linha). As demais linhas indentadas (sidebar, hero)
+ * pertencem a outras chaves e são ignoradas. É propositalmente mínimo: a sonda
+ * precisa da fonte editorial tal como é, não de YAML genérico.
  */
 function parseCorpusFile(path: string): CorpusFile {
 	const raw = readFileSync(path, 'utf8');
@@ -62,13 +68,29 @@ function parseCorpusFile(path: string): CorpusFile {
 	}
 
 	const values = new Map<string, string>();
+	const keywords: string[] = [];
+	let currentKey = '';
 
 	for (const line of match[1].split(/\r?\n/u)) {
 		const top = line.match(/^([A-Za-z][A-Za-z0-9_-]*):(?:[ \t](.*))?$/u);
 
 		if (top !== null) {
+			currentKey = top[1];
 			values.set(top[1], (top[2] ?? '').trim().replace(/^["']|["']$/gu, ''));
+			continue;
 		}
+
+		const item = line.match(/^[ \t]+-[ \t]+(.*)$/u);
+
+		if (currentKey === 'keywords' && item !== null) {
+			const raw = item[1].trim();
+
+			keywords.push(raw.startsWith('"') ? (JSON.parse(raw) as string) : raw);
+		}
+	}
+
+	if ((values.get('keywords') ?? '') !== '') {
+		throw new Error(`adversarial: keywords em linha (use a lista em bloco) em ${path}`);
 	}
 
 	const pick = (key: string): string => {
@@ -94,6 +116,7 @@ function parseCorpusFile(path: string): CorpusFile {
 		topic: pick('topic'),
 		draft: draft === 'true',
 		lastReviewed: pick('lastReviewed'),
+		keywords,
 		body: match[2] ?? '',
 	};
 }
@@ -109,7 +132,10 @@ function generatorInputs() {
 /** O artefato servido, derivado da mesma fonte que o endpoint usa no build. */
 const artifact = serializeSearchIndex(generateSearchIndex(generatorInputs()));
 
-type ArtifactPayload = { entries: Array<{ url: string; title: string; description: string }> };
+type ArtifactPayload = {
+	version: number;
+	entries: Array<{ url: string; title: string; description: string; keywords: string[] }>;
+};
 
 function artifactPayload(): ArtifactPayload {
 	return JSON.parse(artifact) as ArtifactPayload;
@@ -130,6 +156,7 @@ describe('adversarial: corpus real e o artefato servido', () => {
 			expect(entry, `entrada para ${file.slug}`).toBeDefined();
 			expect(entry?.title).toBe(file.title.trim());
 			expect(entry?.description).toBe(file.description.trim());
+			expect(entry?.keywords).toEqual(file.keywords);
 		}
 	});
 
@@ -208,13 +235,13 @@ describe('adversarial: truncagem de rede sobre o artefato real', () => {
 		// Limite documentado da defesa: o contrato garante que toda entrada que
 		// sobrevive é individualmente segura (URL interna, campos tetados, sem
 		// PII), não que o acervo está completo. Completude exigiria assinatura
-		// ou checksum, ausentes no payload versão 1; a integridade do
+		// ou checksum, ausentes no payload versão 2; a integridade do
 		// transporte é dever de same-origin + HTTPS, não do validador.
 		const entries = artifactPayload().entries;
 
 		expect(entries[0]).toBeDefined();
 
-		const partial = validateSearchIndexPayload({ version: 1, entries: [entries[0]!] });
+		const partial = validateSearchIndexPayload({ version: 2, entries: [entries[0]!] });
 
 		expect(partial).toMatchObject({ ok: true, discarded: 0 });
 	});
@@ -227,29 +254,30 @@ describe('adversarial: sondas estruturais contra o validador', () => {
 		description: 'Sonda do validador.',
 		topic: 'primeiros-passos',
 		lastReviewed: '2026-09-08',
+		keywords: ['sonda'],
 	};
 
 	it('descarta chaves próprias __proto__ e constructor (vetor JSON.parse)', () => {
 		for (const key of ['__proto__', 'constructor']) {
 			const hostile = JSON.parse(
-				`{"url":"/primeiros-passos/sonda/","title":"T","description":"D","topic":"primeiros-passos","lastReviewed":"2026-09-08","${key}":{"url":"javascript:alert(1)"}}`,
+				`{"url":"/primeiros-passos/sonda/","title":"T","description":"D","topic":"primeiros-passos","lastReviewed":"2026-09-08","keywords":[],"${key}":{"url":"javascript:alert(1)"}}`,
 			);
 
-			const result = validateSearchIndexPayload({ version: 1, entries: [hostile, validEntry] });
+			const result = validateSearchIndexPayload({ version: 2, entries: [hostile, validEntry] });
 
 			expect(result, key).toMatchObject({ ok: true, discarded: 1 });
 		}
 	});
 
 	it('rejeita version string, entries array-like e url só de barras', () => {
-		expect(validateSearchIndexPayload({ version: '1', entries: [] }).ok).toBe(false);
-		expect(validateSearchIndexPayload({ version: 1, entries: { length: 1, 0: validEntry } }).ok).toBe(false);
-		expect(validateSearchIndexPayload({ version: 1, entries: [{ ...validEntry, url: '//' }] }).ok).toBe(false);
+		expect(validateSearchIndexPayload({ version: '2', entries: [] }).ok).toBe(false);
+		expect(validateSearchIndexPayload({ version: 2, entries: { length: 1, 0: validEntry } }).ok).toBe(false);
+		expect(validateSearchIndexPayload({ version: 2, entries: [{ ...validEntry, url: '//' }] }).ok).toBe(false);
 	});
 
 	it('URL repetida no payload: a primeira vence, as repetições são descartadas', () => {
 		const result = validateSearchIndexPayload({
-			version: 1,
+			version: 2,
 			entries: [validEntry, { ...validEntry, title: 'Clone' }, validEntry],
 		});
 
@@ -257,7 +285,7 @@ describe('adversarial: sondas estruturais contra o validador', () => {
 	});
 
 	it('segmento final index é descartado no consumidor e derruba o build no produtor', () => {
-		expect(validateSearchIndexPayload({ version: 1, entries: [{ ...validEntry, url: '/area/index/' }] }).ok).toBe(
+		expect(validateSearchIndexPayload({ version: 2, entries: [{ ...validEntry, url: '/area/index/' }] }).ok).toBe(
 			false,
 		);
 
@@ -272,11 +300,11 @@ describe('adversarial: sondas estruturais contra o validador', () => {
 			url: `/primeiros-passos/limite-${index}/`,
 		}));
 
-		expect(validateSearchIndexPayload({ version: 1, entries: consumerAtCap })).toMatchObject({
+		expect(validateSearchIndexPayload({ version: 2, entries: consumerAtCap })).toMatchObject({
 			ok: true,
 			discarded: 0,
 		});
-		expect(validateSearchIndexPayload({ version: 1, entries: [...consumerAtCap, validEntry] }).ok).toBe(false);
+		expect(validateSearchIndexPayload({ version: 2, entries: [...consumerAtCap, validEntry] }).ok).toBe(false);
 
 		const producerAtCap = consumerAtCap.map((_entry, index) => ({
 			slug: `primeiros-passos/limite-${index}`,
@@ -285,6 +313,7 @@ describe('adversarial: sondas estruturais contra o validador', () => {
 			topic: 'primeiros-passos',
 			draft: false,
 			lastReviewed: '2026-09-08',
+			keywords: [],
 		}));
 
 		expect(generateSearchIndex(producerAtCap).entries).toHaveLength(SEARCH_INDEX_MAX_ENTRIES);
@@ -298,6 +327,7 @@ describe('adversarial: sondas estruturais contra o validador', () => {
 					topic: 'primeiros-passos',
 					draft: false,
 					lastReviewed: '2026-09-08',
+					keywords: [],
 				},
 			]),
 		).toThrow(/teto de 200 entradas/);
@@ -313,8 +343,9 @@ describe('adversarial: consumidor nos limites em tempo real', () => {
 			description: 'Descrição sintética da sonda de escala do consumidor.',
 			topic: 'primeiros-passos',
 			lastReviewed: '2026-09-08',
+			keywords: [],
 		}));
-		const bytes = JSON.stringify({ version: 1, entries: [...real, ...fill] });
+		const bytes = JSON.stringify({ version: 2, entries: [...real, ...fill] });
 
 		expect(bytes.length).toBeLessThanOrEqual(SEARCH_INDEX_MAX_BYTES);
 
@@ -340,4 +371,96 @@ describe('adversarial: consumidor nos limites em tempo real', () => {
 		// ficar longe de um segundo.
 		expect(performance.now() - started).toBeLessThan(1_000);
 	});
+});
+
+describe('adversarial: vocabulário editorial no artefato real (DOCS-16)', () => {
+	it('o artefato é versão 2 e cada entrada tem exatamente as seis chaves do contrato', () => {
+		const payload = artifactPayload();
+
+		expect(payload.version).toBe(SEARCH_INDEX_VERSION);
+		expect(payload.version).toBe(2);
+
+		for (const entry of payload.entries) {
+			expect(Object.keys(entry).sort()).toEqual(['description', 'keywords', 'lastReviewed', 'title', 'topic', 'url']);
+		}
+	});
+
+	it('o vocabulário existe no acervo e cada lista respeita os tetos', () => {
+		const entries = artifactPayload().entries;
+		const withKeywords = entries.filter((entry) => entry.keywords.length > 0);
+
+		expect(withKeywords.length).toBeGreaterThan(0);
+
+		for (const entry of entries) {
+			expect(entry.keywords.length, entry.url).toBeLessThanOrEqual(SEARCH_INDEX_MAX_KEYWORDS);
+
+			for (const term of entry.keywords) {
+				expect(term.length, `${entry.url}: ${term}`).toBeLessThanOrEqual(SEARCH_INDEX_MAX_KEYWORD_CHARS);
+				expect(findPii(term), `${entry.url}: ${term}`).toBeNull();
+			}
+		}
+	});
+
+	it('orçamento de bytes com o vocabulário inteiro: o acervo cabe com folga mesmo em 200 entradas', () => {
+		const bytes = Buffer.byteLength(artifact, 'utf8');
+		const entries = artifactPayload().entries.length;
+		const projected = (bytes / entries) * SEARCH_INDEX_MAX_ENTRIES;
+
+		expect(bytes).toBeLessThanOrEqual(SEARCH_INDEX_MAX_BYTES);
+		// Na média atual por entrada (keywords incluídas), o teto de quantidade
+		// estoura antes do teto de bytes: o vocabulário não ameaça o orçamento.
+		expect(projected).toBeLessThan(SEARCH_INDEX_MAX_BYTES);
+	});
+
+	it('vocabulário no teto em todas as entradas estoura o orçamento e o serializador falha o build', () => {
+		// 200 entradas com 40 termos de 80 caracteres somam mais de 640 KB só de
+		// keywords: os tetos por campo não bastam e o teto de bytes é a barreira.
+		const atCap = Array.from({ length: SEARCH_INDEX_MAX_ENTRIES }, (_unused, index) => ({
+			slug: `primeiros-passos/limite-${index}`,
+			title: 'Limite',
+			description: 'Entrada sintética da sonda de orçamento.',
+			topic: 'primeiros-passos',
+			draft: false,
+			lastReviewed: '2026-09-08',
+			keywords: Array.from({ length: SEARCH_INDEX_MAX_KEYWORDS }, (_term, term) =>
+				`${String(term).padStart(2, '0')}${'k'.repeat(SEARCH_INDEX_MAX_KEYWORD_CHARS - 2)}`,
+			),
+		}));
+		const payload = generateSearchIndex(atCap);
+
+		expect(() => serializeSearchIndex(payload)).toThrow(/índice excede o teto de 262144 bytes/);
+		expect(SEARCH_INDEX_MAX_FIELD_CHARS).toBeGreaterThan(SEARCH_INDEX_MAX_KEYWORD_CHARS);
+	});
+
+	it.each([
+		['domain', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['dns', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['nameserver', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['renovar licença', '/licencas-e-downloads/licencas-e-prazos/'],
+		['license key', '/licencas-e-downloads/licencas-e-prazos/'],
+		['refund', '/servicos-e-suporte/suporte-e-propriedade/'],
+		['reembolso', '/servicos-e-suporte/suporte-e-propriedade/'],
+		['favicon', '/painel-epico-site/identidade-visual/'],
+		['google analytics', '/painel-epico-site/integracoes/'],
+		['facebook pixel', '/painel-epico-site/integracoes/'],
+		['dark mode', '/painel-epico-site/recursos-do-site/'],
+		['excel', '/painel-epico-site/gerencie-os-leads/'],
+		['loja virtual', '/perguntas-frequentes/'],
+		['ebook', '/painel-epico-site/iscas-e-notificacoes/'],
+	])('a busca de /busca/ acha pelo vocabulário: %j lista %s', (query, url) => {
+		const entries = validateSearchIndexPayload(JSON.parse(artifact));
+
+		expect(entries.ok).toBe(true);
+		if (entries.ok) expect(filterSearchEntries(entries.entries, query).map((result) => result.url)).toContain(url);
+	});
+
+	it.each(['boleto', 'parcelamento', 'ssl', 'https', 'cadeado', 'adsense', 'velocidade'])(
+		'lacuna editorial %j não é apontada para o guia mais próximo',
+		(query) => {
+			const entries = validateSearchIndexPayload(JSON.parse(artifact));
+
+			expect(entries.ok).toBe(true);
+			if (entries.ok) expect(filterSearchEntries(entries.entries, query)).toEqual([]);
+		},
+	);
 });

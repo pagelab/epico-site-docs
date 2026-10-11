@@ -4,6 +4,16 @@ description: Entenda o Épico Site e escolha o caminho certo para começar.
 topic: primeiros-passos
 draft: false
 lastReviewed: 2026-09-07
+keywords:
+  - "começar"
+  - "início"
+  - "primeiros passos"
+  - "getting started"
+  - "empezar"
+  - "como funciona"
+  - "how it works"
+  - "qual serviço escolher"
+  - "escolher serviço"
 sidebar:
   order: 1
 ---

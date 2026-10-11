@@ -4,6 +4,29 @@ description: Passo a passo para apontar o domínio sem tirar o site do ar.
 topic: dominio-e-publicacao
 draft: false
 lastReviewed: 2026-09-08
+keywords:
+  - "apontar domínio"
+  - "apontamento"
+  - "DNS"
+  - "registros DNS"
+  - "nameserver"
+  - "registrador"
+  - "registro.br"
+  - "GoDaddy"
+  - "Hostinger"
+  - "domain"
+  - "connect domain"
+  - "point domain"
+  - "custom domain"
+  - "conectar dominio"
+  - "trocar domínio"
+  - "mudar domínio"
+  - "domínio próprio"
+  - "site fora do ar"
+  - "site caiu"
+  - "downtime"
+  - "acesso ao registrador"
+  - "domínio da licença"
 sidebar:
   order: 3
 ---
