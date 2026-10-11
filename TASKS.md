@@ -32,7 +32,7 @@
 | 22 | `DOCS-10` | P1 | P | Clique no ícone de corrente copia o deep link do título | concluído | ordem do owner de 2026-09-15 |
 | 23 | `DOCS-14` | P1 | G | QA de todas as opções e tutoriais do painel atual | concluído | ordem do owner de 2026-10-02 |
 | 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | concluído em 2026-10-09 (PR #5, merge `1a3d44b`, produção 16/16) | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
-| 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | em integração (gate local verde, PR aberto) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
+| 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | concluído em 2026-10-10 (PR #6, merge `ed1999a`, produção 16/16) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
 
 ## Critérios por task
 
@@ -1954,3 +1954,26 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   .../Area-de-clientes/tests/docs-links-probe.php` em
   `/Users/mac/Studio/app-epico-site`): seção 5 com "version 1 with 27
   entries", "five version-1 contract keys" e o INFO de versão 1 sem keywords.
+- Integração (pedido do owner: "PR, merge e conferir produção como no
+  DOCS-15"): PR #6 aberto com a cabeça `292bc84`, base igual ao `main`
+  (`95140b8`), check do preview do Workers Builds PASS, merge commit `ed1999a`
+  em 2026-10-11T01:35:21Z (UTC, ainda 2026-10-10 no horário local). O Workers
+  Build de produção publicou a versão `6e5fa55e-8902-43dd-a56c-2189d1760786`
+  (deployment de 01:37:01Z, conferido em `wrangler deployments list`).
+- Sonda de produção ANTES do deploy: 15/16, falhando só no índice com
+  `version 1 (esperada 2)`, que era o estado esperado. Depois do deploy:
+  `scripts/probe-production.mjs` 16/16, com o índice em "versão 2, 27
+  entradas, 27 com keywords, bytes 1:1 com o dist" e o CORS do `DOCS-15`
+  intacto.
+- Conferência do lado do painel, somente leitura, com o mesmo comando de
+  antes: seção 5 com `version 2 with 27 entries`, `every entry has exactly the
+  six version-2 contract keys and a canonical path`, `INFO 27 of 27 guides
+  carry editorial keywords`, corpo de 14.932 bytes, ACAO do painel OK, área de
+  toda entrada no mapa fechado, nenhum WARN e `Success` no fim. Nada foi
+  escrito no workspace Área de Clientes.
+- Nota para a sessão do painel: "pix" casa com "pixel" nas duas buscas (na
+  `/busca/` por substring, no painel pelo prefixo de três letras), então a
+  lacuna de pagamento por Pix mostra os guias de Meta Pixel e código extra.
+  `integracoes` já casava pelo resumo, que cita o Pixel. `codigo-extra` casa só
+  pela keyword "pixel", que é legítima (o guia trata o consentimento de
+  rastreadores e pixels).

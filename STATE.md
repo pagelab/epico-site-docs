@@ -478,11 +478,41 @@
   e 27 entradas a partir de `app.epico.site`, bloqueio a partir de
   `example.com`. Narrativa no `TASKS.md` §"Checkpoint de 2026-10-09: DOCS-15".
 
+- `DOCS-16` concluído em 2026-10-10, a partir do QA do owner na busca do
+  painel (14 de 20 perguntas comuns sem resultado). O owner escolheu
+  "vocabulário + tolerância". O `/search-index.json` passou à versão 2: toda
+  entrada tem exatamente `url`, `title`, `description`, `topic`,
+  `lastReviewed` e `keywords`, com no máximo 40 termos de até 80 caracteres,
+  aparados, sem controle, bidi ou PII, e qualquer violação falha o build.
+  Campo opcional `keywords` no frontmatter (lista em bloco, padrão vazio).
+  `/busca/` aceita só a versão 2 e pontua keywords com o peso 3 do painel.
+  São 497 termos em 27 guias, vindos do rascunho revisado pelo owner com
+  correções conferidas contra o texto de cada guia. O guia
+  `configuracoes-do-blog` do rascunho nunca foi commitado: existe só como
+  arquivo não rastreado no checkout principal, e não foi publicado daqui.
+  `npm run verify` exit 0 (300 testes + 1 skipIf), treze de catorze provas
+  por mutação derrubadas (a sobrevivente é equivalente) e o build real falha
+  com PII ou excesso de termos. PR #6 integrado (merge `ed1999a`), versão de
+  produção `6e5fa55e`, `probe-production.mjs` 16/16. A sonda do painel
+  (somente leitura) mostra a seção 5 com versão 2, seis chaves e "27 of 27
+  guides carry editorial keywords", sem WARN. Narrativa no `TASKS.md`
+  §"Checkpoint de 2026-10-10: DOCS-16".
+
 ## ▶ Próxima ação
 
-Nada pendente neste repositório: fila local sem tasks abertos (`DOCS-00` a
-`DOCS-15` concluídos) e o build canônico de produção a cada push no `main`
-segue automático. O que resta é da sessão do workspace Área de Clientes (não
+Nada técnico pendente neste repositório: fila local sem tasks abertos
+(`DOCS-00` a `DOCS-16` concluídos) e o build canônico de produção a cada push
+no `main` segue automático.
+
+Decisões de conteúdo do owner, abertas pelo `DOCS-16` (nenhuma vira keyword de
+guia vizinho): (1) lacunas sem guia: pagamento por boleto, Pix, cartão ou
+parcelamento; SSL e HTTPS; senha do painel; velocidade do site; e-mail
+profissional; anúncios e AdSense; (2) o guia `configuracoes-do-blog`, não
+rastreado no checkout principal: commitar com proveniência quando a aba Blog
+estiver no plugin do kit lançado, e então levar junto a lista de keywords do
+rascunho. Teste de pronto para (2): `git ls-files
+src/content/docs/painel-epico-site/configuracoes-do-blog.md` imprime o caminho
+no `main`. O que resta é da sessão do workspace Área de Clientes (não
 editar daqui): quando o código do `PANEL-01B` chegar ao `main` do plugin,
 rodar `studio wp --path=/Users/mac/Studio/app-epico-site eval-file
 tests/docs-links-probe.php` e conferir que a seção 5 imprime OK onde registrou
@@ -555,7 +585,10 @@ GraphQL desde 2026-09-14) continua como follow-up independente do owner.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-10-09 (`DOCS-15`, CORS estreito do `/search-index.json`
+- Última sessão: 2026-10-10 (`DOCS-16`, vocabulário editorial e índice versão
+  2: PR #6 integrado, produção 16/16 na versão `6e5fa55e`, sonda do painel com
+  a seção 5 em versão 2 e 27 de 27 guias com keywords, `npm run verify` exit 0
+  na sessão). Antes dela, 2026-10-09 (`DOCS-15`, CORS estreito do `/search-index.json`
   para o painel, pedido pela sessão Área de Clientes: PR #5 integrado no
   `main`, produção 16/16 na versão `0c099e23` e leitura cross-origin
   confirmada em navegador real, com `npm run verify` exit 0 na sessão e 231
