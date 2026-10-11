@@ -511,11 +511,24 @@
   sessão do painel. Narrativa no `TASKS.md` §"Checkpoint de 2026-10-10:
   DOCS-17".
 
+- `DOCS-18` em integração desde 2026-10-10, por ordem do owner: o guia
+  `/dominio-e-publicacao/conecte-seu-dominio/` ganha as keywords "down",
+  "site down", "site is down", "website down", "offline" e "site offline", e
+  a `/busca/` espelha o prefixo a 0,7 do painel 0.137.1 (sem isso, "downloads"
+  no título das licenças vencia a keyword "down"). Paridade com o `shell.js`
+  0.137.1 em 770 consultas, "my site is down" com o guia em primeiro, `npm run
+  verify` exit 0 (349 testes) e duas provas por mutação derrubadas. Narrativa
+  no `TASKS.md` §"Checkpoint de 2026-10-10: DOCS-18".
+
 ## ▶ Próxima ação
 
-Nada técnico pendente neste repositório: fila local sem tasks abertos
-(`DOCS-00` a `DOCS-17` concluídos) e o build canônico de produção a cada push
-no `main` segue automático.
+Integrar o `DOCS-18` como no `DOCS-16`: PR com o check do preview do
+Workers Builds PASS, merge, versão nova em `wrangler deployments list`,
+`scripts/probe-production.mjs` 16/16 e, em
+`https://tutoriais.epico.site/busca/`, "my site is down" com
+`/dominio-e-publicacao/conecte-seu-dominio/` em primeiro. Teste de pronto:
+`curl -s https://tutoriais.epico.site/search-index.json` contém
+`"site offline"`.
 
 Decisões de conteúdo do owner, abertas pelo `DOCS-16` (nenhuma vira keyword de
 guia vizinho): (1) lacunas sem guia: pagamento por boleto, Pix, cartão ou

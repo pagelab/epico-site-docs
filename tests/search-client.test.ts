@@ -84,7 +84,7 @@ describe('encontro tolerante entre palavras (mesma escada do painel)', () => {
 		['dominio', 'dominio', 1],
 		['dominios', 'dominio', 0.95],
 		['configuracoes', 'configuracao', 0.95],
-		['publ', 'publicacao', 0.8],
+		['publ', 'publicacao', 0.7],
 		['renovar', 'renovacao', 0.7],
 		['dominoi', 'dominio', 0.6],
 		['licensa', 'licenca', 0.6],
@@ -208,6 +208,19 @@ describe('filtro do browser', () => {
 		];
 
 		expect(filterSearchEntries(bonus, 'dominio backup').map((result) => result.url)).toEqual(['/a/', '/b/']);
+	});
+
+	it('keyword inteira vence fragmento no título (prefixo a 0,7, como no painel 0.137.1)', () => {
+		// Com o prefixo a 0,8, "down" em "downloads" no título (4 x 0,8 = 3,2)
+		// vencia a keyword "down" (3 x 1) e "my site is down" punha as licenças
+		// acima do guia de domínio.
+		const outage = [
+			indexEntry({ url: '/a/', title: 'Licenças e downloads', description: 'Nada.', keywords: ['sites conectados'] }),
+			indexEntry({ url: '/b/', title: 'Conecte seu domínio', description: 'Nada.', keywords: ['site', 'down'] }),
+		];
+
+		expect(filterSearchEntries(outage, 'my site is down').map((result) => result.url)).toEqual(['/b/', '/a/']);
+		expect(filterSearchEntries(outage, 'download').map((result) => result.url)).toEqual(['/a/']);
 	});
 
 	it('é determinístico: mesma consulta e índice produzem a mesma lista', () => {

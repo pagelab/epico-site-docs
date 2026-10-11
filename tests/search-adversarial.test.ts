@@ -500,6 +500,30 @@ describe('adversarial: vocabulário editorial no artefato real (DOCS-16)', () =>
 		expect(rank).toBeLessThan(3);
 	});
 
+	// Pedido do owner de 2026-10-10 (DOCS-18): quem diz que o site caiu cai
+	// primeiro no guia de domínio, pelas keywords de queda e pelo prefixo a 0,7
+	// do painel 0.137.1. "download" continua indo para a área de downloads.
+	it.each([
+		['my site is down', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['site down', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['site is down', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['website down', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['offline', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['site offline', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['website offline', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['meu site caiu', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['download', '/licencas-e-downloads/'],
+	])('a busca de /busca/ põe o guia certo em primeiro: %j → %s', (query, url) => {
+		const entries = validateSearchIndexPayload(JSON.parse(artifact));
+
+		expect(entries.ok).toBe(true);
+		if (!entries.ok) return;
+
+		const found = filterSearchEntries(entries.entries, query).map((result) => result.url);
+
+		expect(found[0], `top: ${found.slice(0, 3).join(' ')}`).toBe(url);
+	});
+
 	// "parcelamento" fica fora: está a duas edições de "cancelamento" e as duas
 	// buscas (esta e a do painel) mostram os guias de cancelamento. "pix" também,
 	// porque é prefixo de "pixel". São falsos positivos compartilhados, mantidos
