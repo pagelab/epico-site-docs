@@ -34,6 +34,7 @@
 | 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | concluído em 2026-10-09 (PR #5, merge `1a3d44b`, produção 16/16) | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
 | 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | concluído em 2026-10-10 (PR #6, merge `ed1999a`, produção 16/16) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
 | 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | concluído em 2026-10-10 (PR #7, merge `bd4a186`, produção 16/16) | ordem do owner de 2026-10-10, depois do `DOCS-16` |
+| 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | em integração | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
 
 ## Critérios por task
 
@@ -257,6 +258,25 @@
   guia certo entre os três primeiros, e as lacunas seguem sem resultado.
 - Fora do recorte: mudar o ranking do painel. Falso positivo compartilhado
   fica registrado para a sessão do painel decidir, sem divergir daqui.
+
+### `DOCS-18` — "my site is down" em primeiro no guia de domínio
+
+- Ordem do owner em 2026-10-10: acrescentar ao guia
+  `/dominio-e-publicacao/conecte-seu-dominio/` as keywords "down", "site
+  down", "site is down", "website down", "offline" e "site offline", para que
+  "my site is down" traga esse guia em primeiro. O painel 0.137.1 já está em
+  produção com o prefixo de palavra a 0,7.
+- Só as keywords não bastam: com o prefixo a 0,8 do `DOCS-17`, "down" em
+  "downloads" no título de `/licencas-e-downloads/` vale 4 x 0,8 = 3,2 e vence
+  a keyword inteira "down" (3 x 1). A `/busca/` passa a espelhar a regra do
+  0.137.1 (prefixo 0,7, keyword inteira 3 vence fragmento no título 2,8),
+  mantendo o critério do `DOCS-17` de as duas buscas devolverem a mesma lista.
+- Critério de pronto: na `/busca/` e no painel, "my site is down", "site
+  down", "site is down", "website down", "offline", "site offline", "website
+  offline" e "meu site caiu" põem o guia de domínio em primeiro, "download"
+  continua na área de downloads e as 33 consultas de aceite seguem no top três.
+- Fora do recorte: "down" sozinho continua com a área de downloads em
+  primeiro (título cobrindo a palavra ganha o bônus de 3), igual no painel.
 
 ### `PANEL-01A`, `PANEL-01B` e `PANEL-02` — integração WordPress
 
@@ -2053,3 +2073,36 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   segundo lugar, atrás do índice da área. "my site is down" dá 4 resultados
   com o mesmo guia em segundo. "boleto" responde "Nenhum resultado" e mostra as
   áreas. Nenhum erro de console.
+
+## Checkpoint de 2026-10-10: DOCS-18 (keywords de queda e prefixo a 0,7)
+
+- `src/content/docs/dominio-e-publicacao/conecte-seu-dominio.md`: seis
+  keywords novas depois de "downtime" ("down", "site down", "site is down",
+  "website down", "offline", "site offline"). O guia passa a 28 termos e o
+  acervo a 503. O guia já trata a queda: o resumo promete apontar o domínio
+  "sem tirar o site do ar" e as keywords "site fora do ar", "site caiu" e
+  "downtime" vinham do `DOCS-16`.
+- Medido antes da mudança, sobre o índice vivo: "my site is down", "site
+  down" e "website down" punham `/licencas-e-downloads/` em primeiro e o guia
+  em segundo. "offline" e "site offline" não achavam nada. Só com as
+  keywords, "my site is down" seguia em segundo, pela conta do fragmento no
+  título (3,2 contra 3).
+- `src/lib/search-client.mjs`: prefixo de palavra de 0,8 para 0,7, a única
+  mudança do `shell.js` entre o painel 0.137.0 e o 0.137.1 (commit `8842f96`
+  do plugin, lido sem escrever no workspace Área de Clientes). O comentário
+  de `wordMatch` registra o porquê.
+- Paridade medida por ferramenta de sessão: o trecho do `shell.js` 0.137.1
+  rodou num `vm` contra o `filterSearchEntries` do acervo, sobre o
+  `dist/search-index.json` novo, em 770 consultas (as 33 de aceite, as de
+  queda, lacunas, todos os termos de keywords e variações de cada palavra de
+  título). As 770 devolveram a mesma lista na mesma ordem.
+- Testes (349, eram 339): `tests/search-adversarial.test.ts` exige o guia de
+  domínio em primeiro para oito consultas de queda e a área de downloads em
+  primeiro para "download". `tests/search-client.test.ts` modela o caso com
+  duas entradas sintéticas e a escada passa a cobrar 0,7 no prefixo.
+- Duas provas por mutação, as duas derrubadas: prefixo de volta a 0,8 (cinco
+  testes falham) e as seis keywords removidas (sete falham). Restauração
+  conferida por SHA-256.
+- `npm run verify` exit 0: check sem diagnósticos, lint e política PASS, 349
+  testes, contraste, build de 29 páginas, publicação estática PASS, audit PASS
+  com a exceção nomeada do `braces` e install scripts PASS.

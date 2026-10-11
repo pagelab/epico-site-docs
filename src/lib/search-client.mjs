@@ -30,7 +30,7 @@ const topicLabel = new Map(Object.entries(topicGroups));
 /*
  * Ranking tolerante (DOCS-17). Espelha regra por regra a busca do painel em
  * `app.epico.site` (`assets/js/shell.js` do plugin `epico-client-area`, versão
- * 0.137.0), para que as duas buscas sobre o mesmo índice concordem: palavras
+ * 0.137.1), para que as duas buscas sobre o mesmo índice concordem: palavras
  * inteiras dobradas sem acento, palavras de ligação descartadas, plural e
  * terminação reduzidos, palavra digitada pela metade, raiz comum, erro de
  * digitação e raridade da palavra no acervo. Nada de regex construída a partir
@@ -187,8 +187,11 @@ function sharedPrefix(left, right) {
 /**
  * Força do encontro entre uma palavra digitada e uma palavra do guia, de 1 (a
  * mesma palavra) a 0 (sem relação). Cada degrau existe para um jeito real de
- * digitar: plural, palavra pela metade, verbo contra substantivo ("renovar" e
- * "renovacao" compartilham "renova"), erro de digitação e palavra dentro de
+ * digitar: plural, palavra pela metade (0,7: fragmento é indício mais fraco
+ * que palavra inteira, então keyword inteira, 3 x 1, vence fragmento no título,
+ * 4 x 0,7. Com 0,8, "my site is down" punha "Licenças e downloads" acima do
+ * guia de domínio, que tem a keyword "down"), verbo contra substantivo
+ * ("renovar" e "renovacao" compartilham "renova"), erro de digitação e palavra dentro de
  * palavra composta. A raiz comum exige seis letras: com cinco, "contato" já
  * encontraria "contas", que é resposta errada.
  *
@@ -199,7 +202,7 @@ function sharedPrefix(left, right) {
 export function wordMatch(token, word) {
 	if (token === word) return 1;
 	if (stemSearch(token) === stemSearch(word)) return 0.95;
-	if (token.length >= 3 && word.startsWith(token)) return 0.8;
+	if (token.length >= 3 && word.startsWith(token)) return 0.7;
 
 	const shared = sharedPrefix(token, word);
 

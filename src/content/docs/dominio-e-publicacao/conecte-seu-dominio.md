@@ -25,6 +25,12 @@ keywords:
   - "site fora do ar"
   - "site caiu"
   - "downtime"
+  - "down"
+  - "site down"
+  - "site is down"
+  - "website down"
+  - "offline"
+  - "site offline"
   - "acesso ao registrador"
   - "domínio da licença"
 sidebar:
