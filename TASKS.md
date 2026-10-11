@@ -34,7 +34,7 @@
 | 24 | `DOCS-15` | P1 | P | CORS estreito no `/search-index.json` para a busca do painel | concluído em 2026-10-09 (PR #5, merge `1a3d44b`, produção 16/16) | pedido da sessão Área de Clientes (`PANEL-01B`) de 2026-10-09 |
 | 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | concluído em 2026-10-10 (PR #6, merge `ed1999a`, produção 16/16) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
 | 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | concluído em 2026-10-10 (PR #7, merge `bd4a186`, produção 16/16) | ordem do owner de 2026-10-10, depois do `DOCS-16` |
-| 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | em integração | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
+| 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | concluído em 2026-10-10 (PR #8, merge `6562017`, produção 16/16) | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
 
 ## Critérios por task
 
@@ -2106,3 +2106,21 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
 - `npm run verify` exit 0: check sem diagnósticos, lint e política PASS, 349
   testes, contraste, build de 29 páginas, publicação estática PASS, audit PASS
   com a exceção nomeada do `braces` e install scripts PASS.
+- Integração por ordem do owner ("o check passou, faça o merge e confira
+  produção"): PR #8 com a cabeça `5e9b304`, base igual ao `main` (`60e3de7`),
+  check do preview do Workers Builds PASS, merge commit `6562017` em
+  2026-10-11T02:38:49Z (UTC, ainda 2026-10-10 no horário local). O Workers
+  Build de produção publicou a versão `a6b98cb5-45fc-46f3-984d-1b559b626633`
+  (deployment de 02:40:24Z, conferido em `wrangler deployments list`). O
+  índice novo apareceu cerca de dois minutos depois do merge.
+- `scripts/probe-production.mjs` 16/16, com o índice em versão 2, 27
+  entradas, 27 com keywords e bytes 1:1 com o `dist` do `main` integrado. A
+  paridade com o `shell.js` 0.137.1 refeita sobre o índice VIVO deu 770 de
+  770 consultas iguais.
+- Navegador real em `https://tutoriais.epico.site/busca/`: "my site is down"
+  dá 4 resultados com `/dominio-e-publicacao/conecte-seu-dominio/` em
+  primeiro, "site offline" dá só esse guia e "download" põe a área de
+  downloads em primeiro. Nenhum erro de console.
+- Para a sessão da Área de Clientes (não editado daqui): o índice v2 vivo já
+  tem os termos de queda, então a recaptura em `tests/fixtures/` e a
+  asserção de "my site is down" em primeiro no grupo H podem seguir.
