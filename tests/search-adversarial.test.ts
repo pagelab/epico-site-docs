@@ -366,7 +366,24 @@ describe('adversarial: consumidor nos limites em tempo real', () => {
 			expect(Array.isArray(filterSearchEntries(entries, hostile))).toBe(true);
 		}
 
-		// Sonda de ausência de retrocesso quadrático (busca literal, sem regex),
+		// Pior caso do ranking tolerante: 12 palavras longas que quase casam
+		// (distância de edição sem saída antecipada fácil) contra 200 entradas
+		// com 40 keywords de 80 caracteres cada.
+		const heavy = Array.from({ length: SEARCH_INDEX_MAX_ENTRIES }, (_unused, index) => ({
+			url: `/primeiros-passos/pesado-${index}/`,
+			title: `Configuracoes avancadas do dominio numero ${index}`,
+			description: 'Descricao longa com publicacao, licenciamento, renovacao e integracoes variadas.',
+			topic: 'primeiros-passos',
+			lastReviewed: '2026-09-08',
+			keywords: Array.from({ length: SEARCH_INDEX_MAX_KEYWORDS }, (_term, term) =>
+				`configuracao${term} publicacoes renovacoes licenciamentos integracao dominios`.slice(0, SEARCH_INDEX_MAX_KEYWORD_CHARS),
+			),
+		}));
+		const heavyQuery = 'configuracaz publicacaoes renovacaox licenciamentoz integracaox dominiosx configuracoex publicacoez renovacoezx licenciamentx integracoesx dominioz';
+
+		expect(filterSearchEntries(heavy, heavyQuery).length).toBeGreaterThan(0);
+
+		// Sonda de ausência de retrocesso quadrático (busca sem regex),
 		// não gate de performance: a bateria inteira no teto de escala precisa
 		// ficar longe de um segundo.
 		expect(performance.now() - started).toBeLessThan(1_000);
@@ -432,29 +449,62 @@ describe('adversarial: vocabulário editorial no artefato real (DOCS-16)', () =>
 		expect(SEARCH_INDEX_MAX_FIELD_CHARS).toBeGreaterThan(SEARCH_INDEX_MAX_KEYWORD_CHARS);
 	});
 
+	// Conjunto de aceite da busca, copiado de `queries` em
+	// `tests/fixtures/docs-search-vocabulary-draft-2026-10-10.json` da Área de
+	// Clientes (o mesmo que a sonda do painel cobra, grupo H4): o guia certo
+	// aparece entre os três primeiros nas duas buscas.
 	it.each([
 		['domain', '/dominio-e-publicacao/conecte-seu-dominio/'],
 		['dns', '/dominio-e-publicacao/conecte-seu-dominio/'],
-		['nameserver', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['como aponto meu domínio', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['transferir dominio', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['my site is down', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['colocar o site no ar', '/dominio-e-publicacao/publique-seu-site-pela-primeira-vez/'],
 		['renovar licença', '/licencas-e-downloads/licencas-e-prazos/'],
 		['license key', '/licencas-e-downloads/licencas-e-prazos/'],
+		['minha licença expirou', '/licencas-e-downloads/licencas-e-prazos/'],
+		['atualizar plugin', '/painel-epico-site/suporte-e-licenca/'],
+		['how much does it cost', '/servicos-e-suporte/precos-e-hospedagem/'],
+		['cuánto cuesta', '/servicos-e-suporte/precos-e-hospedagem/'],
+		['quero meu dinheiro de volta', '/servicos-e-suporte/suporte-e-propriedade/'],
 		['refund', '/servicos-e-suporte/suporte-e-propriedade/'],
-		['reembolso', '/servicos-e-suporte/suporte-e-propriedade/'],
+		['formulario de contato', '/painel-epico-site/captura-de-leads/'],
+		['exportar contatos para excel', '/painel-epico-site/gerencie-os-leads/'],
+		['trocar logo', '/painel-epico-site/identidade-visual/'],
+		['mudar as cores', '/painel-epico-site/identidade-visual/'],
 		['favicon', '/painel-epico-site/identidade-visual/'],
 		['google analytics', '/painel-epico-site/integracoes/'],
 		['facebook pixel', '/painel-epico-site/integracoes/'],
+		['banner de cookies lgpd', '/painel-epico-site/privacidade-e-consentimento/'],
+		['alteração não aparece no site', '/painel-epico-site/publicacao-do-site/'],
 		['dark mode', '/painel-epico-site/recursos-do-site/'],
-		['excel', '/painel-epico-site/gerencie-os-leads/'],
+		['botão do whatsapp', '/painel-epico-site/recursos-do-site/'],
+		['fazer backup', '/painel-epico-site/gerenciamento/'],
+		['inserir código no head', '/painel-epico-site/codigo-extra/'],
+		['e-book gratuito', '/painel-epico-site/iscas-e-notificacoes/'],
 		['loja virtual', '/perguntas-frequentes/'],
-		['ebook', '/painel-epico-site/iscas-e-notificacoes/'],
-	])('a busca de /busca/ acha pelo vocabulário: %j lista %s', (query, url) => {
+		['o que é headless', '/primeiros-passos/formatos-de-publicacao/'],
+		['meus plugins vão funcionar', '/primeiros-passos/formatos-de-publicacao/'],
+		['dominoi', '/dominio-e-publicacao/conecte-seu-dominio/'],
+		['licensa', '/licencas-e-downloads/licencas-e-prazos/'],
+	])('a busca de /busca/ põe o guia certo entre os três primeiros: %j → %s', (query, url) => {
 		const entries = validateSearchIndexPayload(JSON.parse(artifact));
 
 		expect(entries.ok).toBe(true);
-		if (entries.ok) expect(filterSearchEntries(entries.entries, query).map((result) => result.url)).toContain(url);
+		if (!entries.ok) return;
+
+		const found = filterSearchEntries(entries.entries, query).map((result) => result.url);
+		const rank = found.indexOf(url);
+
+		expect(rank, `top: ${found.slice(0, 3).join(' ')}`).toBeGreaterThanOrEqual(0);
+		expect(rank).toBeLessThan(3);
 	});
 
-	it.each(['boleto', 'parcelamento', 'ssl', 'https', 'cadeado', 'adsense', 'velocidade'])(
+	// "parcelamento" fica fora: está a duas edições de "cancelamento" e as duas
+	// buscas (esta e a do painel) mostram os guias de cancelamento. "pix" também,
+	// porque é prefixo de "pixel". São falsos positivos compartilhados, mantidos
+	// para as buscas concordarem (ver checkpoint do DOCS-17).
+	it.each(['boleto', 'ssl', 'https', 'cadeado', 'adsense', 'velocidade', 'esqueci a senha', 'certificado ssl', 'site lento'])(
 		'lacuna editorial %j não é apontada para o guia mais próximo',
 		(query) => {
 			const entries = validateSearchIndexPayload(JSON.parse(artifact));

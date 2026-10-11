@@ -1,11 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
 	SEARCH_FETCH_TIMEOUT_MS,
+	SEARCH_QUERY_MAX_CHARS,
 	SEARCH_RESULTS_LIMIT,
 	fetchSearchIndex,
 	filterSearchEntries,
 	normalizeForSearch,
 	tokenizeQuery,
+	wordMatch,
 } from '../src/lib/search-client.mjs';
 import { SEARCH_INDEX_MAX_BYTES } from '../src/lib/search-index.mjs';
 
@@ -51,13 +53,48 @@ describe('normalização e tokens da consulta', () => {
 		expect(normalizeForSearch('  Publicação   do Site ')).toBe('publicacao do site');
 	});
 
-	it('produz tokens literais limitados em quantidade', () => {
+	it('produz palavras inteiras, sem repetição e limitadas em quantidade', () => {
 		expect(tokenizeQuery('  Ola   MUNDO ')).toEqual(['ola', 'mundo']);
-		expect(tokenizeQuery('um dois três quatro')).toEqual(['um', 'dois', 'tres', 'quatro']);
+		expect(tokenizeQuery('Domínio, domínio; DOMINIO!')).toEqual(['dominio']);
+		expect(tokenizeQuery('e-mail/registro.br')).toEqual(['mail', 'registro', 'br']);
 
 		const manyTokens = tokenizeQuery(Array.from({ length: 40 }, (_unused, index) => `t${index}`).join(' '));
 
 		expect(manyTokens).toHaveLength(12);
+	});
+
+	it('descarta palavras de ligação em português, inglês e espanhol, com volta quando só há elas', () => {
+		expect(tokenizeQuery('um dois três quatro')).toEqual(['dois', 'tres', 'quatro']);
+		expect(tokenizeQuery('como eu conecto meu domínio')).toEqual(['conecto', 'dominio']);
+		expect(tokenizeQuery('how do I connect my domain')).toEqual(['connect', 'domain']);
+		expect(tokenizeQuery('cuánto cuesta mi dominio')).toEqual(['cuanto', 'cuesta', 'dominio']);
+		expect(tokenizeQuery('como e onde')).toEqual(['como', 'onde']);
+	});
+
+	it('descarta letra solta e lê no máximo o teto de caracteres da consulta', () => {
+		expect(tokenizeQuery('a b c')).toEqual([]);
+		expect(tokenizeQuery('% * (')).toEqual([]);
+		expect(tokenizeQuery(`${'x'.repeat(SEARCH_QUERY_MAX_CHARS - 3)} dns`)).not.toContain('dns');
+		expect(tokenizeQuery(`${'x'.repeat(SEARCH_QUERY_MAX_CHARS - 4)} dns`)).toContain('dns');
+	});
+});
+
+describe('encontro tolerante entre palavras (mesma escada do painel)', () => {
+	it.each([
+		['dominio', 'dominio', 1],
+		['dominios', 'dominio', 0.95],
+		['configuracoes', 'configuracao', 0.95],
+		['publ', 'publicacao', 0.8],
+		['renovar', 'renovacao', 0.7],
+		['dominoi', 'dominio', 0.6],
+		['licensa', 'licenca', 0.6],
+		['mail', 'email', 0.6],
+		['site', 'websites', 0.5],
+		['contato', 'contas', 0],
+		['ab', 'abc', 0],
+		['dns', 'nds', 0],
+	])('%j contra %j vale %d', (token, word, strength) => {
+		expect(wordMatch(token, word)).toBe(strength);
 	});
 });
 
@@ -73,11 +110,28 @@ describe('filtro do browser', () => {
 		expect(filterSearchEntries(corpus, 'LICENÇAS')[0]?.url).toBe('/licencas-e-downloads/licencas-e-prazos/');
 	});
 
-	it('exige todos os tokens (AND) em título, descrição ou área', () => {
-		expect(filterSearchEntries(corpus, 'dominio site')[0]?.url).toBe(
+	it('tolera plural, palavra pela metade, erro de digitação e palavras de ligação', () => {
+		for (const query of ['dominios', 'domin', 'dominoi', 'como eu conecto meu domínio', 'conectar dominio']) {
+			expect(filterSearchEntries(corpus, query)[0]?.url, query).toBe('/dominio-e-publicacao/conecte-seu-dominio/');
+		}
+	});
+
+	it('palavra que nenhum guia tem não esconde a resposta, mas sozinha não acha nada', () => {
+		expect(filterSearchEntries(corpus, 'transferir dominio')[0]?.url).toBe(
 			'/dominio-e-publicacao/conecte-seu-dominio/',
 		);
-		expect(filterSearchEntries(corpus, 'dominio inexistente')).toEqual([]);
+		expect(filterSearchEntries(corpus, 'zzzzqqqq')).toEqual([]);
+	});
+
+	it('palavra comum a todos vale pouco: decide a palavra rara, e a comum com uma desconhecida não lista tudo', () => {
+		const common = ['a', 'b', 'c', 'd'].map((letter) =>
+			indexEntry({ url: `/primeiros-passos/${letter}/`, title: `Guia ${letter}`, description: 'Ajuste o site.' }),
+		);
+		const withRare = [...common, indexEntry({ url: '/primeiros-passos/e/', title: 'Guia e', description: 'Ajuste o site e o DNS.' })];
+
+		expect(filterSearchEntries(withRare, 'site dns').map((result) => result.url)).toEqual(['/primeiros-passos/e/']);
+		expect(filterSearchEntries(withRare, 'site')).toHaveLength(5);
+		expect(filterSearchEntries(withRare, 'site xyzqwk')).toEqual([]);
 	});
 
 	it('busca pela área encontra o índice da área sem a palavra no título', () => {
@@ -89,13 +143,14 @@ describe('filtro do browser', () => {
 		).toBe('/perguntas-frequentes/');
 	});
 
-	it('trata metacaracteres como texto literal, sem regex e sem exceção', () => {
+	it('trata metacaracteres como separadores de palavra, sem regex e sem exceção', () => {
 		const dotCorpus = [
 			indexEntry({ url: '/editar-seu-site/versoes/', title: 'Versão 1.2.3 do editor', topic: 'editar-seu-site' }),
 		];
 
-		expect(filterSearchEntries(dotCorpus, '1.2.3')).toHaveLength(1);
-		expect(filterSearchEntries(dotCorpus, '1X2X3')).toHaveLength(0);
+		expect(filterSearchEntries(dotCorpus, 'versão (editor)*')).toHaveLength(1);
+		expect(filterSearchEntries(dotCorpus, '.*')).toHaveLength(0);
+		expect(filterSearchEntries(dotCorpus, '[a-z]+')).toHaveLength(0);
 
 		for (const hostile of [
 			'(a) [b] {c} d.e f*g h+i j^k l$m n|o p?q r\\s t/u v<w> x=y',
@@ -135,11 +190,24 @@ describe('filtro do browser', () => {
 		expect(JSON.stringify(results)).not.toContain('"keywords"');
 	});
 
-	it('termo do vocabulário satisfaz o AND junto com o título', () => {
-		const vocab = [indexEntry({ url: '/a/', title: 'Conecte seu domínio', keywords: ['nameserver', 'registro.br'] })];
+	it('termo do vocabulário acha o guia sozinho e combinado com o título', () => {
+		const vocab = [
+			indexEntry({ url: '/a/', title: 'Conecte seu domínio', keywords: ['nameserver', 'registro.br'] }),
+			indexEntry({ url: '/b/', title: 'Outra coisa', keywords: [] }),
+		];
 
-		expect(filterSearchEntries(vocab, 'nameserver dominio')).toHaveLength(1);
-		expect(filterSearchEntries(vocab, 'nameserver godaddy')).toHaveLength(0);
+		expect(filterSearchEntries(vocab, 'nameservers').map((result) => result.url)).toEqual(['/a/']);
+		expect(filterSearchEntries(vocab, 'nameserver dominio').map((result) => result.url)).toEqual(['/a/']);
+		expect(filterSearchEntries(vocab, 'godaddy')).toEqual([]);
+	});
+
+	it('título que cobre todas as palavras ganha o bônus e passa à frente de encontro mais forte fora do título', () => {
+		const bonus = [
+			indexEntry({ url: '/a/', title: 'Dominio bakcup', description: 'Nada.', keywords: [] }),
+			indexEntry({ url: '/b/', title: 'Dominio', description: 'Nada.', keywords: ['backup'] }),
+		];
+
+		expect(filterSearchEntries(bonus, 'dominio backup').map((result) => result.url)).toEqual(['/a/', '/b/']);
 	});
 
 	it('é determinístico: mesma consulta e índice produzem a mesma lista', () => {

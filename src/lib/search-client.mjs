@@ -22,9 +22,20 @@ import { topicGroups } from './topics.mjs';
 export const SEARCH_FETCH_TIMEOUT_MS = 5_000;
 export const SEARCH_RESULTS_LIMIT = 30;
 export const SEARCH_QUERY_MAX_TOKENS = 12;
+export const SEARCH_QUERY_MAX_CHARS = 100;
 
 /** Label público da área, com fallback para o próprio slug do topic. */
 const topicLabel = new Map(Object.entries(topicGroups));
+
+/*
+ * Ranking tolerante (DOCS-17). Espelha regra por regra a busca do painel em
+ * `app.epico.site` (`assets/js/shell.js` do plugin `epico-client-area`, versão
+ * 0.137.0), para que as duas buscas sobre o mesmo índice concordem: palavras
+ * inteiras dobradas sem acento, palavras de ligação descartadas, plural e
+ * terminação reduzidos, palavra digitada pela metade, raiz comum, erro de
+ * digitação e raridade da palavra no acervo. Nada de regex construída a partir
+ * da consulta: tudo é comparação de strings já normalizadas.
+ */
 
 /**
  * Normaliza texto para busca: separa acentos (NFD), remove diacríticos,
@@ -42,27 +53,206 @@ export function normalizeForSearch(text) {
 }
 
 /**
- * Quebra a consulta em tokens literais, já normalizados. Tokens são tratados
- * como texto puro (busca por substring, sem regex), então metacaracteres como
- * `(`, `*` ou `\` não quebram nem ampliam a busca.
+ * Palavras inteiras de um texto, já normalizadas: "Configurações",
+ * "configuracoes" e "CONFIGURACOES" são a mesma palavra.
+ *
+ * @param {string} text
+ * @returns {string[]}
+ */
+function searchWords(text) {
+	return normalizeForSearch(text).split(/[^a-z0-9]+/u).filter((word) => word !== '');
+}
+
+/**
+ * Palavras que dizem como alguém pergunta, não o que pergunta (português,
+ * inglês e espanhol, já sem acento). Mesmo conjunto do painel.
+ */
+const SEARCH_STOPWORDS = new Set([
+	'a', 'o', 'as', 'os', 'um', 'uma', 'uns', 'umas', 'de', 'do', 'da', 'dos', 'das',
+	'em', 'no', 'na', 'nos', 'nas', 'ao', 'aos', 'por', 'pelo', 'pela', 'para', 'pra',
+	'com', 'sem', 'e', 'ou', 'que', 'como', 'se', 'eu', 'me', 'meu', 'minha', 'meus',
+	'minhas', 'seu', 'sua', 'seus', 'suas', 'voce', 'isso', 'isto', 'esse', 'essa',
+	'este', 'esta', 'estou', 'mais', 'muito', 'nao', 'ja', 'so', 'qual', 'quais', 'onde',
+	'quando', 'porque', 'sobre', 'ate', 'ha', 'ter', 'tem', 'tenho', 'fazer', 'faco',
+	'posso', 'pode', 'preciso', 'quero', 'ser', 'sou', 'consigo', 'dar', 'tipo',
+	'the', 'an', 'of', 'to', 'in', 'on', 'for', 'with', 'my', 'your', 'how', 'does',
+	'is', 'are', 'can', 'what', 'where', 'why', 'it', 'and', 'or', 'i', 'want', 'need',
+	'el', 'la', 'los', 'las', 'mi', 'mis', 'en', 'un', 'una', 'y', 'es', 'con', 'puedo',
+	'quiero', 'necesito', 'cual', 'donde',
+]);
+
+/**
+ * Quebra a consulta em palavras de busca: no máximo 100 caracteres lidos,
+ * palavras inteiras normalizadas com mais de uma letra, sem repetição e sem
+ * palavras de ligação. "como eu conecto meu dominio" busca "conecto dominio".
+ * Consulta feita só de palavras de ligação volta a usar todas elas. Tokens são
+ * texto puro, então metacaracteres como `(`, `*` ou `\` não quebram nem
+ * ampliam a busca.
  *
  * @param {string} query
  * @returns {string[]}
  */
 export function tokenizeQuery(query) {
-	const tokens = normalizeForSearch(query).split(' ').filter((token) => token.length > 0);
+	const words = searchWords(typeof query === 'string' ? query.slice(0, SEARCH_QUERY_MAX_CHARS) : '')
+		.filter((word) => word.length > 1);
+	const meaningful = words.filter((word) => !SEARCH_STOPWORDS.has(word));
 
-	return tokens.slice(0, SEARCH_QUERY_MAX_TOKENS);
+	return [...new Set(meaningful.length > 0 ? meaningful : words)].slice(0, SEARCH_QUERY_MAX_TOKENS);
 }
 
 /**
- * Filtra e ordena as entradas do índice para uma consulta.
- * Todos os tokens precisam aparecer (AND) em título, keywords, descrição ou
- * área. Pontuação por ocorrência com os mesmos pesos da busca do painel
- * (título 4, keywords 3, descrição 2, área 1) e bônus quando o título cobre a
- * consulta inteira; empate decide pela URL, em ordem alfabética, para o
- * resultado ser determinístico. As keywords entram na pontuação e nunca no
- * resultado renderizado.
+ * Reduções leves de plural e terminação em português e inglês: o bastante para
+ * "dominios" encontrar "dominio" e "configuracoes" encontrar "configuracao".
+ */
+const STEM_RULES = [
+	['coes', 'cao'], ['oes', 'ao'], ['aes', 'ao'], ['ais', 'al'], ['eis', 'el'], ['ois', 'ol'],
+	['ns', 'm'], ['ies', 'y'], ['res', 'r'], ['zes', 'z'], ['ses', 's'], ['s', ''],
+];
+
+/**
+ * @param {string} word
+ * @returns {string}
+ */
+function stemSearch(word) {
+	if (word.length <= 3) {
+		return word;
+	}
+
+	const rule = STEM_RULES.find(([suffix]) => word.length - suffix.length >= 3 && word.endsWith(suffix));
+
+	return rule ? word.slice(0, word.length - rule[0].length) + rule[1] : word;
+}
+
+/**
+ * Distância de edição com saída antecipada: só pergunta "está dentro do
+ * limite?". Duas letras vizinhas trocadas ("dominoi") contam como UMA edição.
+ *
+ * @param {string} left
+ * @param {string} right
+ * @param {number} limit
+ * @returns {boolean}
+ */
+function withinEdits(left, right, limit) {
+	if (Math.abs(left.length - right.length) > limit) {
+		return false;
+	}
+
+	/** @type {number[]} */
+	let before = [];
+	let previous = Array.from({ length: right.length + 1 }, (_unused, index) => index);
+
+	for (let row = 1; row <= left.length; row += 1) {
+		const current = [row];
+		let best = row;
+
+		for (let column = 1; column <= right.length; column += 1) {
+			const cost = left.charAt(row - 1) === right.charAt(column - 1) ? 0 : 1;
+
+			current[column] = Math.min(previous[column] + 1, current[column - 1] + 1, previous[column - 1] + cost);
+
+			if (row > 1 && column > 1 && left.charAt(row - 1) === right.charAt(column - 2)
+				&& left.charAt(row - 2) === right.charAt(column - 1)) {
+				current[column] = Math.min(current[column], before[column - 2] + 1);
+			}
+
+			best = Math.min(best, current[column]);
+		}
+
+		if (best > limit) {
+			return false;
+		}
+
+		before = previous;
+		previous = current;
+	}
+
+	return previous[right.length] <= limit;
+}
+
+/**
+ * @param {string} left
+ * @param {string} right
+ * @returns {number}
+ */
+function sharedPrefix(left, right) {
+	let length = 0;
+
+	while (length < left.length && length < right.length && left.charAt(length) === right.charAt(length)) {
+		length += 1;
+	}
+
+	return length;
+}
+
+/**
+ * Força do encontro entre uma palavra digitada e uma palavra do guia, de 1 (a
+ * mesma palavra) a 0 (sem relação). Cada degrau existe para um jeito real de
+ * digitar: plural, palavra pela metade, verbo contra substantivo ("renovar" e
+ * "renovacao" compartilham "renova"), erro de digitação e palavra dentro de
+ * palavra composta. A raiz comum exige seis letras: com cinco, "contato" já
+ * encontraria "contas", que é resposta errada.
+ *
+ * @param {string} token
+ * @param {string} word
+ * @returns {number}
+ */
+export function wordMatch(token, word) {
+	if (token === word) return 1;
+	if (stemSearch(token) === stemSearch(word)) return 0.95;
+	if (token.length >= 3 && word.startsWith(token)) return 0.8;
+
+	const shared = sharedPrefix(token, word);
+
+	if (shared >= 6 && shared >= 0.75 * Math.min(token.length, word.length)) return 0.7;
+	if (token.length >= 4 && withinEdits(token, word, token.length >= 8 ? 2 : 1)) return 0.6;
+	if (token.length >= 4 && word.includes(token)) return 0.5;
+
+	return 0;
+}
+
+/**
+ * Campos pontuáveis de cada entrada, preparados uma vez por objeto validado:
+ * a página chama o filtro a cada tecla sobre o mesmo índice.
+ *
+ * @type {WeakMap<object, Array<{ weight: number, words: string[] }>>}
+ */
+const preparedFields = new WeakMap();
+
+/**
+ * @param {import('./search-index.mjs').SearchIndexEntry} entry
+ * @returns {Array<{ weight: number, words: string[] }>}
+ */
+function fieldsOf(entry) {
+	const cached = preparedFields.get(entry);
+
+	if (cached !== undefined) {
+		return cached;
+	}
+
+	const fields = [
+		{ weight: 4, words: searchWords(entry.title) },
+		{ weight: 3, words: searchWords(Array.isArray(entry.keywords) ? entry.keywords.join(' ') : '') },
+		{ weight: 2, words: searchWords(entry.description) },
+		{ weight: 1, words: searchWords(topicLabel.get(entry.topic) ?? entry.topic) },
+	];
+
+	preparedFields.set(entry, fields);
+
+	return fields;
+}
+
+/**
+ * Filtra e ordena as entradas do índice para uma consulta, com o mesmo ranking
+ * da busca do painel. Cada palavra digitada fica com seu melhor encontro no
+ * guia, pesado pelo campo (título 4, keywords 3, descrição 2, área 1) e pela
+ * raridade da palavra no acervo: palavra que todo guia tem ("site") vale
+ * pouco, palavra que só um guia tem decide. O guia aparece quando as palavras
+ * que encontra somam pelo menos metade do peso das palavras CONHECIDAS da
+ * consulta (as que algum guia tem). Palavra que nenhum guia tem não esconde
+ * uma boa resposta ("transferir dominio" ainda acha o domínio), mas, quando
+ * existe, o que encontrou precisa ser informativo sozinho, para "site xyz" não
+ * listar o acervo inteiro. Título cobrindo todas as palavras soma 3, empate
+ * decide pela URL em ordem alfabética e as keywords nunca vão para o resultado.
  *
  * @typedef {Object} SearchResult
  * @property {string} url
@@ -70,6 +260,7 @@ export function tokenizeQuery(query) {
  * @property {string} description
  * @property {string} topicLabel
  * @property {string} lastReviewed
+ * @property {number} score
  *
  * @param {import('./search-index.mjs').SearchIndexEntry[]} entries Entradas já validadas.
  * @param {string} query Consulta crua do usuário.
@@ -79,40 +270,46 @@ export function tokenizeQuery(query) {
 export function filterSearchEntries(entries, query, options = {}) {
 	const tokens = tokenizeQuery(query);
 
-	if (tokens.length === 0 || !Array.isArray(entries)) {
+	if (tokens.length === 0 || !Array.isArray(entries) || entries.length === 0) {
 		return [];
 	}
 
 	const limit = options.limit ?? SEARCH_RESULTS_LIMIT;
+	const strengths = entries.map((entry) => tokens.map((token) => fieldsOf(entry).reduce((best, field) => {
+		let strength = 0;
+
+		for (let index = 0; index < field.words.length && strength < 1; index += 1) {
+			strength = Math.max(strength, wordMatch(token, field.words[index]));
+		}
+
+		return {
+			weighted: Math.max(best.weighted, strength * field.weight),
+			inTitle: best.inTitle || (field.weight === 4 && strength > 0),
+		};
+	}, { weighted: 0, inTitle: false })));
+	/** @param {number} reached */
+	const rarityOf = (reached) => Math.log(1 + (entries.length + 1) / (reached + 1));
+	const reachedBy = tokens.map((_token, index) => strengths.filter((perEntry) => perEntry[index].weighted > 0).length);
+	const rarity = reachedBy.map(rarityOf);
+	const knownRarity = rarity.reduce((sum, value, index) => sum + (reachedBy[index] > 0 ? value : 0), 0);
+	const someUnknown = reachedBy.some((reached) => reached === 0);
+	const informative = rarityOf(Math.ceil(entries.length / 2));
 	const scored = [];
 
-	for (const entry of entries) {
-		const title = normalizeForSearch(entry.title);
-		const description = normalizeForSearch(entry.description);
-		const keywords = Array.isArray(entry.keywords) ? entry.keywords.map(normalizeForSearch) : [];
-		const label = normalizeForSearch(topicLabel.get(entry.topic) ?? entry.topic);
+	entries.forEach((entry, entryIndex) => {
+		let covered = 0;
 		let score = 0;
-		let matches = true;
 
-		for (const token of tokens) {
-			const inTitle = title.includes(token);
-			const inKeywords = keywords.some((keyword) => keyword.includes(token));
-			const inDescription = description.includes(token);
-			const inLabel = label.includes(token);
+		strengths[entryIndex].forEach((meeting, index) => {
+			if (meeting.weighted > 0) covered += rarity[index];
+			score += meeting.weighted * rarity[index];
+		});
 
-			if (!inTitle && !inKeywords && !inDescription && !inLabel) {
-				matches = false;
-				break;
-			}
-
-			score += (inTitle ? 4 : 0) + (inKeywords ? 3 : 0) + (inDescription ? 2 : 0) + (inLabel ? 1 : 0);
+		if (score === 0 || covered < knownRarity / 2 || (someUnknown && covered < informative)) {
+			return;
 		}
 
-		if (!matches) {
-			continue;
-		}
-
-		if (tokens.every((token) => title.includes(token))) {
+		if (strengths[entryIndex].every((meeting) => meeting.inTitle)) {
 			score += 3;
 		}
 
@@ -124,7 +321,7 @@ export function filterSearchEntries(entries, query, options = {}) {
 			lastReviewed: entry.lastReviewed,
 			score,
 		});
-	}
+	});
 
 	scored.sort((a, b) => (b.score - a.score) || (a.url < b.url ? -1 : a.url > b.url ? 1 : 0));
 
