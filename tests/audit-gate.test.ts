@@ -1,9 +1,11 @@
 /**
  * Regressão do gate de vulnerabilidades de dependências. A suíte cobre
  * `evaluateAudit` do `scripts/check-audit.mjs` com relatórios sintéticos do
- * formato `npm audit --json` (auditReportVersion 2), sem rede: a exceção
- * nomeada do `braces` passa, qualquer outro high ou critical falha, a exceção
- * expira quando há correção não-major e tudo que foge do formato falha fechado.
+ * formato `npm audit --json` (auditReportVersion 2), sem rede: a lista vigente
+ * está vazia, então todo high ou critical falha. O mecanismo de exceção nomeada
+ * segue coberto com uma lista de fixture (o caso histórico do `braces`): a
+ * exceção passa, qualquer outro high ou critical falha, a exceção expira quando
+ * há correção não-major e tudo que foge do formato falha fechado.
  */
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
@@ -12,6 +14,16 @@ import { allowedAdvisories, evaluateAudit } from '../scripts/check-audit.mjs';
 const root = new URL('../', import.meta.url);
 
 const BRACES_ID = 'GHSA-vfj7-8cjw-p6xm';
+
+/** Exceção de fixture no formato da lista real, com o caso histórico do braces. */
+const fixtureExceptions = [
+	{
+		id: BRACES_ID,
+		package: 'braces',
+		decidedBy: 'fixture de teste',
+		reason: 'caso histórico do braces até 3.0.3, retirado pelo GitHub e removido da lista vigente em 2026-10-24',
+	},
+];
 
 type Via = string | Record<string, unknown>;
 
@@ -68,16 +80,21 @@ function bracesChain(bracesFix: unknown = {
 	};
 }
 
-describe('exceção nomeada do audit', () => {
-	it('declara exatamente o advisory do braces decidido pelo owner', () => {
-		expect(allowedAdvisories).toHaveLength(1);
-		expect(allowedAdvisories[0]).toMatchObject({
-			id: BRACES_ID,
-			package: 'braces',
-			decidedBy: 'owner, 2026-10-09',
-		});
-		expect(allowedAdvisories[0].reason.length).toBeGreaterThan(40);
+describe('lista vigente do audit', () => {
+	it('não declara nenhuma exceção', () => {
+		expect(allowedAdvisories).toEqual([]);
 	});
+
+	it('reprova a cadeia do braces com a lista vigente', () => {
+		const result = evaluateAudit(report(bracesChain()));
+
+		expect(result.violations).toHaveLength(1);
+		expect(result.violations[0]).toContain(BRACES_ID);
+		expect(result.exceptions).toEqual([]);
+	});
+});
+
+describe('exceção nomeada do audit', () => {
 
 	it('passa com relatório sem vulnerabilidades', () => {
 		const result = evaluateAudit(report({}));
@@ -97,7 +114,7 @@ describe('exceção nomeada do audit', () => {
 	});
 
 	it('passa a cadeia do braces e informa a exceção usada', () => {
-		const result = evaluateAudit(report(bracesChain()));
+		const result = evaluateAudit(report(bracesChain()), fixtureExceptions);
 
 		expect(result.violations).toEqual([]);
 		expect(result.exceptions.map((entry) => entry.id)).toEqual([BRACES_ID]);
@@ -109,6 +126,7 @@ describe('exceção nomeada do audit', () => {
 				...bracesChain(),
 				sharp: node('sharp', 'high', [advisory('sharp', 'GHSA-wq5f-xc86-pv6w')]),
 			}),
+			fixtureExceptions,
 		);
 
 		expect(result.violations).toHaveLength(1);
@@ -119,6 +137,7 @@ describe('exceção nomeada do audit', () => {
 	it('falha para advisory critical sem exceção', () => {
 		const result = evaluateAudit(
 			report({ axios: node('axios', 'critical', [advisory('axios', 'GHSA-dddd-eeee-ffff', 'critical')]) }),
+			fixtureExceptions,
 		);
 
 		expect(result.violations).toHaveLength(1);
@@ -130,6 +149,7 @@ describe('exceção nomeada do audit', () => {
 	it('falha para novo advisory high no mesmo pacote com outro id', () => {
 		const result = evaluateAudit(
 			report({ braces: node('braces', 'high', [advisory('braces', 'GHSA-gggg-hhhh-iiii')]) }),
+			fixtureExceptions,
 		);
 
 		expect(result.violations).toHaveLength(1);
@@ -139,6 +159,7 @@ describe('exceção nomeada do audit', () => {
 	it('falha quando o id da exceção aparece em outro pacote', () => {
 		const result = evaluateAudit(
 			report({ minimatch: node('minimatch', 'high', [advisory('minimatch', BRACES_ID)]) }),
+			fixtureExceptions,
 		);
 
 		expect(result.violations).toHaveLength(1);
@@ -147,16 +168,18 @@ describe('exceção nomeada do audit', () => {
 
 	it('falha quando o advisory chega sem URL de advisory reconhecível', () => {
 		const withoutUrl = { ...advisory('braces', BRACES_ID), url: 'https://example.com/other' };
-		const result = evaluateAudit(report({ braces: node('braces', 'high', [withoutUrl]) }));
+		const result = evaluateAudit(report({ braces: node('braces', 'high', [withoutUrl]) }), fixtureExceptions);
 
 		expect(result.violations).toHaveLength(1);
 	});
 
 	it('usa a lista de exceções recebida, não uma fixa', () => {
-		const result = evaluateAudit(report(bracesChain()), []);
+		const withFixture = evaluateAudit(report(bracesChain()), fixtureExceptions);
+		const withEmpty = evaluateAudit(report(bracesChain()), []);
 
-		expect(result.violations).toHaveLength(1);
-		expect(result.exceptions).toEqual([]);
+		expect(withFixture.violations).toEqual([]);
+		expect(withEmpty.violations).toHaveLength(1);
+		expect(withEmpty.exceptions).toEqual([]);
 	});
 });
 
@@ -165,7 +188,7 @@ describe('expiração da exceção', () => {
 		['fixAvailable verdadeiro', true],
 		['correção não-major', { name: 'braces', version: '3.0.4', isSemVerMajor: false }],
 	])('falha com %s e pede a atualização', (_label, fix) => {
-		const result = evaluateAudit(report(bracesChain(fix)));
+		const result = evaluateAudit(report(bracesChain(fix)), fixtureExceptions);
 
 		expect(result.violations).toHaveLength(1);
 		expect(result.violations[0]).toContain('expirou');
@@ -177,7 +200,7 @@ describe('expiração da exceção', () => {
 		['sem correção', false],
 		['só correção major (downgrade destrutivo)', { name: 'starlight-llms-txt', version: '0.1.2', isSemVerMajor: true }],
 	])('mantém a exceção %s', (_label, fix) => {
-		const result = evaluateAudit(report(bracesChain(fix)));
+		const result = evaluateAudit(report(bracesChain(fix)), fixtureExceptions);
 
 		expect(result.violations).toEqual([]);
 		expect(result.exceptions).toHaveLength(1);

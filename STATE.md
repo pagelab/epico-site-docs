@@ -449,8 +449,8 @@
   todos com a raiz GHSA-vfj7-8cjw-p6xm (`braces` até 3.0.3), sem versão
   corrigida publicada. O owner escolheu a opção A: `scripts/check-audit.mjs`
   substitui `npm audit --audit-level=high` e aceita high ou critical somente
-  se o advisory estiver nomeado em `allowedAdvisories` (hoje só o do
-  `braces`, por id e pacote), expira sozinho se o npm indicar correção
+  se o advisory estiver nomeado em `allowedAdvisories` (por id e pacote,
+  só o do `braces` até sair em 2026-10-24), expira sozinho se o npm indicar correção
   não-major e falha fechado em relatório fora do formato. 25 testes novos e
   dez provas por mutação. `npm run verify` exit 0 (223 testes, 29 páginas,
   install scripts PASS). PR #4 integrado no `main` (merge `58d80b8`), Workers
@@ -555,12 +555,10 @@ aqui contra a produção. Conferência de 2026-10-09 (somente leitura): o commit
 fad1c2f main` no repositório da Área de Clientes (ou commit equivalente com
 `PANEL-01B` no `git log main`).
 
-Dívida com validade, herdada do PR #4: o GitHub retirou o advisory do `braces`
-(GHSA-vfj7-8cjw-p6xm, "Withdrawn Advisory"), que saiu do `npm audit` em
-2026-10-24. A exceção em `allowedAdvisories` ficou dormente (o gate informa 0
-vigente). Removê-la é follow-up pequeno: apagar a entrada e ajustar
-`tests/audit-gate.test.ts`, que fixa a lista com uma entrada. Teste de pronto:
-`npm run verify` exit 0 com `allowedAdvisories` vazio.
+A dívida herdada do PR #4 foi quitada em 2026-10-24: o GitHub retirou o
+advisory do `braces` (GHSA-vfj7-8cjw-p6xm) e a exceção saiu de
+`allowedAdvisories`, que fica vazio. Nova exceção só com decisão do owner,
+no formato e com a expiração já cobertos por `tests/audit-gate.test.ts`.
 
 O `PANEL-01A` já foi integrado no `main` do plugin (commit `8dfc6e9`, "Tutorials
 hub returns as a closed map of the archive"), então não é mais follow-up

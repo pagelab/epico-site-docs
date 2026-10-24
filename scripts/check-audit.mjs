@@ -4,9 +4,11 @@
 //
 // Equivale a `npm audit --audit-level=high` com UMA diferença decidida pelo
 // owner em 2026-10-09 (opção A do TASKS.md): exceções NOMEADAS por advisory.
-// O `npm audit` não tem lista de ignorados, e o `braces` até 3.0.3
-// (GHSA-vfj7-8cjw-p6xm) não tem versão corrigida publicada, o que mantinha o
-// verify, e portanto todo deploy do Workers Builds, bloqueado.
+// O `npm audit` não tem lista de ignorados. O caso que motivou o mecanismo
+// foi o `braces` até 3.0.3 (GHSA-vfj7-8cjw-p6xm), sem versão corrigida, que
+// mantinha o verify, e portanto todo deploy do Workers Builds, bloqueado. O
+// GitHub retirou esse advisory e a exceção saiu em 2026-10-24. A lista fica
+// vazia e o mecanismo segue disponível para uma nova decisão do owner.
 //
 // Regras:
 // - todo advisory high ou critical precisa estar em `allowedAdvisories`, por
@@ -22,19 +24,12 @@ import { pathToFileURL } from 'node:url';
 const blockingSeverities = new Set(['high', 'critical']);
 
 /**
- * Exceções vigentes. Remover a entrada assim que existir versão corrigida.
+ * Exceções vigentes. Cada entrada exige decisão do owner e sai assim que
+ * existir versão corrigida ou o advisory for retirado.
  *
  * @type {ReadonlyArray<{ id: string, package: string, decidedBy: string, reason: string }>}
  */
-export const allowedAdvisories = [
-	{
-		id: 'GHSA-vfj7-8cjw-p6xm',
-		package: 'braces',
-		decidedBy: 'owner, 2026-10-09',
-		reason:
-			'sem versão corrigida (3.0.3 é a última publicada). Os padrões de glob vêm só de configuração do mantenedor, sem entrada remota, e o efeito possível é derrubar o build ou o lint.',
-	},
-];
+export const allowedAdvisories = [];
 
 const advisoryUrlPattern = /^https:\/\/github\.com\/advisories\/(GHSA-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4})$/u;
 

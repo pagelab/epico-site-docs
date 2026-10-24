@@ -2145,10 +2145,15 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   não se reproduziu em árvore limpa de verdade: era artefato da cópia com
   `node_modules` por symlink. `npm install-scripts ls` limpo nas duas cópias.
 - O advisory do `braces` (GHSA-vfj7-8cjw-p6xm) foi retirado pelo GitHub
-  ("Withdrawn Advisory") e saiu do relatório do `npm audit`. A exceção
-  nomeada fica dormente (o gate informa 0 vigente). Removê-la exige
-  reescrever `tests/audit-gate.test.ts`, que fixa a lista com uma entrada, e
-  ficou como follow-up.
+  ("Withdrawn Advisory") e saiu do relatório do `npm audit`. Na mesma
+  sessão, por ordem do owner, a exceção saiu de `allowedAdvisories`, que
+  fica vazio. O mecanismo de exceção nomeada continua no gate e na suíte:
+  `tests/audit-gate.test.ts` cobre a lista vigente vazia (a cadeia do
+  `braces` passa a reprovar) e testa passagem, expiração e falha fechada com
+  uma lista de fixture no formato real. Prova por mutação: devolver a entrada
+  do `braces` à lista derruba dois testes, restauração conferida por SHA.
+  `npm ci && npm run verify` exit 0 em cópia limpa (350 testes, 1 pulado por
+  depender do `dist`).
 - `npm ci && npm run verify` exit 0 em cópia limpa: check sem diagnósticos,
   lint e política PASS, 348 testes (1 pulado por depender do `dist`),
   contraste, build de 30 páginas, publicação estática PASS, audit PASS e
