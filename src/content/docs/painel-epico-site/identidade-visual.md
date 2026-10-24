@@ -3,7 +3,7 @@ title: Aplique a identidade visual do site
 description: Como operar a aba Identidade visual do painel Épico Site, com cores da marca, tipografia, logotipo, ícone do site e animações.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-02
+lastReviewed: 2026-10-24
 keywords:
   - "cores"
   - "cor"
@@ -29,6 +29,9 @@ keywords:
   - "visual"
   - "aparência"
   - "look"
+  - "peso da fonte"
+  - "negrito"
+  - "font weight"
 sidebar:
   order: 2
 ---
@@ -109,6 +112,27 @@ então uma fonte de destaque pode aparecer nos títulos e não no texto.
 
 A Biblioteca de Fontes fornece as famílias disponíveis. A escolha que vale
 no site publicado é a destes quatro campos do painel Épico Site.
+
+## Peso da fonte
+
+Com **Personalizado** escolhido, o grupo **Peso da fonte** aparece abaixo das
+fontes personalizadas, com quatro seletores: **Peso do título**, **Peso do
+texto**, **Peso do subtítulo** e **Peso das legendas**. Cada um lista só os
+pesos que a fonte escolhida para aquele papel realmente tem, com nomes como
+Ultraleve, Leve, Normal, Médio, Negrito e Ultranegrito. A opção **Padrão**
+mantém o peso recomendado do papel.
+
+- Se você mudar a fonte de um papel, a lista de pesos daquele papel se
+  atualiza na hora.
+- Se a fonte tem um peso só, o seletor não aparece, porque não há o que
+  escolher. Quando nenhuma das quatro fontes tem mais de um peso, o grupo
+  inteiro fica oculto.
+- Para ter mais opções, instale na Biblioteca de Fontes uma família com
+  vários pesos ou uma fonte variável.
+- Um peso que a fonte não oferece nunca é aplicado. Nesse caso o site usa o
+  peso padrão do papel.
+
+Salve e aguarde a publicação para ver o resultado no site.
 
 ## Identidade e comportamento
 
