@@ -59,6 +59,24 @@ o layout.
   padrão, com texto ajustado para facilitar a leitura.
 - **Cor do texto** é opcional. Em branco, o site usa preto e branco.
 
+### Texto sobre as cores da marca
+
+Logo abaixo da cor de destaque, da marca secundária e da marca terciária, o
+campo **Texto sobre esta cor** define a cor do texto nos botões, faixas e
+seções que usam aquela cor como fundo.
+
+- **Automático** é o padrão. O site usa texto branco sempre que o branco fica
+  legível sobre a cor, com contraste de pelo menos 4,5:1, e texto preto nos
+  demais casos. Assim o texto atende ao mínimo de acessibilidade com qualquer
+  cor escolhida.
+- **Branco** e **Preto** fixam a cor do texto, independente da cor de fundo.
+  Use quando preferir outra combinação para a sua marca.
+
+Se a escolha manual ficar abaixo de 4,5:1, o painel mostra um aviso com o
+contraste medido depois de salvar. O aviso não impede o salvamento, mas texto
+com pouco contraste é mais difícil de ler. Para voltar ao ajuste automático,
+escolha **Automático** e salve.
+
 No seletor de cores, o botão **Padrão** devolve a cor de fábrica do campo. Se
 você limpar a cor de destaque sem escolher outra, o painel restaura o padrão
 ao salvar.

@@ -3,7 +3,7 @@ title: Ative e desative recursos do site
 description: Como operar a aba Recursos do painel Épico Site, organizada em quatro sub-abas, com estrutura do post, recursos de leitura, impressão, compartilhamento, comentários, experiência do visitante e blocos do editor.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-02
+lastReviewed: 2026-10-24
 keywords:
   - "recursos"
   - "features"
@@ -271,12 +271,10 @@ título e o endereço dela. Escolha uma página publicada.
 
 ### Listagens de posts
 
-O interruptor **Carregamento contínuo** faz os próximos posts carregarem
-sozinhos quando o visitante se aproxima do fim da lista, no blog, na página
-de posts e nos arquivos de categoria, sem botão extra. Depois de cinco
-páginas automáticas, o link normal da paginação volta, e o rodapé continua ao
-alcance. Sem JavaScript a paginação funciona como sempre. Vem desligado por
-padrão.
+O interruptor **Carregamento contínuo de posts** fica agora na aba **Blog**,
+junto das outras configurações da listagem. A escolha feita antes nesta aba
+foi levada para lá automaticamente. Veja
+[Configure a listagem do blog](/painel-epico-site/configuracoes-do-blog/#carregamento-contínuo-de-posts).
 
 ### Rolar para o topo
 

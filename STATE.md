@@ -524,21 +524,33 @@
 
 ## ▶ Próxima ação
 
-Nada técnico pendente neste repositório: fila local sem tasks abertos
-(`DOCS-00` a `DOCS-18` concluídos) e o build canônico de produção a cada push
-no `main` segue automático. Com o `DOCS-18` no ar, a sessão da Área de
-Clientes pode recapturar o índice v2 vivo e afirmar "my site is down" em
-primeiro no painel (não editar daqui).
+Destravar o gate de dependências antes do próximo deploy: `npm run verify`
+falha em `Dependency audit` com cinco advisories high publicados contra
+markdown-it (GHSA-r7fv-28h4-cvq7, GHSA-gfr2-rv44-r23c), undici
+(GHSA-xjj6-f33q-929c), vite (GHSA-587h-7wmj-h5pm) e zod (GHSA-mrhx-c7xc-m3w5),
+reproduzido em cópia limpa com `npm ci` em 2026-10-24. Como o Workers Builds só
+publica com o gate exit 0, nada sai para produção até o upgrade (ou exceção com
+validade em `allowedAdvisories`). Teste de pronto: `npm ci && npm run verify`
+exit 0 numa árvore limpa. Depois, conferir em produção os dois guias do
+checkpoint de 2026-10-24 abaixo.
+
+Checkpoint de 2026-10-24, ordem direta do owner ("commit/push de tudo
+pendente"): guia `configuracoes-do-blog` reescrito contra a aba Blog do plugin
+1.70.0 (o rascunho de 2026-10-06 contradizia o painel atual em título e
+descrição vazios e cobria só os textos), com a lista de keywords do rascunho
+revisado pelo owner mais os termos das seções novas. Item 3 da lista do
+`index.md`, seção "Texto sobre as cores da marca" na `identidade-visual`
+(campo novo do plugin 1.70.0) e remissão do "Carregamento contínuo" de
+`recursos-do-site` para a aba Blog, para onde o controle migrou. O commit
+local `af10e76` (Peso da fonte) era redundante com `fe746e0` do remoto e
+ficou só na ref `backup/local-af10e76-peso-da-fonte`. Conteúdo verde em
+cópia limpa: check, lint, política, testes, contraste, build e publicação.
 
 Decisões de conteúdo do owner, abertas pelo `DOCS-16` (nenhuma vira keyword de
 guia vizinho): (1) lacunas sem guia: pagamento por boleto, Pix, cartão ou
 parcelamento; SSL e HTTPS; senha do painel; velocidade do site; e-mail
-profissional; anúncios e AdSense; (2) o guia `configuracoes-do-blog`, não
-rastreado no checkout principal: commitar com proveniência quando a aba Blog
-estiver no plugin do kit lançado, e então levar junto a lista de keywords do
-rascunho. Teste de pronto para (2): `git ls-files
-src/content/docs/painel-epico-site/configuracoes-do-blog.md` imprime o caminho
-no `main`. O que resta é da sessão do workspace Área de Clientes (não
+profissional; anúncios e AdSense; (2) o guia `configuracoes-do-blog`: concluído no checkpoint de 2026-10-24
+acima. O que resta é da sessão do workspace Área de Clientes (não
 editar daqui): quando o código do `PANEL-01B` chegar ao `main` do plugin,
 rodar `studio wp --path=/Users/mac/Studio/app-epico-site eval-file
 tests/docs-links-probe.php` e conferir que a seção 5 imprime OK onde registrou

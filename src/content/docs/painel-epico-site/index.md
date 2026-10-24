@@ -3,7 +3,7 @@ title: Conheça o painel Épico Site
 description: Onde encontrar o painel do seu site no WordPress, o que cada seção controla e como as alterações chegam ao site publicado.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-02
+lastReviewed: 2026-10-24
 keywords:
   - "painel"
   - "dashboard"
@@ -47,22 +47,24 @@ O painel reúne as configurações em abas laterais, nesta ordem:
    [Aplique a identidade visual do site](/painel-epico-site/identidade-visual/).
 2. **Publicação** controla o endereço público do site e qual conteúdo é
    publicado. Veja [Controle o que o site publica](/painel-epico-site/publicacao-do-site/).
-3. **Recursos** liga e desliga recursos do site e blocos do editor. Veja
+3. **Blog** define os textos, o modelo e a aparência da listagem dos artigos. Veja
+   [Configure a listagem do blog](/painel-epico-site/configuracoes-do-blog/).
+4. **Recursos** liga e desliga recursos do site e blocos do editor. Veja
    [Ative e desative recursos do site](/painel-epico-site/recursos-do-site/).
-4. **Geração de leads** configura a captura de contatos por formulário,
+5. **Geração de leads** configura a captura de contatos por formulário,
    pop-up e chat. Veja
    [Capture leads no conteúdo, no pop-up e no chat](/painel-epico-site/captura-de-leads/)
    e [Entregue iscas e notifique novos leads](/painel-epico-site/iscas-e-notificacoes/).
-5. **Integrações** conecta ferramentas de e-mail marketing e de análise. Veja
+6. **Integrações** conecta ferramentas de e-mail marketing e de análise. Veja
    [Conecte ferramentas de marketing e análise](/painel-epico-site/integracoes/).
-6. **Privacidade** cuida da página de privacidade, do banner de consentimento
+7. **Privacidade** cuida da página de privacidade, do banner de consentimento
    e das incorporações de terceiros. Veja
    [Peça consentimento e cuide da privacidade](/painel-epico-site/privacidade-e-consentimento/).
-7. **Código extra** recebe CSS e JavaScript personalizados do site. Veja
+8. **Código extra** recebe CSS e JavaScript personalizados do site. Veja
    [Adicione código personalizado ao site](/painel-epico-site/codigo-extra/).
-8. **Gerenciamento** reúne backup, exclusão de dados e bloqueio da instalação.
+9. **Gerenciamento** reúne backup, exclusão de dados e bloqueio da instalação.
    Veja [Gerencie dados, segurança e backup do plugin](/painel-epico-site/gerenciamento/).
-9. **Suporte** encaminha para os canais de ajuda da área do cliente. Veja
+10. **Suporte** encaminha para os canais de ajuda da área do cliente. Veja
    [Use o suporte e ative a licença do plugin](/painel-epico-site/suporte-e-licenca/).
 
 Fora das abas, o menu **Épico Site** ainda traz o submenu **Licença**, que

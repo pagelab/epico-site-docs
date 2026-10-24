@@ -35,6 +35,7 @@
 | 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | concluído em 2026-10-10 (PR #6, merge `ed1999a`, produção 16/16) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
 | 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | concluído em 2026-10-10 (PR #7, merge `bd4a186`, produção 16/16) | ordem do owner de 2026-10-10, depois do `DOCS-16` |
 | 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | concluído em 2026-10-10 (PR #8, merge `6562017`, produção 16/16) | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
+| 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | conteúdo commitado em 2026-10-24, deploy bloqueado pelo gate de dependências (ver `STATE.md`) | ordem direta do owner de 2026-10-24 |
 
 ## Critérios por task
 
