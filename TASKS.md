@@ -35,7 +35,7 @@
 | 25 | `DOCS-16` | P1 | M | Vocabulário editorial por guia e índice de busca versão 2 | concluído em 2026-10-10 (PR #6, merge `ed1999a`, produção 16/16) | QA do owner de 2026-10-10 na busca do painel; painel 0.137.0 já aceita a versão 2 |
 | 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | concluído em 2026-10-10 (PR #7, merge `bd4a186`, produção 16/16) | ordem do owner de 2026-10-10, depois do `DOCS-16` |
 | 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | concluído em 2026-10-10 (PR #8, merge `6562017`, produção 16/16) | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
-| 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | conteúdo commitado em 2026-10-24, deploy bloqueado pelo gate de dependências (ver `STATE.md`) | ordem direta do owner de 2026-10-24 |
+| 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | concluído em 2026-10-24 (conteúdo `e778251`, gate destravado em `ec8e7f8`, produção 16/16 na versão `7ccc279d`) | ordem direta do owner de 2026-10-24 |
 
 ## Critérios por task
 
@@ -2125,3 +2125,41 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
 - Para a sessão da Área de Clientes (não editado daqui): o índice v2 vivo já
   tem os termos de queda, então a recaptura em `tests/fixtures/` e a
   asserção de "my site is down" em primeiro no grupo H podem seguir.
+
+## Checkpoint de 2026-10-24: DOCS-19 publicado e gate de dependências destravado
+
+- O conteúdo do `DOCS-19` (`e778251`) e a seção Peso da fonte (`fe746e0`)
+  estavam no `main` sem chegar à produção: o Workers Builds falhava em
+  `Dependency audit` com cinco advisories high publicados depois do último
+  deploy (2026-10-11). Reproduzido em cópia limpa por `git checkout-index` e
+  `npm ci`.
+- Correção só de dependências, sem exceção nova em `allowedAdvisories`:
+  `markdownlint-cli2` 0.23.3 para 0.24.0 (traz `markdown-it` 15.0.3,
+  GHSA-r7fv-28h4-cvq7 e GHSA-gfr2-rv44-r23c). Override aninhado
+  `miniflare` para `undici` 7.30.1 (GHSA-xjj6-f33q-929c), porque até o
+  `wrangler` 4.152.0, o mais novo, fixa `undici` 7.29.1 exato. No lockfile,
+  dentro das faixas já declaradas: `undici` 8.12.3 (via `unifont`), `vite`
+  8.3.5 (GHSA-587h-7wmj-h5pm) e `zod` 4.6.7 (GHSA-mrhx-c7xc-m3w5). O
+  override de `smol-toml` 1.8.0 continua e o contrato da suíte segue igual.
+- O alerta de install scripts sobre `esbuild@0.28.2` e `workerd@1.20261006.1`
+  não se reproduziu em árvore limpa de verdade: era artefato da cópia com
+  `node_modules` por symlink. `npm install-scripts ls` limpo nas duas cópias.
+- O advisory do `braces` (GHSA-vfj7-8cjw-p6xm) foi retirado pelo GitHub
+  ("Withdrawn Advisory") e saiu do relatório do `npm audit`. A exceção
+  nomeada fica dormente (o gate informa 0 vigente). Removê-la exige
+  reescrever `tests/audit-gate.test.ts`, que fixa a lista com uma entrada, e
+  ficou como follow-up.
+- `npm ci && npm run verify` exit 0 em cópia limpa: check sem diagnósticos,
+  lint e política PASS, 348 testes (1 pulado por depender do `dist`),
+  contraste, build de 30 páginas, publicação estática PASS, audit PASS e
+  install scripts PASS. Restam 13 moderate e 3 low, abaixo do limiar do gate.
+- Push de `ec8e7f8` no `main` por autorização do owner de 2026-10-24. O
+  Workers Builds passou (check `completed success` às 20:26:00Z) e publicou
+  a versão `7ccc279d-a0d3-4c7a-bcb7-753439d6a6ec` (deployment de
+  2026-10-24T20:25:56Z). `probe-production.mjs` 16/16, com o índice em
+  versão 2, 28 entradas, 28 com keywords e bytes 1:1 com o `dist`.
+- Conferido em produção: `/painel-epico-site/configuracoes-do-blog/` 200 com
+  as seções da aba Blog, `/painel-epico-site/identidade-visual/` com o H3
+  "Texto sobre as cores da marca" sob "Cores da marca" e o H2 "Peso da
+  fonte", e `/painel-epico-site/recursos-do-site/` com a remissão para
+  `#carregamento-contínuo-de-posts`.

@@ -522,29 +522,23 @@
   "my site is down" com o guia de domínio em primeiro na `/busca/` ao vivo.
   Narrativa no `TASKS.md` §"Checkpoint de 2026-10-10: DOCS-18".
 
+- `DOCS-19` concluído em 2026-10-24, por ordem do owner: guia
+  `configuracoes-do-blog` reescrito contra a aba Blog do plugin 1.70.0, seção
+  "Texto sobre as cores da marca" na `identidade-visual` e remissão do
+  "Carregamento contínuo" de `recursos-do-site` para a aba Blog (conteúdo
+  `e778251`, junto da seção Peso da fonte de `fe746e0`). O deploy estava
+  travado pelo gate de dependências (cinco advisories high novos), destravado
+  em `ec8e7f8` só com versões corrigidas: `markdownlint-cli2` 0.24.0, override
+  aninhado `miniflare` para `undici` 7.30.1 e lockfile com `undici` 8.12.3,
+  `vite` 8.3.5 e `zod` 4.6.7. `npm ci && npm run verify` exit 0 em cópia
+  limpa (348 testes, 30 páginas). Produção na versão `7ccc279d`,
+  `probe-production.mjs` 16/16 e as três páginas conferidas ao vivo.
+  Narrativa no `TASKS.md` §"Checkpoint de 2026-10-24: DOCS-19".
+
 ## ▶ Próxima ação
 
-Destravar o gate de dependências antes do próximo deploy: `npm run verify`
-falha em `Dependency audit` com cinco advisories high publicados contra
-markdown-it (GHSA-r7fv-28h4-cvq7, GHSA-gfr2-rv44-r23c), undici
-(GHSA-xjj6-f33q-929c), vite (GHSA-587h-7wmj-h5pm) e zod (GHSA-mrhx-c7xc-m3w5),
-reproduzido em cópia limpa com `npm ci` em 2026-10-24. Como o Workers Builds só
-publica com o gate exit 0, nada sai para produção até o upgrade (ou exceção com
-validade em `allowedAdvisories`). Teste de pronto: `npm ci && npm run verify`
-exit 0 numa árvore limpa. Depois, conferir em produção os dois guias do
-checkpoint de 2026-10-24 abaixo.
-
-Checkpoint de 2026-10-24, ordem direta do owner ("commit/push de tudo
-pendente"): guia `configuracoes-do-blog` reescrito contra a aba Blog do plugin
-1.70.0 (o rascunho de 2026-10-06 contradizia o painel atual em título e
-descrição vazios e cobria só os textos), com a lista de keywords do rascunho
-revisado pelo owner mais os termos das seções novas. Item 3 da lista do
-`index.md`, seção "Texto sobre as cores da marca" na `identidade-visual`
-(campo novo do plugin 1.70.0) e remissão do "Carregamento contínuo" de
-`recursos-do-site` para a aba Blog, para onde o controle migrou. O commit
-local `af10e76` (Peso da fonte) era redundante com `fe746e0` do remoto e
-ficou só na ref `backup/local-af10e76-peso-da-fonte`. Conteúdo verde em
-cópia limpa: check, lint, política, testes, contraste, build e publicação.
+Nenhum task do Docs aberto nesta frente. Sem nova ordem do owner, a próxima
+ação é a conferência abaixo, que pertence à sessão da Área de Clientes.
 
 Decisões de conteúdo do owner, abertas pelo `DOCS-16` (nenhuma vira keyword de
 guia vizinho): (1) lacunas sem guia: pagamento por boleto, Pix, cartão ou
@@ -561,10 +555,12 @@ aqui contra a produção. Conferência de 2026-10-09 (somente leitura): o commit
 fad1c2f main` no repositório da Área de Clientes (ou commit equivalente com
 `PANEL-01B` no `git log main`).
 
-Dívida com validade, herdada do PR #4: a exceção do `braces` em
-`allowedAdvisories` sai quando `npm view braces versions` listar versão acima de
-3.0.3 ou quando o gate falhar com "expirou" (passos no checkpoint do
-`TASKS.md`). Em 2026-10-09 a última versão publicada segue 3.0.3.
+Dívida com validade, herdada do PR #4: o GitHub retirou o advisory do `braces`
+(GHSA-vfj7-8cjw-p6xm, "Withdrawn Advisory"), que saiu do `npm audit` em
+2026-10-24. A exceção em `allowedAdvisories` ficou dormente (o gate informa 0
+vigente). Removê-la é follow-up pequeno: apagar a entrada e ajustar
+`tests/audit-gate.test.ts`, que fixa a lista com uma entrada. Teste de pronto:
+`npm run verify` exit 0 com `allowedAdvisories` vazio.
 
 O `PANEL-01A` já foi integrado no `main` do plugin (commit `8dfc6e9`, "Tutorials
 hub returns as a closed map of the archive"), então não é mais follow-up
@@ -610,8 +606,8 @@ GraphQL desde 2026-09-14) continua como follow-up independente do owner.
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
 - Cloudflare: Worker `epico-site-docs` em produção (versão
-  `02128101-28c9-4877-bd27-108fbf557a71`, deployment de 2026-09-15T14:32:50Z
-  pelo Workers Builds do merge `52cce8e`) com custom domain
+  `7ccc279d-a0d3-4c7a-bcb7-753439d6a6ec`, deployment de 2026-10-24T20:25:56Z
+  pelo Workers Builds do push `ec8e7f8`) com custom domain
   `tutoriais.epico.site`, canary
   `epico-site-docs.epico.workers.dev` noindex e Single Redirect HTTP→HTTPS
   escopado ao host (301 com path e query). OAuth do wrangler válido (conta
@@ -623,7 +619,10 @@ GraphQL desde 2026-09-14) continua como follow-up independente do owner.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-10-10 (`DOCS-17`, busca `/busca/` tolerante: PR #7
+- Última sessão: 2026-10-24 (`DOCS-19` publicado e gate de dependências
+  destravado sem exceção nova: push `ec8e7f8`, produção 16/16 na versão
+  `7ccc279d`, `npm run verify` exit 0 em cópia limpa, 348 testes). Antes,
+  2026-10-10 (`DOCS-17`, busca `/busca/` tolerante: PR #7
   integrado, produção 16/16 na versão `85209917`, 339 testes. Antes, na mesma sessão, `DOCS-16`, vocabulário editorial e índice versão
   2: PR #6 integrado, produção 16/16 na versão `6e5fa55e`, sonda do painel com
   a seção 5 em versão 2 e 27 de 27 guias com keywords, `npm run verify` exit 0
