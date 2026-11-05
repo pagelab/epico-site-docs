@@ -1,9 +1,9 @@
 ---
 title: Configure a listagem do blog
-description: Como operar a aba Blog do painel Épico Site, com o título e a descrição da listagem, a quantidade de posts por página, o modelo da página principal, os posts populares, a cor do título e o carregamento contínuo.
+description: Como operar a aba Blog do painel Épico Site, com o título e a descrição da listagem, a quantidade de posts por página, o modelo da página principal, a barra lateral, os posts populares, a cor do título e o carregamento contínuo.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-24
+lastReviewed: 2026-11-05
 keywords:
   - "blog"
   - "título do blog"
@@ -22,6 +22,11 @@ keywords:
   - "Minimal"
   - "Galeria"
   - "Sidebar"
+  - "Revista"
+  - "Mínimo"
+  - "barra lateral"
+  - "coluna lateral"
+  - "newsletter na lateral"
   - "posts populares"
   - "mais lidos"
   - "carregamento contínuo"
@@ -105,23 +110,23 @@ arquivos de categoria, tag e autor mantêm o layout compartilhado.
 | Modelo | Como a primeira página se organiza |
 | --- | --- |
 | **Padrão** | Post em destaque e grade de cards. É o modelo de fábrica. |
-| **Minimal** | Foco no texto, com imagens opcionais ao lado de cada linha. |
-| **Magazine** | Abertura editorial e grupos de posts por categoria. |
+| **Mínimo** | Foco no texto, com imagens opcionais ao lado de cada linha. |
+| **Revista** | Abertura editorial e grupos de posts por categoria. |
 | **Galeria** | Mosaico de imagens. |
-| **Sidebar** | Listagem com coluna lateral. |
-| **Sidebar Alt** | Grade de cards com coluna lateral à esquerda. |
+| **Barra lateral** | Listagem com uma coluna ao lado. |
+| **Barra lateral alternativa** | Grade de cards com a coluna ao lado, começando à esquerda. |
 
 Trocar o modelo preserva o título e a descrição da listagem. Abaixo do
 seletor, o painel mostra somente os controles do modelo escolhido.
 
-### Imagens no modelo Minimal
+### Imagens no modelo Mínimo
 
-Aparece com o modelo **Minimal**. Ligado, mostra a imagem destacada ao lado de
-cada linha. Desligue para uma listagem somente com texto.
+Aparece com o modelo **Mínimo**. Ligado, mostra a imagem destacada ao lado de
+cada linha. Desligue para uma listagem somente com texto. Vem ligado.
 
-### Categorias dos grupos do Magazine
+### Categorias dos grupos da Revista
 
-Aparecem com o modelo **Magazine**. Cada um dos três campos escolhe a
+Aparecem com o modelo **Revista**. Cada um dos três campos escolhe a
 categoria de um grupo editorial:
 
 - Os posts da página com a categoria escolhida abrem o grupo, que traz o
@@ -131,20 +136,39 @@ categoria de um grupo editorial:
 - O terceiro grupo é misto, com um post em destaque e quatro cards
   compactos.
 
+### Captura de email na barra lateral
+
+Aparece com os modelos **Barra lateral** e **Barra lateral alternativa**.
+Ligado, coloca um formulário de inscrição na coluna lateral da página
+principal do blog. Vem desligado.
+
+O formulário usa o título, a mensagem, o botão e os campos configurados em
+**Geração de leads → Captura fixada por rolagem**. Na barra lateral ele fica
+parado na coluna, sem se fixar na tela. Esta opção e **Exibir na barra lateral
+do blog**, da aba Geração de leads, são a mesma escolha: mudar uma muda a
+outra. Veja
+[Captura fixada por rolagem](/painel-epico-site/captura-de-leads/#captura-fixada-por-rolagem).
+
+### Alternar posição da barra lateral
+
+Aparece com os mesmos dois modelos. Ligado, leva a coluna lateral para o lado
+oposto. No modelo **Barra lateral** ela começa à direita, e no modelo **Barra
+lateral alternativa** ela começa à esquerda. Vem desligado.
+
 ## Posts populares
 
 Ligado, exibe os artigos mais acessados nos últimos 90 dias. Eles aparecem ao
 lado do post em destaque no modelo **Padrão** e na coluna lateral no modelo
-**Sidebar Alt**.
+**Barra lateral alternativa**. Vem ligado.
 
 Para funcionar, configure o Cloudflare Web Analytics em **Recursos →
-Visualizações de posts**. A ordem é atualizada a cada publicação do site.
+Visualização de posts**. A ordem é atualizada a cada publicação do site.
 Enquanto não houver visualizações disponíveis, a lista fica oculta.
 
 ## Cor de fundo do título principal do blog
 
-Pinta uma faixa atrás do título e da descrição da listagem. Essa opção vale
-para o modelo **Padrão**. Nos demais modelos, o título aparece sem faixa.
+Pinta uma faixa de largura total atrás do título e da descrição da listagem,
+em qualquer modelo.
 
 - **Sem cor de fundo** mantém o título sobre o fundo do site. É o padrão.
 - **Destaque**, **Marca secundária** e **Marca terciária** usam as cores da
@@ -155,6 +179,14 @@ para o modelo **Padrão**. Nos demais modelos, o título aparece sem faixa.
   usa a cor de destaque quando fica vazia, e **Cor do texto personalizada**,
   que se ajusta automaticamente ao fundo quando fica vazia. Se escolher uma
   cor de texto, mantenha contraste suficiente para uma leitura confortável.
+
+### Imagem de fundo do cabeçalho
+
+Aparece quando uma cor de fundo está escolhida. É uma imagem opcional atrás
+do texto do cabeçalho do blog, coberta por uma camada escura que facilita a
+leitura. Posição, tamanho, repetição e fixação funcionam como na imagem de
+fundo do cabeçalho dos artigos. Com **Sem cor de fundo**, a imagem não tem
+efeito.
 
 ## Carregamento contínuo de posts
 

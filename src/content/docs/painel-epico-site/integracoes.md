@@ -1,9 +1,9 @@
 ---
 title: Conecte ferramentas de marketing e análise
-description: Como operar a aba Integrações do painel Épico Site, com e-mail marketing, Google Tag Manager, Google Analytics, Meta Pixel e meta tags de verificação.
+description: Como operar a aba Integrações do painel Épico Site, com e-mail marketing, e-mail transacional pelo Resend, Google Tag Manager, Google Analytics, Meta Pixel e meta tags de verificação.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-02
+lastReviewed: 2026-11-05
 keywords:
   - "integrações"
   - "integrations"
@@ -29,6 +29,11 @@ keywords:
   - "rastreamento"
   - "tracking"
   - "métricas"
+  - "Resend"
+  - "e-mail transacional"
+  - "SMTP"
+  - "e-mail não chega"
+  - "transactional email"
 sidebar:
   order: 8
 ---
@@ -107,6 +112,45 @@ bloqueado.
 
 Confirme na plataforma o recebimento de um contato de teste antes de divulgar
 o site.
+
+## E-mail transacional
+
+Os e-mails que o próprio plugin envia, as mensagens da página de contato e os
+avisos de novos leads, saem normalmente pelo servidor de e-mail da sua
+hospedagem. Muitas hospedagens entregam mal esses e-mails, que acabam no spam
+ou nem chegam. O grupo **E-mail transacional** permite enviar esses e-mails
+pelo Resend, um serviço especializado nesse tipo de envio.
+
+Para conseguir a chave, que leva poucos minutos:
+
+1. Crie uma conta gratuita em [resend.com](https://resend.com).
+2. Abra a página **API Keys** e clique em **Create API Key**.
+3. Escolha a permissão **Sending access**, dê à chave o nome do seu site e
+   crie. Copie a chave na hora, porque o Resend a mostra uma única vez.
+4. No painel, cole a chave em **Chave de API**, ligue **Enviar pelo Resend** e
+   salve a página.
+
+Os campos do grupo:
+
+- **Enviar pelo Resend** vem desligado. Ligado, os e-mails do plugin passam
+  pelo Resend. Os outros e-mails do WordPress, como a redefinição de senha,
+  não mudam. Se o Resend recusar uma mensagem, o WordPress a envia do jeito de
+  sempre.
+- **Chave de API** recebe a chave com a permissão Sending access, que só
+  consegue enviar e-mails. Ela fica criptografada no servidor e nunca é
+  exibida de novo.
+- **E-mail do remetente** define o endereço que envia as mensagens. O nome do
+  remetente é o título do site.
+
+Sem um domínio verificado no Resend, deixe **E-mail do remetente** vazio. As
+mensagens saem de um endereço de teste do próprio Resend e só chegam ao
+e-mail da sua conta Resend. Nesse caso, use esse e-mail como destino da
+página de contato. Para enviar a qualquer endereço, verifique o seu domínio
+na página **Domains** do Resend e digite aqui um endereço desse domínio.
+
+Depois de salvar, envie uma mensagem de teste pela página de contato e
+confirme que ela chegou ao destino. Veja
+[Página de contato](/painel-epico-site/recursos-do-site/#página-de-contato).
 
 ## Rastreamento e análise
 

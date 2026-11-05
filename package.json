@@ -36,6 +36,9 @@
     "smol-toml": "1.8.0",
     "miniflare": {
       "undici": "7.30.1"
+    },
+    "markdownlint": {
+      "re2js": "2.8.8"
     }
   },
   "allowScripts": {

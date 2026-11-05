@@ -3,7 +3,7 @@ title: Aplique a identidade visual do site
 description: Como operar a aba Identidade visual do painel Épico Site, com cores da marca, tipografia, logotipo, ícone do site e animações.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-24
+lastReviewed: 2026-11-05
 keywords:
   - "cores"
   - "cor"
@@ -12,6 +12,7 @@ keywords:
   - "logo"
   - "logotipo"
   - "logomarca"
+  - "logo para modo escuro"
   - "marca"
   - "brand"
   - "branding"
@@ -157,6 +158,11 @@ Salve e aguarde a publicação para ver o resultado no site.
 - **Logotipo** recebe a versão principal da marca, usada no cabeçalho e no
   rodapé. Envie a imagem no tamanho original, porque recortes de miniatura
   podem esconder parte do logo.
+- **Logotipo (modo escuro)** recebe uma versão clara opcional da marca. Ela
+  aparece no cabeçalho e no rodapé enquanto o site está em modo escuro ou
+  quando o bloco usa o papel visual **Escuro**. Vazio mantém o logotipo
+  principal. Cada cabeçalho e rodapé pode escolher o próprio logo. Veja
+  [Monte o cabeçalho e o rodapé do site](/painel-epico-site/cabecalho-e-rodape/#mídia).
 - **Ícone do site** é a marca pequena da aba do navegador e da tela de
   início do celular. É um elemento diferente do logotipo. Envie um PNG, JPEG
   ou WebP quadrado com pelo menos 512 pixels de cada lado. Imagens que não

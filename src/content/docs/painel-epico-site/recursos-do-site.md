@@ -1,9 +1,9 @@
 ---
 title: Ative e desative recursos do site
-description: Como operar a aba Recursos do painel Épico Site, organizada em quatro sub-abas, com estrutura do post, recursos de leitura, impressão, compartilhamento, comentários, experiência do visitante e blocos do editor.
+description: Como operar a aba Recursos do painel Épico Site, organizada em quatro sub-abas, com estrutura do post, recursos de leitura, compartilhamento, comentários, modo escuro, vídeo flutuante, página de contato, transição entre páginas e blocos do editor.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-24
+lastReviewed: 2026-11-05
 keywords:
   - "recursos"
   - "features"
@@ -30,6 +30,14 @@ keywords:
   - "blocks"
   - "editor"
   - "linha do tempo"
+  - "página de contato"
+  - "formulário de contato"
+  - "contact page"
+  - "mapa"
+  - "vídeo flutuante"
+  - "picture in picture"
+  - "transição entre páginas"
+  - "modelo Post"
 sidebar:
   order: 4
 ---
@@ -45,11 +53,12 @@ quatro sub-abas, e cada seção deste artigo diz em qual delas o recurso mora:
   ferramentas.
 - **Interação** reúne compartilhamento, comentários e conversa nas redes.
 - **Experiência** reúne o que muda a forma de ler e navegar pelo site.
-- **Módulos** reúne os módulos de monetização e os blocos do editor.
+- **Módulos** reúne os blocos de post do editor.
 
-A estrutura e as ferramentas do artigo também valem para páginas que usam o
-modelo **Posts**, inclusive uma página inicial com esse modelo. Páginas com
-outros modelos não ganham essas ferramentas automaticamente.
+A estrutura e as ferramentas do artigo também valem para as páginas que usam
+o modelo Post. Com a opção **Utilizar modelo padrão de posts em páginas**
+ligada, que é o padrão, todas as páginas usam esse modelo. Veja a opção na
+seção [Estrutura do post](#estrutura-do-post).
 
 Vários recursos das sub-abas Geral e Experiência podem ser ajustados em cada
 conteúdo editorial, no menu **Épico Site** da lateral do editor.
@@ -94,6 +103,13 @@ valem para todos os posts, e a maioria vem ligada por padrão:
   legível.
 - **Capitular no início do post** amplia a primeira letra do primeiro
   parágrafo, com a fonte de destaque e a cor da marca. Vem desligada.
+- **Utilizar modelo padrão de posts em páginas** faz do modelo Post, com o
+  cabeçalho do artigo, a barra de ferramentas e os recursos de leitura, o
+  padrão também das páginas. Vem ligada. Para tirar uma página desse modelo,
+  abra a página no editor e, no menu **Épico Site** da lateral, escolha
+  **Desativado** em **Utilizar o modelo Post nesta página**. A página fica sem
+  o cabeçalho do artigo. Uma página que escolheu o modelo **Posts** no menu
+  de modelos do WordPress sempre usa o modelo Post.
 
 ### Recursos adicionais
 
@@ -222,8 +238,19 @@ formulário nem coleta de dados, e pode conviver com os comentários no site.
 
 O interruptor **Alternador do modo escuro** decide se o visitante pode trocar
 entre tema claro e escuro. Desligado, o site permanece no tema claro. Vem
-desligado por padrão. O controle aparece no cabeçalho do site quando o tema do
-site oferece o componente.
+desligado por padrão. O controle aparece no cabeçalho do site, e cada
+cabeçalho pode mostrar ou esconder o botão na própria aba Design. Veja
+[Monte o cabeçalho e o rodapé do site](/painel-epico-site/cabecalho-e-rodape/#design).
+
+Com o alternador ligado, aparece **Modo escuro como padrão**. Ligado, quem
+visita o site pela primeira vez o vê em modo escuro, em vez de seguir a
+preferência do aparelho. Quem escolhe um modo no alternador mantém a própria
+escolha. Seções com o papel visual **Escuro** ficam escuras de qualquer
+forma. Vem desligado.
+
+Para o logotipo continuar legível sobre o fundo escuro, envie uma versão clara
+em **Logotipo (modo escuro)**, na aba Identidade visual. Veja
+[Identidade e comportamento](/painel-epico-site/identidade-visual/#identidade-e-comportamento).
 
 ### Experiência de leitura
 
@@ -262,12 +289,82 @@ O sumário e a barra de progresso também podem ser decididos post a post, no
 menu **Épico Site** do editor. O **Painel de Ajustes** e o **Modo “Zen”** valem
 para o site todo.
 
+### Vídeo flutuante
+
+O interruptor **Manter vídeos em reprodução fixos na página** vem desligado.
+Ligado, quando um vídeo de um post está tocando e o leitor rola a página para
+além dele, o player encolhe e fica preso no canto inferior da tela. Ali ele
+oferece botões para pausar, retomar ou fechar. Quando o leitor volta ao trecho
+do vídeo, o player retorna ao lugar de origem.
+
+Funciona com vídeos do YouTube, do Vimeo e com arquivos de vídeo que exibem os
+controles de reprodução.
+
 ### Página de linha do tempo
 
 O campo **Página de linha do tempo** escolhe a página que hospeda o arquivo
 cronológico do site, com as publicações organizadas por data e um calendário
 filtrável. O conteúdo dessa página não é renderizado, importam apenas o
 título e o endereço dela. Escolha uma página publicada.
+
+### Página de contato
+
+O campo **Página de contato** escolhe uma página publicada do WordPress para
+receber o modelo de contato do site. O modelo tem um cabeçalho de largura
+total, um formulário, as suas informações de contato e um mapa opcional. A
+página escolhida empresta apenas o título e o endereço. O conteúdo escrito
+nela não aparece no site publicado.
+
+Os grupos abaixo só aparecem depois que uma página é escolhida.
+
+#### Cabeçalho da página
+
+- **Mensagem de saudação** é um texto curto exibido abaixo do título, com
+  negrito, itálico e links. O painel já traz uma mensagem de exemplo, que você
+  pode reescrever.
+- **Botões de ação** acrescenta até dois botões ao cabeçalho. Vem desligado.
+  Em **Botões**, cada item tem **Texto do botão** e **Link**. O primeiro é a
+  ação principal e o segundo é a alternativa mais discreta.
+
+#### Formulário
+
+- **Campos** escolhe o que o visitante preenche além do e-mail, que está
+  sempre incluído: **Nome**, **Telefone**, **Consentimento (LGPD/GDPR)**,
+  **Assunto** e **Mensagem**. Nome e Mensagem vêm marcados. O telefone usa um
+  seletor internacional com o código de cada país, e o consentimento mostra o
+  aviso de privacidade com um link para a sua página de privacidade.
+- **Itens do assunto** aparece com o campo Assunto marcado. Cada item vira uma
+  opção da lista **Assunto** do formulário. Sem itens, a lista não aparece.
+- **Texto do botão do formulário** muda o texto do botão de envio.
+- **E-mail de destino** recebe todas as mensagens do formulário. Vazio usa o
+  e-mail do administrador principal do WordPress, mostrado no campo como
+  exemplo. O endereço nunca aparece no site.
+
+O formulário passa pelas mesmas proteções das capturas do site, inclusive a
+verificação contra robôs da aba Geração de leads. A mensagem não vai para a
+ferramenta de e-mail marketing. Ela chega por e-mail ao destino escolhido e,
+com **Salvar dados dos leads** ligado, também entra na tela **Todos os
+leads**, com a fonte **Página de contato**. Para que esses e-mails não
+dependam do servidor da sua hospedagem, veja
+[E-mail transacional](/painel-epico-site/integracoes/#e-mail-transacional).
+
+#### Informações de contato e mapa
+
+- **Exibir informações de contato** vem ligado e divide a página em duas
+  colunas, com as informações à esquerda e o formulário à direita. Desligado,
+  o formulário fica centralizado.
+- **Dados de contato** lista as informações exibidas. Cada item tem um
+  **Título** e um **Tipo de informação**: **E-mail**, **Telefone**,
+  **Endereço** ou **Redes sociais**. O tipo Redes sociais não tem campo
+  próprio. Ele mostra as redes do usuário escolhido na aba SEO. Veja
+  [Defina a identidade do site para os buscadores](/painel-epico-site/seo-do-site/).
+  Com **Ninguém** escolhido na aba SEO, o item não aparece.
+- **Exibir mapa** mostra um mapa do OpenStreetMap abaixo do formulário e das
+  informações. Vem desligado e depende das informações de contato ligadas. O
+  mapa só carrega depois que o visitante aceita mídia externa no banner de
+  consentimento.
+- **Local do mapa** posiciona o marcador. Busque o endereço ou arraste o
+  marcador até o local. O ponto inicial é Brasília.
 
 ### Listagens de posts
 
@@ -283,34 +380,19 @@ ao topo. Ele fica oculto até o visitante começar a rolar, aparece centrado na
 parte inferior da janela e leva ao topo quando clicado. Vem desligado por
 padrão.
 
-## Módulos e blocos do editor
+### Transição entre páginas
 
-Os três grupos a seguir formam a sub-aba **Módulos** e decidem o que o
-editor de blocos oferece a quem escreve. Desligar um item remove o
-componente do editor. Páginas já publicadas que usam o componente continuam
-no ar até a próxima publicação do site.
+O interruptor **Transição suave entre páginas** acrescenta uma passagem suave
+quando o visitante navega de uma página do site para outra, nos navegadores
+compatíveis. Nos demais, a navegação segue normal. A transição respeita a
+preferência do visitante por movimento reduzido e a opção **Ativar
+animações** da aba Identidade visual. Vem desligado.
 
-### Módulos de monetização
+## Módulos
 
-Um módulo é maior do que um bloco: ele traz um tipo de conteúdo inteiro,
-com a tela de cadastro e os campos que aquele conteúdo precisa.
-
-O **Módulo de serviços** traz o tipo de conteúdo Serviços, com o seletor
-de ícones, e vem ligado por padrão. Desligue quando o site não vende
-serviços, e o menu do WordPress fica mais curto para quem edita.
-
-### Blocos de seção
-
-Os blocos de seção são as seções prontas que montam uma página inteira,
-como a seção de abertura **Hero**, **Depoimentos** e **Cartão de captura**.
-Cada
-interruptor decide se a seção aparece na lista de blocos do editor.
-
-Cada seção é um bloco fechado, com os campos que o contrato dela prevê.
-Você preenche texto, mídia e links, sem mexer na estrutura. As três seções
-vêm habilitadas no editor. O Cartão de captura é a opção local para inserir
-um formulário em um ponto específico do conteúdo. Veja
-[Captura fixada por rolagem](/painel-epico-site/captura-de-leads/#captura-fixada-por-rolagem).
+A sub-aba **Módulos** decide quais blocos de post o editor oferece a quem
+escreve. Desligar um item remove o bloco do editor. Páginas já publicadas que
+usam o bloco continuam no ar até a próxima publicação do site.
 
 ### Blocos de post
 

@@ -42,6 +42,8 @@ texto voltado ao cliente. Nada além disso é reescrito sem registro.
 | (sem origem) | n/a | [`painel-epico-site/codigo-extra`](../src/content/docs/painel-epico-site/codigo-extra.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
 | (sem origem) | n/a | [`painel-epico-site/gerenciamento`](../src/content/docs/painel-epico-site/gerenciamento.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
 | (sem origem) | n/a | [`painel-epico-site/suporte-e-licenca`](../src/content/docs/painel-epico-site/suporte-e-licenca.md) | `DOCS-09` | conteúdo novo em 2026-09-15 |
+| (sem origem) | n/a | [`painel-epico-site/seo-do-site`](../src/content/docs/painel-epico-site/seo-do-site.md) | `DOCS-20` | conteúdo novo em 2026-11-05 |
+| (sem origem) | n/a | [`painel-epico-site/cabecalho-e-rodape`](../src/content/docs/painel-epico-site/cabecalho-e-rodape.md) | `DOCS-20` | conteúdo novo em 2026-11-05 |
 
 O slug de `01-entenda-o-novo-formato.md` perdeu a palavra "novo" porque slugs
 publicados são permanentes e não carregam referência temporal. O prefixo
@@ -115,3 +117,14 @@ locais de QA do owner. A matriz de campos, os limites dessa fotografia e as
 correções factuais ficam em `qa-painel-tutoriais-2026-10-02.md`. A revisão
 substitui a referência antiga de DOCS-09 para os guias revistos, sem prometer
 que o código local já foi promovido a um pacote de plugin.
+
+## Revisão de 2026-11-05 (DOCS-20)
+
+Varredura do painel e dos blocos do kit epico-base no plugin 2.0.19, fonte Git
+`e696503ba1c2e659b75e94924fe046f7fbf1728b` com árvore limpa, lida por
+definições reais de campos em WordPress/pt_BR (onze abas, caixas do editor,
+perfil do usuário e os catorze blocos de cabeçalho e rodapé), tooltips e
+descrições do painel, catálogo pt_BR e docblocks. Dois artigos novos (aba SEO
+e tela Cabeçalho e rodapé) e oito guias revistos. A matriz de lacunas e os
+limites da conferência ficam em `qa-painel-tutoriais-2026-11-05.md`. Nada foi
+escrito no repositório do kit a partir deste acervo.

@@ -3,7 +3,7 @@ title: Entregue iscas e notifique novos leads
 description: Como operar em Geração de leads o registro de UTM, o convite do Google, a entrega de iscas digitais, as notificações por e-mail e o armazenamento dos leads.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-02
+lastReviewed: 2026-11-05
 keywords:
   - "isca digital"
   - "lead magnet"
@@ -66,10 +66,13 @@ Na seção **Entrega da isca digital**, escolha qual isca digital entregar em
 cada tipo de captura. O padrão é não associar uma isca:
 
 - **Formulários da página** atende os formulários das seções de página.
-  O Cartão de captura tem a associação própria abaixo.
 - **Formulário do pop-up** atende o pop-up modal.
-- **Formulário da captura fixa por rolagem** atende o cartão automático ou
-  inserido como bloco no conteúdo.
+- **Formulário da captura fixa por rolagem** atende o cartão automático, o
+  cartão já inserido como bloco no conteúdo e a captura na barra lateral do
+  blog.
+- **Formulário do rodapé** atende a faixa de inscrição do rodapé do site.
+  Veja
+  [Monte o cabeçalho e o rodapé do site](/painel-epico-site/cabecalho-e-rodape/#rodapé).
 - **Formulário do chat** atende a janela de chat.
 
 A entrega acontece depois que o serviço de marketing integrado confirma o

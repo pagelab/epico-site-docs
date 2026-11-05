@@ -1,9 +1,9 @@
 ---
 title: Capture leads no conteúdo, no pop-up e no chat
-description: Como configurar a captura automática no artigo, o Cartão de captura local, o pop-up e o chat, com proteção contra robôs e confirmação de envio.
+description: Como configurar a captura automática no artigo, a captura na barra lateral do blog, o pop-up e o chat, com proteção contra robôs e confirmação de envio.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-02
+lastReviewed: 2026-11-05
 keywords:
   - "leads"
   - "captura"
@@ -133,31 +133,27 @@ não aparece.
   artigos. Um bloco local tem frequência própria.
 - **Exibir a captura fixada em celulares** vem ligado. Em telas pequenas o
   cartão fica no fluxo do texto.
+- **Exibir na barra lateral do blog** vem desligado. Ligado, coloca o mesmo
+  formulário, parado, na coluna lateral da página principal do blog, quando o
+  modelo do blog é **Barra lateral** ou **Barra lateral alternativa**. É a
+  mesma escolha da opção **Captura de email** da aba Blog: mudar uma muda a
+  outra. Veja
+  [Captura de email na barra lateral](/painel-epico-site/configuracoes-do-blog/#captura-de-email-na-barra-lateral).
 - **Selecione onde inserir** oferece **Todos os posts** (o padrão), **Todos,
   exceto selecionados** e **Somente nos selecionados**. As duas últimas
   opções revelam **Selecione os conteúdos**, que lista posts e páginas
   publicadas com o modelo Posts.
 
-### Usar um Cartão de captura em um artigo específico
+### Cartão de captura já inserido em um artigo
 
-O bloco **Cartão de captura (Épico Site)** permite escolher uma mensagem e
-uma posição próprias para aquele artigo. Ele usa o mesmo formulário e a
-mesma aparência da captura automática.
+O bloco **Cartão de captura (Épico Site)** não é oferecido no momento na
+lista de blocos do editor. Um artigo que já tem o bloco continua com ele no
+site publicado, com a mensagem, a imagem e as opções de exibição escolhidas
+no próprio bloco.
 
-1. Em **Recursos → Módulos → Blocos de seção**, mantenha **Cartão de captura**
-   habilitado.
-2. No editor do artigo, insira o bloco no ponto desejado.
-3. Preencha título, mensagem, texto do botão e campos extras em
-   **Configurações gerais**, e a imagem opcional em **Estilo**.
-4. Em **Opções de exibição**, ajuste **Fixar ao rolar**, **Frequência de
-   exibição** e **Exibir em celulares**. O bloco vem com fixação e exibição
-   em celulares ligadas, com frequência de uma vez por sessão.
-5. Salve o artigo e aguarde a publicação.
-
-Um bloco local substitui a captura automática apenas naquele artigo. Não
-precisa ligar a captura automática para usar o bloco. Desligar a automática
-não remove um bloco já inserido. A fixação só vale em conteúdo com modelo
-editorial e quando o pop-up está desligado.
+Nesse artigo, o bloco substitui a captura automática. Desligar a captura
+automática não remove um bloco já inserido. A fixação do bloco só vale em
+conteúdo com o modelo Post e quando o pop-up está desligado.
 
 ## Escolha apenas um modo de captura
 

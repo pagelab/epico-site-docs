@@ -1,9 +1,9 @@
 ---
 title: Gerencie dados, segurança e backup do plugin
-description: Como operar a aba Gerenciamento do painel Épico Site, com exclusão de dados na desinstalação, bloqueio da instalação WordPress e backup das configurações.
+description: Como operar a aba Gerenciamento do painel Épico Site, com exclusão de dados na desinstalação, bloqueio da instalação WordPress, ocultação do site publicado nos buscadores e backup das configurações.
 topic: painel-epico-site
 draft: false
-lastReviewed: 2026-10-02
+lastReviewed: 2026-11-05
 keywords:
   - "backup"
   - "cópia de segurança"
@@ -20,6 +20,11 @@ keywords:
   - "bloquear instalação"
   - "segurança"
   - "security"
+  - "noindex"
+  - "esconder do Google"
+  - "ocultar dos buscadores"
+  - "robots.txt"
+  - "site em construção"
 sidebar:
   order: 11
 ---
@@ -59,6 +64,22 @@ login ou autenticação em duas etapas, que continuam sendo tarefas de plugins
 dedicados.
 
 O efeito é imediato no WordPress, sem depender da publicação do site.
+
+## Ocultar o site publicado dos buscadores
+
+O interruptor **Ocultar o site publicado dos buscadores** vem desligado.
+Ligado, o site publicado pede aos buscadores que não o indexem: o arquivo
+`robots.txt` fecha o site inteiro e todas as páginas recebem a marcação
+`noindex`. Use enquanto o site ainda não deve aparecer no Google, por exemplo
+durante a revisão do conteúdo, e desligue antes de divulgar o endereço.
+
+A mudança vale a partir da próxima publicação do site. Os buscadores levam um
+tempo para atualizar os resultados nos dois sentidos, então uma página já
+indexada pode continuar aparecendo por alguns dias.
+
+Esta opção é independente de **Configurações → Leitura → Visibilidade para
+buscadores** do WordPress. A opção do WordPress vale só para o endereço onde
+você acessa o painel, e não para o site publicado.
 
 ## Backup das configurações
 

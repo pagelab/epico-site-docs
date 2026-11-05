@@ -36,6 +36,7 @@
 | 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | concluído em 2026-10-10 (PR #7, merge `bd4a186`, produção 16/16) | ordem do owner de 2026-10-10, depois do `DOCS-16` |
 | 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | concluído em 2026-10-10 (PR #8, merge `6562017`, produção 16/16) | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
 | 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | concluído em 2026-10-24 (conteúdo `e778251`, gate destravado em `ec8e7f8`, produção 16/16 na versão `7ccc279d`) | ordem direta do owner de 2026-10-24 |
+| 29 | `DOCS-20` | P1 | M | Varredura do painel e dos blocos do kit 2.0.19, tutoriais ausentes e paridade do índice da Área de Clientes | conteúdo e gate verdes em 2026-11-05, pendente de commit, push e deploy | ordem direta do owner de 2026-11-05 |
 
 ## Critérios por task
 
@@ -2168,3 +2169,49 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   "Texto sobre as cores da marca" sob "Cores da marca" e o H2 "Peso da
   fonte", e `/painel-epico-site/recursos-do-site/` com a remissão para
   `#carregamento-contínuo-de-posts`.
+
+## Checkpoint de 2026-11-05: DOCS-20 (varredura do painel e paridade do índice)
+
+- Ordem direta do owner: detectar funções e features do painel e dos blocos
+  sem tutorial, escrever no acervo e manter o índice da Área de Clientes em
+  paridade. Matriz de lacunas, método e limites em
+  [`docs/qa-painel-tutoriais-2026-11-05.md`](docs/qa-painel-tutoriais-2026-11-05.md).
+- Fonte: kit `epico-base` plugin 2.0.19 (commit `e696503b`), definições reais
+  lidas somente leitura no WordPress local em `pt_BR`. O painel não foi aberto
+  no navegador.
+- Dois artigos novos: `painel-epico-site/seo-do-site` e
+  `painel-epico-site/cabecalho-e-rodape`. Sete guias ampliados: Blog,
+  Recursos (página de contato, vídeo flutuante, transição entre páginas, modo
+  escuro como padrão, modelo de posts em páginas), Identidade visual
+  (logotipo do modo escuro), Gerenciamento (ocultar dos buscadores),
+  Integrações (e-mail transacional Resend), Captura de leads (exibição na
+  barra lateral do blog) e Iscas (formulário do rodapé). Seções de módulos e
+  blocos de seção que o painel oculta hoje foram removidas de Recursos e do
+  guia de Captura. Entrada do painel (`index`) com onze abas e a tela
+  Cabeçalho e rodapé. Proveniência atualizada. Nenhum slug existente mudou e os
+  dois novos são permanentes.
+- Dependência: o gate falhava no `npm audit` por um advisory high do `re2js`
+  2.8.6 (cadeia `markdownlint`). Override aninhado
+  `markdownlint` para `re2js` 2.8.8, sem exceção nova em `allowedAdvisories`.
+- `npm ci && npm run verify` exit 0 em cópia limpa (Node 24.20.0, npm 11.19.0):
+  350 testes (1 pulado, depende do `dist`), 32 páginas, audit e install
+  scripts PASS. O índice sai em versão 2 com 30 entradas, 15 em
+  `painel-epico-site`, todas com keywords. O alerta de install scripts no
+  `node_modules` antigo do worktree é o mesmo artefato de 2026-10-24
+  (`workerd`/`esbuild` abaixo do lockfile) e some com `npm ci`.
+- Paridade com a Área de Clientes (`DocsSite::PANEL_PAGES`, workspace
+  `Produto/Area-de-clientes`): o mapa tinha 12 guias e ganhou `blog`, `seo` e
+  `header-footer`. Conferido por script: as 15 URLs do índice e as 15 do mapa
+  são o mesmo conjunto. Os quatro smokes do plugin passam no Studio e o
+  `phpcs` está limpo. Detalhe e ordem de entrega no histórico daquele
+  workspace.
+- Ordem de entrega: publicar este repositório ANTES de liberar a release do
+  plugin com o mapa de 15 guias, senão três links do hub `/tutoriais` dão 404
+  até o deploy. Depois do deploy, rodar `tests/docs-links-probe.php` no
+  Studio e `probe-production.mjs` aqui.
+- Pendências fora deste repositório, para a sessão do kit (sem escrita
+  daqui): entradas do mapa fechado `wp/includes/fields/tutorial-links.php`
+  para as seções novas, com as âncoras listadas no relatório de QA.
+- Trabalho feito num worktree irmão (`epico-missing-tutorials-8cbfde`) por uma
+  sessão que esgotou o limite; foi copiado integralmente para este worktree.
+  O irmão permanece intacto.
