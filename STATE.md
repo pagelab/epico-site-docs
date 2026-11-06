@@ -544,31 +544,35 @@
   `DocsSite::PANEL_PAGES` foi de 12 para 15 guias, mesmo conjunto de URLs do
   índice, e o `docs-links-probe.php` passou contra o acervo vivo. Narrativa no
   `TASKS.md` §"Checkpoint de 2026-11-05: DOCS-20".
+- `DOCS-21` concluído em 2026-11-05: checkout alinhado ao `origin/main`
+  (`358c559`), plugin `epico-client-area` 0.170.3 ativo no Studio e sonda
+  `docs-links-probe.php` sem FAIL nem WARN contra o acervo publicado (15
+  guias 200, índice versão 2 com 30 entradas e CORS correto). O mapa dos
+  tutoriais está sincronizado. A verificação em duas etapas opcional do Perfil,
+  introduzida na 0.170.0, ainda não tem guia público. Narrativa no
+  `TASKS.md` §"Checkpoint de 2026-11-05: DOCS-21". `npm run verify` passou
+  com exit 0 em cópia limpa (350 testes, 32 páginas).
 
 ## ▶ Próxima ação
 
-Nenhum task do Docs aberto. A release do plugin da Área de Clientes com o mapa
-de 15 guias pertence à sessão daquele workspace (não editar daqui).
-Pendência do kit, também fora deste repositório: entradas no mapa
+Próxima ação deste acervo: decidir a área e o slug de um tutorial público para
+a verificação em duas etapas do Perfil da Área de Clientes e, se aprovado,
+escrevê-lo contra o fluxo da versão 0.170.3, com `npm run verify` verde antes
+da publicação. A checagem é concreta: o guia precisa cobrir ativação,
+recuperação, troca de códigos e desativação sem publicar segredos. A versão
+0.170.3 já aponta para os 15 guias existentes, todos conferidos em produção.
+
+Pendência do kit, fora deste repositório: entradas no mapa
 `wp/includes/fields/tutorial-links.php` para as seções novas, com as âncoras
 do relatório de QA.
-
-A conferência abaixo continua pertencendo à sessão da Área de Clientes.
 
 Decisões de conteúdo do owner, abertas pelo `DOCS-16` (nenhuma vira keyword de
 guia vizinho): (1) lacunas sem guia: pagamento por boleto, Pix, cartão ou
 parcelamento; SSL e HTTPS; senha do painel; velocidade do site; e-mail
-profissional; anúncios e AdSense; (2) o guia `configuracoes-do-blog`: concluído no checkpoint de 2026-10-24
-acima. O que resta é da sessão do workspace Área de Clientes (não
-editar daqui): quando o código do `PANEL-01B` chegar ao `main` do plugin,
-rodar `studio wp --path=/Users/mac/Studio/app-epico-site eval-file
-tests/docs-links-probe.php` e conferir que a seção 5 imprime OK onde registrou
-o WARN de ACAO. O índice já passa em todas as verificações dela, reproduzidas
-aqui contra a produção. Conferência de 2026-10-09 (somente leitura): o commit
-`fad1c2f` do `PANEL-01B` segue fora do `main` do plugin, só no worktree
-`dreamy-germain-9cd360`. Teste de pronto: `git merge-base --is-ancestor
-fad1c2f main` no repositório da Área de Clientes (ou commit equivalente com
-`PANEL-01B` no `git log main`).
+profissional; anúncios e AdSense. O guia `configuracoes-do-blog` foi concluído
+em 2026-10-24. O follow-up anterior do `PANEL-01B` está resolvido: o commit
+`fad1c2f` é ancestral do `main` do plugin e a seção 5 da sonda imprime OK
+para CORS, JSON, versão, chaves, áreas e tamanho do índice.
 
 A dívida herdada do PR #4 foi quitada em 2026-10-24: o GitHub retirou o
 advisory do `braces` (GHSA-vfj7-8cjw-p6xm) e a exceção saiu de
@@ -618,10 +622,9 @@ GraphQL desde 2026-09-14) continua como follow-up independente do owner.
 - npm: `11.19.0`.
 - Astro: `7.3.1`.
 - Starlight: `0.42.0`.
-- Cloudflare: Worker `epico-site-docs` em produção (versão
-  `7ccc279d-a0d3-4c7a-bcb7-753439d6a6ec`, deployment de 2026-10-24T20:25:56Z
-  pelo Workers Builds do push `ec8e7f8`) com custom domain
-  `tutoriais.epico.site`, canary
+- Cloudflare: Worker `epico-site-docs` em produção (conteúdo `DOCS-20`
+  publicado em 2026-11-05; ID do deployment não rechecado no `DOCS-21`) com
+  custom domain `tutoriais.epico.site`, canary
   `epico-site-docs.epico.workers.dev` noindex e Single Redirect HTTP→HTTPS
   escopado ao host (301 com path e query). OAuth do wrangler válido (conta
   `contato@uberfacil.com`). Token `cfut_` da API ativo nas quatro MCPs
@@ -632,7 +635,9 @@ GraphQL desde 2026-09-14) continua como follow-up independente do owner.
   `7f74ef20`).
 - Remoto: `pagelab/epico-site-docs` no GitHub, PÚBLICO (ADR 0005), branch
   `main`.
-- Última sessão: 2026-10-24 (`DOCS-19` publicado e gate de dependências
+- Última sessão: 2026-11-05 (`DOCS-21`, plugin local 0.170.3 e links do
+  acervo conferidos, checkout em `358c559`; conteúdo público não alterado).
+  Antes, 2026-10-24 (`DOCS-19` publicado e gate de dependências
   destravado sem exceção nova: push `ec8e7f8`, produção 16/16 na versão
   `7ccc279d`, `npm run verify` exit 0 em cópia limpa, 348 testes). Antes,
   2026-10-10 (`DOCS-17`, busca `/busca/` tolerante: PR #7

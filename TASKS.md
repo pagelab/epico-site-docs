@@ -37,6 +37,7 @@
 | 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | concluído em 2026-10-10 (PR #8, merge `6562017`, produção 16/16) | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
 | 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | concluído em 2026-10-24 (conteúdo `e778251`, gate destravado em `ec8e7f8`, produção 16/16 na versão `7ccc279d`) | ordem direta do owner de 2026-10-24 |
 | 29 | `DOCS-20` | P1 | M | Varredura do painel e dos blocos do kit 2.0.19, tutoriais ausentes e paridade do índice da Área de Clientes | concluído em 2026-11-05 (conteúdo `f2d840d`, produção 16/16) | ordem direta do owner de 2026-11-05 |
+| 30 | `DOCS-21` | P1 | P | Conferir o plugin Área de Clientes 0.170.3 instalado contra o acervo público e o índice | concluído em 2026-11-05 (sonda sem FAIL nem WARN) | ordem direta do owner de 2026-11-05 |
 
 ## Critérios por task
 
@@ -2225,3 +2226,26 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
 - Trabalho feito num worktree irmão (`epico-missing-tutorials-8cbfde`) por uma
   sessão que esgotou o limite; foi copiado integralmente para este worktree.
   O irmão permanece intacto.
+
+## Checkpoint de 2026-11-05: DOCS-21 (plugin 0.170.3 e acervo)
+
+- O WordPress local de `~/Studio/app-epico-site` informa o plugin
+  `epico-client-area` ativo na versão 0.170.3. O commit `5157576` do plugin
+  acrescentou ao mapa fechado `blog`, `seo` e `header-footer`, totalizando
+  15 guias. O acervo `f2d840d` já os tinha publicado. Este checkout do Docs
+  avançou por fast-forward de `0fb4743` a `358c559`, sem reescrever conteúdo.
+- `tests/docs-links-probe.php`, executado no WordPress local contra
+  `tutoriais.epico.site`, terminou sem FAIL nem WARN: entrada, cinco destinos,
+  sete áreas e 15 guias responderam 200. O índice respondeu 200 com CORS
+  restrito a `https://app.epico.site`, JSON versão 2, 30 entradas com as seis
+  chaves do contrato, 30 com keywords e áreas conhecidas. A sonda comprova os
+  links e o contrato de busca, mas não revisa visualmente cada artigo.
+- A revisão dos commits 0.170.0 a 0.170.3 identificou uma lacuna editorial
+  independente do mapa: a verificação em duas etapas opcional do Perfil,
+  introduzida na 0.170.0, ainda não tem guia no acervo público. A decisão
+  sobre criar um tutorial de conta, sua área e seu slug permanece aberta.
+  Nenhuma página pública foi alterada neste checkpoint.
+- Em cópia limpa, com Node 24.20.0, `npm ci` e `npm run verify` terminaram
+  com exit 0: 350 testes, 32 páginas, política de conteúdo, build, audit e
+  política de install scripts PASS. O checkout principal contém worktrees
+  irmãos dentro de `.claude/`, que o glob de Markdown também alcança.
