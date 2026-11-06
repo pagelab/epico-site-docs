@@ -36,7 +36,7 @@
 | 26 | `DOCS-17` | P1 | M | Busca `/busca/` tolerante, com o mesmo ranking do painel | concluído em 2026-10-10 (PR #7, merge `bd4a186`, produção 16/16) | ordem do owner de 2026-10-10, depois do `DOCS-16` |
 | 27 | `DOCS-18` | P1 | P | Keywords de queda no guia de domínio e prefixo a 0,7 como no painel 0.137.1 | concluído em 2026-10-10 (PR #8, merge `6562017`, produção 16/16) | ordem do owner de 2026-10-10; painel 0.137.1 já em produção |
 | 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | concluído em 2026-10-24 (conteúdo `e778251`, gate destravado em `ec8e7f8`, produção 16/16 na versão `7ccc279d`) | ordem direta do owner de 2026-10-24 |
-| 29 | `DOCS-20` | P1 | M | Varredura do painel e dos blocos do kit 2.0.19, tutoriais ausentes e paridade do índice da Área de Clientes | conteúdo e gate verdes em 2026-11-05, pendente de commit, push e deploy | ordem direta do owner de 2026-11-05 |
+| 29 | `DOCS-20` | P1 | M | Varredura do painel e dos blocos do kit 2.0.19, tutoriais ausentes e paridade do índice da Área de Clientes | concluído em 2026-11-05 (conteúdo `f2d840d`, produção 16/16) | ordem direta do owner de 2026-11-05 |
 
 ## Critérios por task
 
@@ -2205,10 +2205,20 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   são o mesmo conjunto. Os quatro smokes do plugin passam no Studio e o
   `phpcs` está limpo. Detalhe e ordem de entrega no histórico daquele
   workspace.
-- Ordem de entrega: publicar este repositório ANTES de liberar a release do
-  plugin com o mapa de 15 guias, senão três links do hub `/tutoriais` dão 404
-  até o deploy. Depois do deploy, rodar `tests/docs-links-probe.php` no
-  Studio e `probe-production.mjs` aqui.
+- Publicação: push de `f2d840d` no `main` por autorização do owner de
+  2026-11-05. O primeiro build do Workers Builds (`a698696e`) falhou no
+  teste `search-adversarial` "pipeline completo no teto de 200 entradas em
+  tempo interativo" (1,28 s contra o teto de 1 s, suíte inteira em 6,95 s no
+  worker contra 1,1 s local). Retry manual do owner passou (`2aadb2b7`).
+  `probe-production.mjs` 16/16, índice versão 2 com 30 entradas (15 do
+  painel) e os três guias do painel tocados respondendo 200. O
+  `tests/docs-links-probe.php` da Área de Clientes passou contra o acervo
+  vivo, sem FAIL nem WARN.
+- Teste instável corrigido por ordem do owner: a sonda era declarada "não gate
+  de performance" mas usava relógio de parede de 1 s; o teto passou a 10 s,
+  que ainda reprova explosão de custo e tolera um worker lento.
+- Ordem de entrega que vale daqui em diante: o acervo já está publicado, então
+  a release do plugin com o mapa de 15 guias não causa 404.
 - Pendências fora deste repositório, para a sessão do kit (sem escrita
   daqui): entradas do mapa fechado `wp/includes/fields/tutorial-links.php`
   para as seções novas, com as âncoras listadas no relatório de QA.

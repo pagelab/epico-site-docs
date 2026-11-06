@@ -384,9 +384,11 @@ describe('adversarial: consumidor nos limites em tempo real', () => {
 		expect(filterSearchEntries(heavy, heavyQuery).length).toBeGreaterThan(0);
 
 		// Sonda de ausência de retrocesso quadrático (busca sem regex),
-		// não gate de performance: a bateria inteira no teto de escala precisa
-		// ficar longe de um segundo.
-		expect(performance.now() - started).toBeLessThan(1_000);
+		// não gate de performance: um teto de 1 s reprovou o deploy de
+		// 2026-11-05 (1,28 s no worker do Workers Builds, onde a suíte inteira
+		// levou 6,95 s contra 1,1 s local). O teto de 10 s mede explosão de
+		// custo, não a velocidade da máquina.
+		expect(performance.now() - started).toBeLessThan(10_000);
 	});
 });
 

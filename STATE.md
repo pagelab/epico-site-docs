@@ -534,33 +534,26 @@
   limpa (348 testes, 30 páginas). Produção na versão `7ccc279d`,
   `probe-production.mjs` 16/16 e as três páginas conferidas ao vivo.
   Narrativa no `TASKS.md` §"Checkpoint de 2026-10-24: DOCS-19".
-- `DOCS-20` com conteúdo e gate verdes em 2026-11-05, ainda sem commit: varredura
-  do painel e dos blocos do kit 2.0.19 (relatório em
+- `DOCS-20` concluído em 2026-11-05 (conteúdo `f2d840d`): varredura do painel
+  e dos blocos do kit 2.0.19 (relatório em
   `docs/qa-painel-tutoriais-2026-11-05.md`), dois artigos novos (`seo-do-site`,
   `cabecalho-e-rodape`), sete guias ampliados e override do `re2js` 2.8.8 para
-  o audit. `npm ci && npm run verify` exit 0 em cópia limpa (350 testes, 32
-  páginas, índice versão 2 com 30 entradas). Paridade com a Área de Clientes
-  conferida: `DocsSite::PANEL_PAGES` foi de 12 para 15 guias e o conjunto de
-  URLs é idêntico ao do índice. Narrativa no `TASKS.md` §"Checkpoint de
-  2026-11-05: DOCS-20".
+  o audit. Produção `probe-production.mjs` 16/16, índice versão 2 com 30
+  entradas (15 do painel). Primeiro build falhou num teste de tempo com teto de
+  1 s; o teto passou a 10 s. Paridade com a Área de Clientes:
+  `DocsSite::PANEL_PAGES` foi de 12 para 15 guias, mesmo conjunto de URLs do
+  índice, e o `docs-links-probe.php` passou contra o acervo vivo. Narrativa no
+  `TASKS.md` §"Checkpoint de 2026-11-05: DOCS-20".
 
 ## ▶ Próxima ação
 
-Concluir o `DOCS-20`, nesta ordem (push e deploy exigem autorização do owner):
+Nenhum task do Docs aberto. A release do plugin da Área de Clientes com o mapa
+de 15 guias pertence à sessão daquele workspace (não editar daqui).
+Pendência do kit, também fora deste repositório: entradas no mapa
+`wp/includes/fields/tutorial-links.php` para as seções novas, com as âncoras
+do relatório de QA.
 
-1. Commitar neste worktree (`claude/epico-tutorial-audit-1ca0d3`) o conteúdo,
-   `package.json`/lockfile, `docs/` e estes arquivos de estado.
-2. Com autorização, levar ao `main` e conferir o Workers Builds verde. Teste de
-   pronto: `node scripts/probe-production.mjs` com 16/16 e
-   `/painel-epico-site/seo-do-site/` e `/painel-epico-site/cabecalho-e-rodape/`
-   respondendo 200 em produção.
-3. Só então a sessão da Área de Clientes libera a release do plugin com o mapa
-   de 15 guias e roda `tests/docs-links-probe.php` no Studio, que deve imprimir
-   OK nos 15 guias. As mudanças dela estão no `main` de
-   `Produto/Area-de-clientes` sem commit (`DocsSite.php`, catálogos, smokes).
-
-Sem esse passo pendente, nenhum outro task do Docs está aberto. A conferência
-abaixo continua pertencendo à sessão da Área de Clientes.
+A conferência abaixo continua pertencendo à sessão da Área de Clientes.
 
 Decisões de conteúdo do owner, abertas pelo `DOCS-16` (nenhuma vira keyword de
 guia vizinho): (1) lacunas sem guia: pagamento por boleto, Pix, cartão ou
