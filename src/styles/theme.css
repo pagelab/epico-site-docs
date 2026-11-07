@@ -245,6 +245,13 @@ body:has(.hero)::after {
 	text-wrap: balance;
 }
 
+/* Hover e foco dos links da sidebar na cor de destaque (QA do owner,
+ * 2026-11-07). Seletor estável no lugar da classe com hash do Starlight. */
+#starlight__sidebar a:hover,
+#starlight__sidebar a:focus {
+	color: var(--sl-color-accent);
+}
+
 #starlight__sidebar [aria-current='page'],
 #starlight__sidebar [aria-current='page']:hover,
 #starlight__sidebar [aria-current='page']:focus {

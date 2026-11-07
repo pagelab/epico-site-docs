@@ -40,6 +40,7 @@
 | 30 | `DOCS-21` | P1 | P | Conferir o plugin Área de Clientes 0.170.3 instalado contra o acervo público e o índice | concluído em 2026-11-05 (sonda sem FAIL nem WARN) | ordem direta do owner de 2026-11-05 |
 | 31 | `DOCS-22` | P1 | P | Guia de resolução de problemas: publicação falha com 403 por causa da CDN da Hostinger | concluído em 2026-11-07 (PR #9, merge `e7ccdb2`, produção 16/16) | pedido da sessão do kit `epico-base` (releases 2.0.38 a 2.0.41, classificação `host-cdn-block`) |
 | 32 | `DOCS-23` | P1 | P | Filtro da imagem do hero no light mode e pergunta do 403 da Hostinger no FAQ | concluído em 2026-11-07 (PR #10, merge `9606b47`, produção 16/16) | ordem direta do owner de 2026-11-07 |
+| 33 | `DOCS-24` | P1 | P | Hover e foco dos links da sidebar na cor de destaque | integrado em 2026-11-07, conferência pós-deploy pendente | QA do owner de 2026-11-07 |
 
 ## Critérios por task
 
@@ -2298,3 +2299,13 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   pergunta nova aparece no FAQ ao vivo e o CSS servido traz a regra. No
   navegador, em light mode, a imagem do hero computa
   `invert(1) hue-rotate(529deg)`.
+
+## Checkpoint de 2026-11-07: DOCS-24 (hover da sidebar na cor de destaque)
+
+- QA do owner: `a:where(.astro-rmhv4bp6):hover` e `:focus` com
+  `color: var(--sl-color-accent)`. A classe com hash é do `SidebarSublist`
+  do Starlight e muda a cada versão, então a regra usa o seletor estável
+  `#starlight__sidebar a:hover, #starlight__sidebar a:focus`, já usado pelo
+  tema. Fica antes da regra de `[aria-current='page']`, que segue com a cor
+  do item ativo por ser mais específica.
+- Guarda nova em `tests/theme.test.ts`. `npm run verify` exit 0 (350 testes).
