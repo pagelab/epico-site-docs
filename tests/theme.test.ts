@@ -145,6 +145,9 @@ describe('tema e refinamentos autorizados pelo primeiro passe visual', () => {
 		expect(css).toMatch(/\.page > \.header\s*{[^}]*border-top: var\(--epico-header-brand-strip-width\) solid var\(--epico-color-action-primary\)/s);
 		expect(css).toMatch(/#starlight__sidebar ul\s*{[^}]*--sl-sidebar-item-padding-inline: 0\.8rem/s);
 		expect(css).toMatch(/#starlight__sidebar a\s*{[^}]*padding: 0\.6em;/s);
+		expect(css).toMatch(
+			/#starlight__sidebar a:hover,\s*#starlight__sidebar a:focus \{\s*color: var\(--sl-color-accent\);\s*\}/,
+		);
 		expect(css).toMatch(/\[aria-current='page'\][^{]*{[^}]*var\(--epico-nav-active-color\)[^}]*var\(--epico-nav-active-background\)[^}]*border-radius: 5px/s);
 		expect(css).toMatch(/starlight-theme-select > label\s*{[^}]*--sl-label-icon-size: 1\.25rem/s);
 		expect(css).toMatch(/starlight-theme-select \.icon\s*{[^}]*width: 0\.9em[^}]*height: 0\.9em/s);

@@ -563,6 +563,10 @@
   `invert(1) hue-rotate(529deg)` na imagem do hero só no light mode e pergunta
   do 403 da Hostinger no FAQ, com link para o guia do `DOCS-22`. Narrativa no `TASKS.md`
   §"Checkpoint de 2026-11-07: DOCS-23".
+- `DOCS-24` integrado em 2026-11-07, por QA do owner: hover e foco dos links
+  da sidebar em `var(--sl-color-accent)`, com seletor estável
+  `#starlight__sidebar a`. Conferência pós-deploy com `probe-production.mjs`
+  pendente. Narrativa no `TASKS.md` §"Checkpoint de 2026-11-07: DOCS-24".
 
 ## ▶ Próxima ação
 
