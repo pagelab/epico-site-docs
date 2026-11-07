@@ -3,7 +3,7 @@ title: Perguntas frequentes
 description: Respostas diretas sobre o andamento do serviço, posts, e-commerce, acessos e o acompanhamento na Área de Clientes.
 topic: perguntas-frequentes
 draft: false
-lastReviewed: 2026-09-14
+lastReviewed: 2026-11-07
 keywords:
   - "dúvidas"
   - "perguntas"
@@ -68,6 +68,18 @@ a equipe Épico faça”. Na ativação, DNS e revisão de plugins terão tutori
 ajuda dentro do suporte. Até essa atualização ser concluída, uma URL técnica não
 significa que o domínio deve ser alterado.
 
+## Por que a publicação do meu site falha com erro 403 na Hostinger?
+
+Quando o WordPress está na Hostinger, a CDN própria da hospedagem (hCDN) às
+vezes confunde o servidor que gera o seu site com um robô e bloqueia a leitura
+do conteúdo. O registro da publicação mostra o rótulo **bloqueio da CDN da
+hospedagem**, com `servidor hcdn` e um `x-hcdn-request-id`. O bloqueio é da
+Hostinger, e não da Cloudflare. A solução recomendada é desativar a CDN da
+Hostinger, que não acelera nada nesse modelo, porque o site público é servido
+pela Cloudflare. O passo a passo, com as alternativas para quem prefere manter
+a CDN, está em
+[A publicação falha com 403 por causa da CDN da Hostinger](/dominio-e-publicacao/publicacao-falha-com-403-da-cdn-da-hostinger/).
+
 ## Onde cada dúvida é respondida em detalhe?
 
 - O que é headless, os três serviços e o que acontece com os plugins:
@@ -79,3 +91,5 @@ significa que o domínio deve ser alterado.
 - O que configuramos, suporte e os 100 dias, operação gerenciada, dono dos arquivos e
   das contas, cancelamento e reembolso:
   [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/).
+- Publicação que falha com erro 403 por causa da CDN da Hostinger:
+  [A publicação falha com 403 por causa da CDN da Hostinger](/dominio-e-publicacao/publicacao-falha-com-403-da-cdn-da-hostinger/).

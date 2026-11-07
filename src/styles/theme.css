@@ -196,6 +196,13 @@ body:has(.hero)::after {
 	}
 }
 
+/* Imagem do hero desenhada para fundo escuro: no light mode, inverte e
+ * devolve o matiz da marca. */
+:root[data-theme='light'] .sl-container .hero img,
+[data-theme='light'] .sl-container .hero img {
+	filter: invert(1) hue-rotate(529deg);
+}
+
 /* ---------- Refinamentos do primeiro passe G-VISUAL ---------- */
 
 .page > .header,

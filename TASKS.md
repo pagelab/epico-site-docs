@@ -38,7 +38,8 @@
 | 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | concluído em 2026-10-24 (conteúdo `e778251`, gate destravado em `ec8e7f8`, produção 16/16 na versão `7ccc279d`) | ordem direta do owner de 2026-10-24 |
 | 29 | `DOCS-20` | P1 | M | Varredura do painel e dos blocos do kit 2.0.19, tutoriais ausentes e paridade do índice da Área de Clientes | concluído em 2026-11-05 (conteúdo `f2d840d`, produção 16/16) | ordem direta do owner de 2026-11-05 |
 | 30 | `DOCS-21` | P1 | P | Conferir o plugin Área de Clientes 0.170.3 instalado contra o acervo público e o índice | concluído em 2026-11-05 (sonda sem FAIL nem WARN) | ordem direta do owner de 2026-11-05 |
-| 31 | `DOCS-22` | P1 | P | Guia de resolução de problemas: publicação falha com 403 por causa da CDN da Hostinger | conteúdo pronto em 2026-11-07, sem push nem deploy | pedido da sessão do kit `epico-base` (releases 2.0.38 a 2.0.41, classificação `host-cdn-block`) |
+| 31 | `DOCS-22` | P1 | P | Guia de resolução de problemas: publicação falha com 403 por causa da CDN da Hostinger | concluído em 2026-11-07 (PR #9, merge `e7ccdb2`, produção 16/16) | pedido da sessão do kit `epico-base` (releases 2.0.38 a 2.0.41, classificação `host-cdn-block`) |
+| 32 | `DOCS-23` | P1 | P | Filtro da imagem do hero no light mode e pergunta do 403 da Hostinger no FAQ | integrado em 2026-11-07, conferência pós-deploy pendente | ordem direta do owner de 2026-11-07 |
 
 ## Critérios por task
 
@@ -2275,5 +2276,21 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
 - `npm run verify` exit 0 depois de `npm ci` no worktree (350 testes, 33
   páginas). O primeiro verify falhou só na política de install scripts porque
   o `node_modules` do worktree estava defasado do lockfile.
-- Pendente: push, deploy e conferência em produção. O link no painel do
-  plugin (linha "CDN da hospedagem" do preflight) é trabalho da sessão do kit.
+- Publicado pelo PR #9 (merge `e7ccdb2`). `probe-production.mjs` 16/16, o
+  guia responde 200 e o índice vivo tem 31 entradas, todas com keywords. O
+  link no painel do plugin (linha "CDN da hospedagem" do preflight) é
+  trabalho da sessão do kit.
+
+## Checkpoint de 2026-11-07: DOCS-23 (hero no light mode e FAQ da Hostinger)
+
+- Ordem do owner: `filter: invert(1) hue-rotate(529deg)` em
+  `.sl-container .hero img` somente no light mode, com o mesmo par de
+  seletores `:root[data-theme='light']` e `[data-theme='light']` do tema.
+  O teste de tema proibia qualquer `filter:` desde o primeiro passe do
+  G-VISUAL (o logo usa tokens, sem filtro). A guarda passou a aceitar só este
+  filtro, nesta regra.
+- Pergunta nova no FAQ, "Por que a publicação do meu site falha com erro 403
+  na Hostinger?", com resumo e link para o guia do `DOCS-22`, mais a entrada
+  na lista de remissões. Sem keywords novas no FAQ, para o guia continuar em
+  primeiro na busca.
+- `npm run verify` exit 0 antes do commit (350 testes).

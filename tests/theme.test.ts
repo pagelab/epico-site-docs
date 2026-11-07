@@ -116,7 +116,11 @@ describe('tema e refinamentos autorizados pelo primeiro passe visual', () => {
 		expect(css).not.toMatch(/https?:|\/\//);
 		expect(css.match(/url\('\.\.\/assets\/outer-space\.webp'\)/g)).toHaveLength(1);
 		expect(css).not.toContain('tokens.css');
-		expect(css).not.toContain('filter:');
+		// Único filtro autorizado (owner, 2026-11-07): a imagem do hero no light mode.
+		expect(css.match(/filter:/g)).toHaveLength(1);
+		expect(css).toMatch(
+			/:root\[data-theme='light'\] \.sl-container \.hero img,\s*\[data-theme='light'\] \.sl-container \.hero img \{\s*filter: invert\(1\) hue-rotate\(529deg\);\s*\}/,
+		);
 	});
 
 	it('usa o fundo espacial local com máscaras e resposta ao tema', async () => {
