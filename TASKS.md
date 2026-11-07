@@ -38,6 +38,7 @@
 | 28 | `DOCS-19` | P1 | P | Guia da aba Blog contra o plugin 1.70.0, texto sobre as cores da marca e remissão do carregamento contínuo | concluído em 2026-10-24 (conteúdo `e778251`, gate destravado em `ec8e7f8`, produção 16/16 na versão `7ccc279d`) | ordem direta do owner de 2026-10-24 |
 | 29 | `DOCS-20` | P1 | M | Varredura do painel e dos blocos do kit 2.0.19, tutoriais ausentes e paridade do índice da Área de Clientes | concluído em 2026-11-05 (conteúdo `f2d840d`, produção 16/16) | ordem direta do owner de 2026-11-05 |
 | 30 | `DOCS-21` | P1 | P | Conferir o plugin Área de Clientes 0.170.3 instalado contra o acervo público e o índice | concluído em 2026-11-05 (sonda sem FAIL nem WARN) | ordem direta do owner de 2026-11-05 |
+| 31 | `DOCS-22` | P1 | P | Guia de resolução de problemas: publicação falha com 403 por causa da CDN da Hostinger | conteúdo pronto em 2026-11-07, sem push nem deploy | pedido da sessão do kit `epico-base` (releases 2.0.38 a 2.0.41, classificação `host-cdn-block`) |
 
 ## Critérios por task
 
@@ -2249,3 +2250,30 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   com exit 0: 350 testes, 32 páginas, política de conteúdo, build, audit e
   política de install scripts PASS. O checkout principal contém worktrees
   irmãos dentro de `.claude/`, que o glob de Markdown também alcança.
+
+## Checkpoint de 2026-11-07: DOCS-22 (403 da CDN da Hostinger)
+
+- Pedido da sessão do kit `epico-base`: builds parados por 403 intermitente
+  da hCDN da Hostinger, classificados pelo motor como `host-cdn-block` em
+  `core/scripts/wp-read.mjs` (commit `944eebcb` do kit, lido sem escrita).
+- Artigo novo em
+  `/dominio-e-publicacao/publicacao-falha-com-403-da-cdn-da-hostinger/`
+  (slug permanente). O acervo não tem área de resolução de problemas e criar
+  uma mexeria na allowlist de áreas que a sonda do painel confere, então o
+  guia entrou em Domínio e publicação, ordem 4.
+- Conteúdo: sintoma (rótulo "bloqueio da CDN da hospedagem", servidor hcdn e
+  `x-hcdn-request-id`, no mesmo formato que o `wp-read.mjs` imprime), causa
+  (desafio "Checking your browser" da hCDN a IPs de data center), solução
+  recomendada (desativar a CDN), alternativa (nível de segurança Medium e
+  depois Low) e último recurso (exceção para `/wp-json/*` e
+  `/wp-content/uploads/*` pelo suporte). Os caminhos do hPanel foram conferidos
+  em 2026-11-07 nos três artigos oficiais da Hostinger, todos em inglês:
+  Websites, Manage site, Performance, CDN, Disable, e Manage, aba Security.
+- Keyword "HTTP 403" e "HTTP" na descrição saíram: a redução de plural
+  levava a lacuna editorial "https" a este guia e quebrava o teste de
+  lacunas do `DOCS-16`.
+- `npm run verify` exit 0 depois de `npm ci` no worktree (350 testes, 33
+  páginas). O primeiro verify falhou só na política de install scripts porque
+  o `node_modules` do worktree estava defasado do lockfile.
+- Pendente: push, deploy e conferência em produção. O link no painel do
+  plugin (linha "CDN da hospedagem" do preflight) é trabalho da sessão do kit.

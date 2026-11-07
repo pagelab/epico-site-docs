@@ -552,8 +552,20 @@
   introduzida na 0.170.0, ainda não tem guia público. Narrativa no
   `TASKS.md` §"Checkpoint de 2026-11-05: DOCS-21". `npm run verify` passou
   com exit 0 em cópia limpa (350 testes, 32 páginas).
+- `DOCS-22` com conteúdo pronto em 2026-11-07, sem push nem deploy: guia
+  `/dominio-e-publicacao/publicacao-falha-com-403-da-cdn-da-hostinger/`
+  (slug permanente, a ser usado pelo painel do plugin na linha "CDN da
+  hospedagem" do preflight do kit `epico-base`). `npm run verify` exit 0 (350
+  testes, 33 páginas). Narrativa no `TASKS.md` §"Checkpoint de 2026-11-07:
+  DOCS-22".
 
 ## ▶ Próxima ação
+
+Primeiro, publicar o `DOCS-22`: integrar o commit do guia da CDN da Hostinger
+no `main`, deixar o Workers Builds publicar e conferir com
+`probe-production.mjs` 16/16 que
+`/dominio-e-publicacao/publicacao-falha-com-403-da-cdn-da-hostinger/`
+responde 200 e aparece no índice de busca.
 
 Próxima ação deste acervo: decidir a área e o slug de um tutorial público para
 a verificação em duas etapas do Perfil da Área de Clientes e, se aprovado,
