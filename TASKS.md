@@ -39,7 +39,7 @@
 | 29 | `DOCS-20` | P1 | M | Varredura do painel e dos blocos do kit 2.0.19, tutoriais ausentes e paridade do índice da Área de Clientes | concluído em 2026-11-05 (conteúdo `f2d840d`, produção 16/16) | ordem direta do owner de 2026-11-05 |
 | 30 | `DOCS-21` | P1 | P | Conferir o plugin Área de Clientes 0.170.3 instalado contra o acervo público e o índice | concluído em 2026-11-05 (sonda sem FAIL nem WARN) | ordem direta do owner de 2026-11-05 |
 | 31 | `DOCS-22` | P1 | P | Guia de resolução de problemas: publicação falha com 403 por causa da CDN da Hostinger | concluído em 2026-11-07 (PR #9, merge `e7ccdb2`, produção 16/16) | pedido da sessão do kit `epico-base` (releases 2.0.38 a 2.0.41, classificação `host-cdn-block`) |
-| 32 | `DOCS-23` | P1 | P | Filtro da imagem do hero no light mode e pergunta do 403 da Hostinger no FAQ | integrado em 2026-11-07, conferência pós-deploy pendente | ordem direta do owner de 2026-11-07 |
+| 32 | `DOCS-23` | P1 | P | Filtro da imagem do hero no light mode e pergunta do 403 da Hostinger no FAQ | concluído em 2026-11-07 (PR #10, merge `9606b47`, produção 16/16) | ordem direta do owner de 2026-11-07 |
 
 ## Critérios por task
 
@@ -2294,3 +2294,7 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   na lista de remissões. Sem keywords novas no FAQ, para o guia continuar em
   primeiro na busca.
 - `npm run verify` exit 0 antes do commit (350 testes).
+- Publicado pelo PR #10 (merge `9606b47`). `probe-production.mjs` 16/16, a
+  pergunta nova aparece no FAQ ao vivo e o CSS servido traz a regra. No
+  navegador, em light mode, a imagem do hero computa
+  `invert(1) hue-rotate(529deg)`.

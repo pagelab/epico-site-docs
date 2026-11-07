@@ -559,10 +559,9 @@
   hospedagem" do preflight do kit `epico-base`). `npm run verify` exit 0 (350
   testes, 33 páginas). Narrativa no `TASKS.md` §"Checkpoint de 2026-11-07:
   DOCS-22".
-- `DOCS-23` integrado em 2026-11-07, por ordem do owner: filtro
+- `DOCS-23` concluído em 2026-11-07 (PR #10, merge `9606b47`, produção 16/16), por ordem do owner: filtro
   `invert(1) hue-rotate(529deg)` na imagem do hero só no light mode e pergunta
-  do 403 da Hostinger no FAQ, com link para o guia do `DOCS-22`. Conferência
-  pós-deploy com `probe-production.mjs` pendente. Narrativa no `TASKS.md`
+  do 403 da Hostinger no FAQ, com link para o guia do `DOCS-22`. Narrativa no `TASKS.md`
   §"Checkpoint de 2026-11-07: DOCS-23".
 
 ## ▶ Próxima ação
