@@ -61,10 +61,10 @@ Não. O uso é permanente: nenhum prazo expirado desliga o produto nem retira o
 que você já baixou. A compra separa três direitos:
 
 - **Uso do produto**: permanente, válido para a versão adquirida.
-- **Suporte humano**: 100 dias a partir da compra, com atendimento da equipe
-  Épico dentro da própria Área de Clientes.
-- **Novas atualizações**: 12 meses a partir da compra, período em que as
-  versões novas do produto ficam disponíveis para você.
+- **Suporte humano**: 100 dias a partir da aprovação do pagamento, com
+  atendimento da equipe Épico dentro da própria Área de Clientes.
+- **Novas atualizações**: 100 dias a partir da aprovação do pagamento, período
+  em que as versões novas do produto ficam disponíveis para você.
 
 O que o suporte cobre está detalhado em
 [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/).
@@ -78,16 +78,19 @@ O produto segue funcionando normalmente. O que muda:
 - você mantém o download da última versão liberada enquanto suas atualizações
   estiveram válidas, na seção **Downloads**.
 
-Renovar devolve o acesso imediato à versão atual e inicia um novo período de
-12 meses, sem cobrança retroativa pelo tempo sem renovação. Para renovar, fale
-com a equipe Épico pela página **Suporte**.
+Renovar devolve o acesso imediato à versão atual e soma 100 dias de suporte e
+de atualizações, sem cobrança retroativa pelo tempo sem renovação. O período é
+estendido a partir do fim atual ou, se já venceu, a partir da confirmação do
+pagamento. Para renovar, use o card **Renovação do suporte**, na seção
+**Serviços**.
 
 ## O que acontece quando o suporte termina?
 
 Downloads e uso do produto não são afetados. A mudança é no canal de ajuda: a
 página **Suporte** passa a mostrar a caixa **Renove seu acesso ao suporte**,
-com o botão **Renovar agora**. Ele leva ao card **Suporte adicional**, na seção
-**Serviços**, onde é possível comprar mais tempo, somado ao que você já tem.
+com o botão **Renovar agora**. Ele leva ao card **Renovação do suporte**, na
+seção **Serviços**, onde é possível comprar mais 100 dias, somados ao que você
+já tem.
 
 ## Como funcionam os sites conectados?
 

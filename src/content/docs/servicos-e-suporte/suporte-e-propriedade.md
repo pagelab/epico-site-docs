@@ -39,7 +39,7 @@ Configuramos tudo o que pertence ao serviço contratado:
   site real e conduzimos revisão e publicação conforme o escopo.
 - no **Site Horizonte**, implantamos e validamos a infraestrutura e incluímos uma ativação
   posterior com DNS e revisão segura de plugins.
-- no **Site Fronteira**, criamos ou recriamos o site no site kit conforme a
+- no **Site Fronteira**, criamos ou recriamos o site no site kit Épico Base conforme a
   proposta aprovada.
 
 O Site Horizonte não inclui converter páginas existentes, reproduzir a marca,
@@ -70,7 +70,7 @@ plugins. Os tutoriais continuam disponíveis depois. A execução humana posteri
 contratada à parte.
 
 Operação gerenciada contínua, que cobre publicação, monitoramento, manutenção e
-intervenção humana, é um serviço recorrente separado. Infraestrutura em plano gratuito não
+intervenção humana, é um serviço recorrente separado (**Gestão WP**). Infraestrutura em plano gratuito não
 inclui esse trabalho operacional.
 
 ## Quem é o dono dos arquivos e das contas?

@@ -41,7 +41,7 @@ Não. O portfólio tem três serviços:
 - **Site Núcleo:** mantém o site e o WordPress atuais, publicando uma versão
   estática sem site kit.
 - **Site Horizonte:** instala e valida a infraestrutura técnica headless.
-- **Site Fronteira:** cria ou recria o site real no site kit e o leva até o
+- **Site Fronteira:** cria ou recria o site real no site kit Épico Base e o leva até o
   lançamento conforme a proposta.
 
 ## O Site Horizonte substitui meu site atual?
