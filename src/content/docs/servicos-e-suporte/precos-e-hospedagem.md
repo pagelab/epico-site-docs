@@ -42,7 +42,7 @@ Há três serviços, escolhidos conforme o resultado desejado:
 | --- | --- | --- |
 | **Site Núcleo** | **R$ 497**, pagamento único | publica uma versão estática do site atual, preservando seu layout e sua estrutura tecnológica |
 | **Site Horizonte** | **R$ 497**, pagamento único | prepara a conexão técnica e inclui a ativação posterior com DNS e revisão de plugins |
-| **Site Fronteira** | orçamento individual | cria ou recria o site atual no modelo headless, usando um site kit |
+| **Site Fronteira** | orçamento individual | cria ou recria o site atual no modelo headless, com páginas sob medida no site kit Épico Base |
 
 O Site Núcleo e o Site Horizonte têm o mesmo preço, mas entregam resultados diferentes. O
 Site Fronteira é trabalho de agência: páginas, identidade visual, conteúdo,
@@ -88,8 +88,8 @@ kit. O escopo, o cronograma e o preço são definidos em proposta própria.
 ## É uma assinatura?
 
 Os três serviços de implantação são cobrados como projeto ou pagamento único. Hospedagem e
-operação gerenciadas são um serviço recorrente separado e opcional. Não estão escondidas no
-preço do Site Horizonte.
+operação gerenciadas (**Gestão WP**) são um serviço recorrente separado e opcional. Não
+estão escondidas no preço do Site Horizonte.
 
 ## Onde o site público pode ficar hospedado?
 
