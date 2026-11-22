@@ -571,6 +571,8 @@
 
 **Prioridade (Brain #41, Emenda I, owner, 22/11/2026): garantia de 30 dias.**
 
+> **Master plan:** `Brain/00-Chronology/44-master-plan-garantia-30-dias.md`. Esta fila é a trilha **D**: ler os contratos (§2) e os critérios de aceite (§3) antes de começar, colá-los na descrição do PR com a evidência e atualizar a linha D do §6 no Brain.
+
 Antes da abertura da compra ao público na Black Friday, alinhar o acervo com a nova regra:
 - **Regra:** Site Horizonte e Site Núcleo têm **garantia incondicional de 30 dias, com
   reembolso integral** pelo botão da Área de Clientes.
