@@ -569,6 +569,31 @@
 
 ## ▶ Próxima ação
 
+**Prioridade (Brain #41, Emenda I, owner, 22/11/2026): garantia de 30 dias.**
+
+Antes da abertura da compra ao público na Black Friday, alinhar o acervo com a nova regra:
+- **Regra:** Site Horizonte e Site Núcleo têm **garantia incondicional de 30 dias, com
+  reembolso integral** pelo botão da Área de Clientes.
+- **Implantação:** numa data livre em até 20 dias após a compra, em dias úteis.
+- **Nota fiscal:** é emitida no dia da implantação.
+- **Gestão WP:** continua com 7 dias.
+
+1. `src/content/docs/servicos-e-suporte/suporte-e-propriedade.md`, seção "Como funcionam
+   cancelamento e reembolso?": dizer a garantia de 30 dias, onde fica o botão, que o
+   reembolso desativa a licença e o acesso ao repositório entregue, e que a Gestão WP tem
+   regra própria. Manter "além dos direitos previstos em lei".
+2. `src/content/docs/perguntas-frequentes/index.md`: resposta curta sobre garantia e
+   agendamento, com link para a página acima.
+3. Não citar Spedy, Cal.com nem mecânica interna. A nota fiscal só entra se a FAQ já falar
+   de nota.
+4. Rodar `npm run verify` antes da publicação. Esperar a revisão jurídica dos termos
+   (pendência do owner) para não publicar uma redação diferente da contratual.
+
+Especificação: `Brain/06-Product/garantia-30-dias-agenda-nota-fiscal.md`. Até o merge, está
+na branch `claude/legal-review-withdrawal-rights-292e01` do repositório Brain.
+
+Depois disso, a fila anterior:
+
 Próxima ação deste acervo: decidir a área e o slug de um tutorial público para
 a verificação em duas etapas do Perfil da Área de Clientes e, se aprovado,
 escrevê-lo contra o fluxo da versão 0.170.3, com `npm run verify` verde antes
