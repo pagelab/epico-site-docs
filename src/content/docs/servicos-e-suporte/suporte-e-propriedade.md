@@ -66,9 +66,12 @@ manutenção geral do WordPress, conflitos de terceiros e novas integrações n�
 suporte por estarem próximos do site. Quando necessários, são avaliados como serviço
 adicional.
 
-No Site Horizonte, a janela é de 100 dias e inclui ajuda solicitada para DNS e revisão de
-plugins. Os tutoriais continuam disponíveis depois. A execução humana posterior pode ser
-contratada à parte.
+No Site Núcleo e no Site Horizonte, você tem 100 dias de suporte e atualizações, contados
+da confirmação do pagamento e pedidos pelo formulário de Suporte da Área de Clientes.
+Chamados abertos dentro do prazo são atendidos até o fim, mesmo depois dele, e o suporte e
+as atualizações podem ser renovados depois dos 100 dias. No Site Horizonte, essa janela
+inclui ajuda solicitada para DNS e revisão de plugins. Os tutoriais continuam disponíveis
+depois. A execução humana posterior pode ser contratada à parte.
 
 Operação gerenciada contínua, que cobre publicação, monitoramento, manutenção e
 intervenção humana, é um serviço recorrente separado (**Gestão WP**). Infraestrutura em plano gratuito não

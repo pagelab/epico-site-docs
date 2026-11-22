@@ -2334,3 +2334,10 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
 - Sem Spedy, Cal.com nem a ferramenta de geração estática no texto.
 - `npm run verify` exit 0 com Node 24.20.0. Sem deploy: o merge do PR #15 é
   do owner.
+- Complemento do mesmo dia: o owner confirmou que o Site Núcleo também tem
+  100 dias de suporte e atualizações a partir do pagamento (cláusula 10 dos
+  termos, Brain `d46503e` na branch `claude/master-plan-trilha-l`). A seção
+  "Vocês oferecem suporte?" passa a citar os dois serviços, com o
+  atendimento de chamados abertos no prazo e a renovação. O FAQ só remete à
+  página, sem nomear serviço, e não mudou. `npm run verify` exit 0 (350
+  testes).

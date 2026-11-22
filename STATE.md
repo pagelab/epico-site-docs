@@ -577,13 +577,15 @@
 - Feito na branch `claude/garantia-30-dias-state`, a partir dos termos do Site Horizonte e
   do Site Núcleo revisados pelo advogado: seção "Como funcionam cancelamento e reembolso?"
   de `servicos-e-suporte/suporte-e-propriedade.md` e pergunta "Como funcionam a garantia e o
-  agendamento?" no FAQ. `npm run verify` exit 0.
+  agendamento?" no FAQ. A seção "Vocês oferecem suporte?" cita os 100 dias de suporte e
+  atualizações do Site Núcleo e do Site Horizonte (cláusula 10, confirmada pelo owner).
+  `npm run verify` exit 0.
 - **Próxima ação, do owner:** revisar e fazer o merge do PR #15. Depois do merge, conferir
   em produção que `/servicos-e-suporte/suporte-e-propriedade/` mostra "garantia
   incondicional de 30 dias" e que a sonda `probe-production.mjs` passa 16/16.
 - Se a versão publicada dos termos (`epico.site/termos/site-horizonte-e-site-nucleo`) mudar
-  algo da garantia, do agendamento ou dos efeitos do reembolso, reabrir o `DOCS-25` antes do
-  merge. Quando o owner decidir o suporte do Site Núcleo, conferir se os docs precisam citar.
+  algo da garantia, do agendamento, dos efeitos do reembolso ou do suporte, reabrir o
+  `DOCS-25` antes do merge.
 - A linha D do §6 do #44 fica para a sessão do Brain, porque este repositório não escreve no
   Brain.
 
