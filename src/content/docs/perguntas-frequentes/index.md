@@ -3,7 +3,7 @@ title: Perguntas frequentes
 description: Respostas diretas sobre o andamento do serviço, posts, e-commerce, acessos e o acompanhamento na Área de Clientes.
 topic: perguntas-frequentes
 draft: false
-lastReviewed: 2026-11-07
+lastReviewed: 2026-11-22
 keywords:
   - "dúvidas"
   - "perguntas"
@@ -23,6 +23,8 @@ keywords:
   - "área de clientes"
   - "cancelamento"
   - "reembolso"
+  - "agendamento"
+  - "data da implantação"
 sidebar:
   order: 1
 ---
@@ -60,6 +62,16 @@ usados para implantar e validar a infraestrutura. Quem fica com os arquivos e as
 ao final do serviço está respondido em
 [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/).
 
+## Como funcionam a garantia e o agendamento?
+
+No Site Núcleo e no Site Horizonte, você escolhe a data da implantação no próprio
+pagamento, entre as datas livres dos 20 dias seguintes, em dias úteis. A data pode ser
+trocada pela Área de Clientes até 48 horas antes, dentro da mesma janela. A garantia é
+incondicional por 30 dias a partir do pagamento, com reembolso integral pelo botão da
+Área de Clientes, antes ou depois da implantação. A Gestão WP tem regra própria, com 7
+dias. O que o reembolso encerra e os demais detalhes estão em
+[Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/#como-funcionam-cancelamento-e-reembolso).
+
 ## A Área de Clientes mostrará qual serviço contratei?
 
 Sim. No Site Horizonte, o acompanhamento mostrará Implantação técnica, Prepare seu site
@@ -89,7 +101,7 @@ a CDN, está em
 - Preços, assinatura, quando escolher cada serviço, o que o Site Horizonte inclui e
   hospedagem: [Preços, hospedagem e tipos de implantação](/servicos-e-suporte/precos-e-hospedagem/).
 - O que configuramos, suporte e os 100 dias, operação gerenciada, dono dos arquivos e
-  das contas, cancelamento e reembolso:
+  das contas, garantia de 30 dias, cancelamento e reembolso:
   [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/).
 - Publicação que falha com erro 403 por causa da CDN da Hostinger:
   [A publicação falha com 403 por causa da CDN da Hostinger](/dominio-e-publicacao/publicacao-falha-com-403-da-cdn-da-hostinger/).
