@@ -3,12 +3,13 @@ title: Suporte, garantias e propriedade do site
 description: O que o suporte cobre, quem fica com arquivos e contas e como funcionam cancelamento e reembolso.
 topic: servicos-e-suporte
 draft: false
-lastReviewed: 2026-09-14
+lastReviewed: 2026-11-22
 keywords:
   - "suporte"
   - "support"
   - "soporte"
   - "garantia"
+  - "garantia de 30 dias"
   - "warranty"
   - "reembolso"
   - "refund"
@@ -86,7 +87,30 @@ terceiros nem inclui manutenção futura.
 
 ## Como funcionam cancelamento e reembolso?
 
-Aplicam-se as condições apresentadas na oferta e no contrato do serviço, além dos
-direitos previstos em lei. O cancelamento não autoriza apagar conteúdo, contas ou o site
-atual do cliente. Qualquer reversão técnica segue o plano de rollback acordado para
-aquela entrega.
+No **Site Núcleo** e no **Site Horizonte**, você tem garantia incondicional de 30 dias
+corridos, contados da confirmação do pagamento. Dentro desse prazo, antes ou depois da
+implantação, você pede o reembolso integral pelo botão de reembolso da Área de Clientes,
+sem precisar dar motivo. Se preferir não usar a Área, o pedido pode ser feito pelos canais
+de atendimento, com a comprovação da sua identidade.
+
+- O valor volta pelo mesmo meio de pagamento. No cartão, o prazo para ele aparecer na
+  fatura depende do banco emissor.
+- O pedido inteiro é devolvido, inclusive a Personalização WP contratada junto com o
+  Site Horizonte.
+- A garantia inclui e amplia o direito de arrependimento de 7 dias do Código de Defesa do
+  Consumidor.
+- No Site Núcleo, se a verificação feita depois da compra mostrar que o site não é
+  compatível, você recebe o reembolso integral sem precisar pedir.
+
+O reembolso desativa a licença e encerra o suporte e as atualizações. Se a implantação já
+foi feita, a equipe Épico também apaga o repositório de código do site e remove da sua
+conta Cloudflare os recursos de publicação que criou, enquanto ainda tiver acesso a ela.
+Com isso, o site publicado pela equipe Épico deixa de funcionar. O seu WordPress e o seu
+conteúdo não são alterados nem apagados. Se o endereço do site já apontava para a nova
+publicação, você precisa voltar o DNS para o servidor anterior, e a Área de Clientes mostra
+o passo a passo no momento do reembolso.
+
+Depois dos 30 dias não há reembolso, mas continuam valendo os seus direitos por defeito do
+serviço. A **Gestão WP** tem regra própria, com 7 dias para pedir o reembolso, e o
+**Site Fronteira** segue a proposta aprovada. Em todos os casos, valem as condições do
+contrato de cada serviço, além dos direitos previstos em lei.

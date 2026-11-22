@@ -569,30 +569,23 @@
 
 ## ▶ Próxima ação
 
-**Prioridade (Brain #41, Emenda I, owner, 22/11/2026): garantia de 30 dias.**
+**Garantia de 30 dias (Brain #41, Emenda I): `DOCS-25` escrito em 22/11/2026, aguardando o owner.**
 
-> **Master plan:** `Brain/00-Chronology/44-master-plan-garantia-30-dias.md`. Esta fila é a trilha **D**: ler os contratos (§2) e os critérios de aceite (§3) antes de começar, colá-los na descrição do PR com a evidência e atualizar a linha D do §6 no Brain.
+> **Master plan:** `Brain/00-Chronology/44-master-plan-garantia-30-dias.md`, trilha **D**.
+> O critério do §3 e a evidência estão na descrição do PR #15.
 
-Antes da abertura da compra ao público na Black Friday, alinhar o acervo com a nova regra:
-- **Regra:** Site Horizonte e Site Núcleo têm **garantia incondicional de 30 dias, com
-  reembolso integral** pelo botão da Área de Clientes.
-- **Implantação:** numa data livre em até 20 dias após a compra, em dias úteis.
-- **Nota fiscal:** é emitida no dia da implantação.
-- **Gestão WP:** continua com 7 dias.
-
-1. `src/content/docs/servicos-e-suporte/suporte-e-propriedade.md`, seção "Como funcionam
-   cancelamento e reembolso?": dizer a garantia de 30 dias, onde fica o botão, que o
-   reembolso desativa a licença e o acesso ao repositório entregue, e que a Gestão WP tem
-   regra própria. Manter "além dos direitos previstos em lei".
-2. `src/content/docs/perguntas-frequentes/index.md`: resposta curta sobre garantia e
-   agendamento, com link para a página acima.
-3. Não citar Spedy, Cal.com nem mecânica interna. A nota fiscal só entra se a FAQ já falar
-   de nota.
-4. Rodar `npm run verify` antes da publicação. Esperar a revisão jurídica dos termos
-   (pendência do owner) para não publicar uma redação diferente da contratual.
-
-Especificação: `Brain/06-Product/garantia-30-dias-agenda-nota-fiscal.md`. Até o merge, está
-na branch `claude/legal-review-withdrawal-rights-292e01` do repositório Brain.
+- Feito na branch `claude/garantia-30-dias-state`, a partir dos termos do Site Horizonte e
+  do Site Núcleo revisados pelo advogado: seção "Como funcionam cancelamento e reembolso?"
+  de `servicos-e-suporte/suporte-e-propriedade.md` e pergunta "Como funcionam a garantia e o
+  agendamento?" no FAQ. `npm run verify` exit 0.
+- **Próxima ação, do owner:** revisar e fazer o merge do PR #15. Depois do merge, conferir
+  em produção que `/servicos-e-suporte/suporte-e-propriedade/` mostra "garantia
+  incondicional de 30 dias" e que a sonda `probe-production.mjs` passa 16/16.
+- Se a versão publicada dos termos (`epico.site/termos/site-horizonte-e-site-nucleo`) mudar
+  algo da garantia, do agendamento ou dos efeitos do reembolso, reabrir o `DOCS-25` antes do
+  merge. Quando o owner decidir o suporte do Site Núcleo, conferir se os docs precisam citar.
+- A linha D do §6 do #44 fica para a sessão do Brain, porque este repositório não escreve no
+  Brain.
 
 Depois disso, a fila anterior:
 

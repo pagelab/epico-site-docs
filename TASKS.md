@@ -41,6 +41,7 @@
 | 31 | `DOCS-22` | P1 | P | Guia de resolução de problemas: publicação falha com 403 por causa da CDN da Hostinger | concluído em 2026-11-07 (PR #9, merge `e7ccdb2`, produção 16/16) | pedido da sessão do kit `epico-base` (releases 2.0.38 a 2.0.41, classificação `host-cdn-block`) |
 | 32 | `DOCS-23` | P1 | P | Filtro da imagem do hero no light mode e pergunta do 403 da Hostinger no FAQ | concluído em 2026-11-07 (PR #10, merge `9606b47`, produção 16/16) | ordem direta do owner de 2026-11-07 |
 | 33 | `DOCS-24` | P1 | P | Hover e foco dos links da sidebar na cor de destaque | concluído em 2026-11-07 (PR #12, merge `b1e4444`, produção 16/16) | QA do owner de 2026-11-07 |
+| 34 | `DOCS-25` | P1 | P | Garantia de 30 dias em Suporte e propriedade e no FAQ (trilha D do Brain #44) | texto escrito, `npm run verify` exit 0, aguardando merge do owner no PR #15 | Brain #41, Emenda I, e termos revisados pelo advogado (owner, 2026-11-22) |
 
 ## Critérios por task
 
@@ -2313,3 +2314,23 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   CSS servido traz a regra. No navegador, com hover real num link da sidebar
   em dark mode, a cor computada passou a `rgb(128, 152, 246)`, que é o
   `--sl-color-accent` (`#8098f6`).
+
+## Checkpoint de 2026-11-22: DOCS-25 (garantia de 30 dias)
+
+- Fonte: rascunho dos termos do Site Horizonte e do Site Núcleo no Brain
+  (cláusulas 1, 3, 5, 7 e 8), revisado pelo advogado e liberado pelo owner.
+  Trechos ainda entre colchetes, como o suporte de 100 dias do Site Núcleo,
+  ficaram fora.
+- `suporte-e-propriedade.md`, seção "Como funcionam cancelamento e
+  reembolso?": garantia incondicional de 30 dias contados da confirmação do
+  pagamento, reembolso integral pelo botão da Área de Clientes antes ou
+  depois da implantação, outros canais com comprovação de identidade, mesmo
+  meio de pagamento, pedido inteiro com a Personalização WP, art. 49 incluído,
+  reembolso automático do Site Núcleo incompatível, efeitos do reembolso
+  (licença, suporte, atualizações, repositório, recursos na Cloudflare, DNS),
+  Gestão WP com 7 dias e "além dos direitos previstos em lei" mantido.
+- FAQ: pergunta nova "Como funcionam a garantia e o agendamento?" com link
+  para a seção acima. O FAQ não fala de nota fiscal, então a nota ficou fora.
+- Sem Spedy, Cal.com nem a ferramenta de geração estática no texto.
+- `npm run verify` exit 0 com Node 24.20.0. Sem deploy: o merge do PR #15 é
+  do owner.
