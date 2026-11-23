@@ -569,28 +569,45 @@
 
 ## ▶ Próxima ação
 
-**Garantia de 30 dias (Brain #41, Emenda I): `DOCS-25` concluído em 22/11/2026.**
+### Retomada: trilha D da garantia de 30 dias (Brain #44)
 
-- PR #15 mergeado no `main` (`6687c55`). Em produção,
-  `/servicos-e-suporte/suporte-e-propriedade/` mostra "garantia incondicional de 30 dias"
-  e os 100 dias de suporte do Site Núcleo e do Site Horizonte. O FAQ mostra "Como funcionam
-  a garantia e o agendamento?". `probe-production.mjs` 16/16.
-- Vigilância: se a versão publicada dos termos (`epico.site/termos/site-horizonte-e-site-nucleo`)
-  mudar algo da garantia, do agendamento, dos efeitos do reembolso ou do suporte, abrir um
-  task novo para alinhar os dois artigos.
-- A linha D do §6 do Brain #44 fica para a sessão do Brain, porque este repositório não
-  escreve no Brain.
+> Este bloco é a **trilha D** do master plan
+> `Brain/00-Chronology/44-master-plan-garantia-30-dias.md`. Retome-o numa **sessão própria**,
+> só da trilha D, na branch `claude/agendamento-pos-compra`. Não misture com a fila corrente
+> abaixo nem com as outras trilhas (A, L, F e E têm sessões e repositórios próprios). Esta
+> sessão não escreve no Brain: o quadro de estado (§6 do #44) é atualizado pela sessão do
+> Brain, avisada por mensagem.
 
-**Agendamento depois da compra (Brain #41, Emenda I8): `DOCS-26` escrito em 22/11/2026, aguardando o owner.**
+**Feito (22/11/2026):**
 
-- O FAQ troca "data escolhida no pagamento" por agendamento pela Área de Clientes depois do
-  pagamento, numa data livre dos 20 dias seguintes à confirmação do pagamento, em dias úteis.
-  `npm run verify` exit 0.
-- **Próxima ação, do owner:** revisar e fazer o merge do PR do `DOCS-26`. Depois do merge,
-  conferir em produção que `/perguntas-frequentes/` diz "você agenda a implantação pela Área
-  de Clientes" e que a sonda `probe-production.mjs` passa 16/16.
-- Se o owner resolver o ponto aberto da I8 contando a janela a partir do agendamento, e não do
-  pagamento, reescrever a frase dos 20 dias.
+- `DOCS-25`: garantia de 30 dias, efeitos do reembolso e 100 dias de suporte do Site Núcleo
+  e do Site Horizonte em `servicos-e-suporte/suporte-e-propriedade.md`, e a pergunta "Como
+  funcionam a garantia e o agendamento?" no FAQ. PR #15 (merge `6687c55`) e fechamento no
+  PR #16 (merge `0d15efc`). Em produção, `probe-production.mjs` 16/16. Linha D do #44
+  atualizada no Brain (brain#10, merge `ef186fc`).
+- `DOCS-26`: Emenda I8, a compra não tem mais data. O FAQ diz que, depois do pagamento, o
+  cliente agenda a implantação pela Área de Clientes, numa data livre dos 20 dias seguintes
+  à confirmação do pagamento, em dias úteis, com troca até 48 horas antes. Texto conferido
+  pela sessão do Brain contra a cláusula 5 dos termos. PR #17 aberto, `npm run verify`
+  exit 0, sem merge.
+
+**Falta, em ordem:**
+
+1. **Owner:** fazer o merge de brain#11 (Emenda I8 no `main` do Brain, cherry-pick de
+   `5be6592`).
+2. **Owner:** decidir o ponto aberto da I8: a janela de 20 dias conta do pagamento (como hoje
+   na cláusula 5 e no FAQ) ou do agendamento (como o Cal.com faz). Se contar do agendamento,
+   reescrever a frase dos 20 dias no FAQ no PR #17, rodar `npm run verify` e atualizar a
+   descrição do PR antes do merge.
+3. **Owner:** fazer o merge do PR #17.
+4. **Sessão D:** depois do merge, conferir em produção que `/perguntas-frequentes/` diz "você
+   agenda a implantação pela Área de Clientes" e que `probe-production.mjs` passa 16/16
+   (Node 24.20.0 do `.nvmrc`). Marcar `DOCS-26` como concluído no `TASKS.md` e neste bloco,
+   e pedir à sessão do Brain que atualize a linha D do #44.
+5. **Vigilância:** quando os termos forem publicados em
+   `epico.site/termos/site-horizonte-e-site-nucleo`, comparar com os dois artigos. Qualquer
+   diferença na garantia, no agendamento, nos efeitos do reembolso ou no suporte vira task
+   novo da trilha D.
 
 Fila corrente:
 
