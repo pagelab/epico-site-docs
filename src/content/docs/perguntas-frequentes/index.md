@@ -25,6 +25,11 @@ keywords:
   - "reembolso"
   - "agendamento"
   - "data da implantação"
+  - "plugin específico"
+  - "plugin incompatível"
+  - "templates"
+  - "custo do site"
+  - "preço"
 sidebar:
   order: 1
 ---
@@ -73,6 +78,46 @@ incondicional por 30 dias a partir do pagamento, com reembolso integral pelo bot
 Área de Clientes, antes ou depois da implantação. A Gestão WP tem regra própria, com 7
 dias. O que o reembolso encerra e os demais detalhes estão em
 [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/#como-funcionam-cancelamento-e-reembolso).
+
+## Quanto custa e o que cada serviço faz?
+
+Os dois serviços de implantação custam **R$ 497 cada**, com pagamento por Pix ou cartão em
+até 12x, com a taxa do parcelamento. A garantia é de 30 dias, com reembolso integral.
+
+- **Site Horizonte:** instala o Épico Base e publica o site no modelo headless.
+- **Site Núcleo:** publica uma versão estática do site atual, preservando o visual.
+- **Personalização WP (R$ 497):** adicional disponível só para o Site Horizonte.
+
+Quem quer um projeto totalmente personalizado, ou algo novo que esses serviços não cobrem,
+pode pedir orçamento do **Site Fronteira**.
+
+## Depois de publicado, quanto custa manter o site?
+
+O site final custa **R$ 0** para ficar no ar. Ele roda na sua conta da Cloudflare, no plano
+gratuito, e só passa a ter custo se ultrapassar o limite, que é muito amplo para sites
+estáticos. O domínio e a hospedagem do WordPress continuam por sua conta. O suporte e as
+atualizações duram 100 dias a partir do pagamento e, depois, podem ser renovados. A Gestão WP
+é opcional.
+
+## E se eu precisar de um plugin específico?
+
+No **Site Horizonte**, os plugins do tema antigo não entram, porque o Épico Base cobre as
+necessidades do site. Nós os desativamos, e você pode sugerir uma função ou pedir orçamento.
+No **Site Núcleo**, mantemos só o básico, como formulários, busca e comentários.
+
+Depois da compra, a equipe Épico confere o seu site e diz o que fica e o que sai. Se um plugin
+não for compatível e você não quiser abrir mão dele, você pode solicitar o reembolso integral
+pela Área de Clientes em até 30 dias, ou pedir orçamento. O reembolso nesse caso é pedido por
+você. Ele só é automático para quem não agendou a implantação dentro da janela, e quem decide
+seguir sem o plugin não é reembolsado.
+
+## Tem templates para outros sites?
+
+No lançamento, o Site Horizonte usa o **Épico Base**, a preço promocional. Ele traz blog
+completo, cinco modelos de página principal, páginas de categoria, tag, autor, busca e erro,
+cabeçalho e rodapé, SEO, privacidade e captura de leads. Blocos para montar páginas e outros
+site kits estão em desenvolvimento. O Site Núcleo não usa template e mantém o visual atual do
+seu site.
 
 ## A Área de Clientes mostrará qual serviço contratei?
 

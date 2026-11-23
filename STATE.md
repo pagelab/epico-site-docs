@@ -599,15 +599,20 @@
 - Os termos ainda não estão publicados (`epico.site/termos/site-horizonte-e-site-nucleo`
   responde 404). Referência usada: `Brain/06-Product/termos-site-horizonte-nucleo-rascunho.md`
   no `main` do Brain.
+- `DOCS-27` (outra sessão, PR #21, merge `94fbe8a`): o FAQ ganhou as respostas do owner de
+  23/11 (preço e serviços com o Site Fronteira, custo do site final R$ 0, plugin específico
+  com reembolso solicitado e não automático, templates). Falta conferir em produção.
 
 **Falta, em ordem:**
 
-1. **Owner:** revisar e fazer o merge do PR do `DOCS-27` (cláusula 5.5 dos termos no FAQ, sem
-   agendamento até o 20º dia corrido, reembolso integral automático), empilhado sobre o PR da
-   retomada. `npm run verify` exit 0.
-2. **Sessão D:** depois do merge, conferir que `/perguntas-frequentes/` em produção diz "o
-   pedido é reembolsado integralmente, de forma automática" e que `probe-production.mjs` passa
-   16/16. Marcar `DOCS-27` como concluído e pedir à sessão do Brain que atualize a linha D.
+1. **Sessão D:** conferir o `DOCS-27` em produção (`/perguntas-frequentes/` com "Quanto custa e
+   o que cada serviço faz?") e `probe-production.mjs` 16/16.
+2. **Owner:** revisar e fazer o merge do PR do `DOCS-28` (cláusula 5.5 dos termos na resposta
+   "Como funcionam a garantia e o agendamento?", sem agendamento até o 20º dia corrido,
+   reembolso integral automático), empilhado sobre o PR da retomada. `npm run verify` exit 0.
+   Depois do merge, a sessão D confere que a página em produção diz "o pedido é reembolsado
+   integralmente, de forma automática", `probe-production.mjs` 16/16, marca `DOCS-28` como
+   concluído e pede à sessão do Brain que atualize a linha D.
 3. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
    diferença na garantia, no agendamento, nos efeitos do reembolso ou no suporte vira task
    novo da trilha D.

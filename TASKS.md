@@ -43,7 +43,8 @@
 | 33 | `DOCS-24` | P1 | P | Hover e foco dos links da sidebar na cor de destaque | concluído em 2026-11-07 (PR #12, merge `b1e4444`, produção 16/16) | QA do owner de 2026-11-07 |
 | 34 | `DOCS-25` | P1 | P | Garantia de 30 dias em Suporte e propriedade e no FAQ (trilha D do Brain #44) | concluído em 2026-11-22 (PR #15, merge `6687c55`, produção 16/16) | Brain #41, Emenda I, e termos revisados pelo advogado (owner, 2026-11-22) |
 | 35 | `DOCS-26` | P1 | P | FAQ: agendamento depois da compra, pela Área de Clientes (Brain #41, Emenda I8) | concluído em 2026-11-23 (PR #17, merge `021a9fa`, produção 16/16) | Emenda I8 do owner (2026-11-22) e cláusula 5 dos termos |
-| 36 | `DOCS-27` | P1 | P | FAQ: reembolso automático sem agendamento até o 20º dia (Brain #41, I8, cláusula 5.5 dos termos) | texto escrito, `npm run verify` exit 0, aguardando merge do owner | decisão do owner de 2026-11-23 (Brain `31a9356`) e cláusula 5.5 dos termos |
+| 36 | `DOCS-27` | P1 | P | FAQ: respostas do owner de 23/11 (preço e serviços, custo do site final, plugin específico, templates) | mergeado (PR #21, `94fbe8a`), conferência em produção pendente | respostas do owner de 2026-11-23 (Brain #44) |
+| 37 | `DOCS-28` | P1 | P | FAQ: reembolso automático sem agendamento até o 20º dia (Brain #41, I8, cláusula 5.5 dos termos) | texto escrito, `npm run verify` exit 0, aguardando merge do owner | decisão do owner de 2026-11-23 (Brain `31a9356`) e cláusula 5.5 dos termos |
 
 ## Critérios por task
 
@@ -2373,10 +2374,11 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   janela conta da confirmação do pagamento, como o FAQ já diz. A frase dos 20
   dias não muda.
 - A mesma decisão criou a cláusula 5.5 dos termos (sem agendamento até o 20º
-  dia, reembolso integral automático), que o FAQ ainda não menciona. Vira o
-  `DOCS-27`.
+  dia, reembolso integral automático), que a resposta sobre garantia e
+  agendamento ainda não menciona. Vira o `DOCS-28` (o `DOCS-27` foi usado
+  pelas respostas do owner de 23/11, PR #21).
 
-## Checkpoint de 2026-11-23: DOCS-27 (sem agendamento, reembolso automático)
+## Checkpoint de 2026-11-23: DOCS-28 (sem agendamento, reembolso automático)
 
 - Fonte: cláusula 5.5 de `06-Product/termos-site-horizonte-nucleo-rascunho.md`
   no `main` do Brain (`31a9356`). Se o cliente não agendar até o 20º dia
@@ -2384,5 +2386,7 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   integralmente, de forma automática.
 - FAQ, "Como funcionam a garantia e o agendamento?": uma frase nova depois da
   troca de data. O resto do parágrafo não muda. `lastReviewed` 2026-11-23.
+  A resposta "E se eu precisar de um plugin específico?" (`DOCS-27`) já cita
+  o reembolso automático de passagem, e as duas respostas ficam coerentes.
 - Fora do escopo: a falta na data marcada (cláusula 5.6, uma remarcação
   automática e depois reembolso) segue sem menção no FAQ, como antes da I8.
