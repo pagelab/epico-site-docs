@@ -591,6 +591,11 @@
   pela sessão do Brain contra a cláusula 5 dos termos. PR #17 aberto, `npm run verify`
   exit 0, sem merge.
 
+**Atualização de 23/11/2026 (`DOCS-27`):** PR #17 já está no `main` (`021a9fa`). O FAQ ganhou as
+respostas do owner de 23/11 (preço e serviços com o Site Fronteira, custo do site final R$ 0,
+plugin específico com reembolso solicitado e não automático, templates). PR próprio, sem merge
+sem ordem do owner. Depois do merge, conferir em produção e `probe-production.mjs` 16/16.
+
 **Falta, em ordem:**
 
 1. **Owner:** fazer o merge de brain#11 (Emenda I8 no `main` do Brain, cherry-pick de
