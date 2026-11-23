@@ -581,6 +581,17 @@
 - A linha D do §6 do Brain #44 fica para a sessão do Brain, porque este repositório não
   escreve no Brain.
 
+**Agendamento depois da compra (Brain #41, Emenda I8): `DOCS-26` escrito em 22/11/2026, aguardando o owner.**
+
+- O FAQ troca "data escolhida no pagamento" por agendamento pela Área de Clientes depois do
+  pagamento, numa data livre dos 20 dias seguintes à confirmação do pagamento, em dias úteis.
+  `npm run verify` exit 0.
+- **Próxima ação, do owner:** revisar e fazer o merge do PR do `DOCS-26`. Depois do merge,
+  conferir em produção que `/perguntas-frequentes/` diz "você agenda a implantação pela Área
+  de Clientes" e que a sonda `probe-production.mjs` passa 16/16.
+- Se o owner resolver o ponto aberto da I8 contando a janela a partir do agendamento, e não do
+  pagamento, reescrever a frase dos 20 dias.
+
 Fila corrente:
 
 Próxima ação deste acervo: decidir a área e o slug de um tutorial público para

@@ -64,12 +64,12 @@ ao final do serviço está respondido em
 
 ## Como funcionam a garantia e o agendamento?
 
-No Site Núcleo e no Site Horizonte, você escolhe a data da implantação no próprio
-pagamento, entre as datas livres dos 20 dias seguintes, em dias úteis. A data pode ser
-trocada pela Área de Clientes até 48 horas antes, dentro da mesma janela. A garantia é
-incondicional por 30 dias a partir do pagamento, com reembolso integral pelo botão da
-Área de Clientes, antes ou depois da implantação. A Gestão WP tem regra própria, com 7
-dias. O que o reembolso encerra e os demais detalhes estão em
+No Site Núcleo e no Site Horizonte, depois do pagamento, você agenda a implantação pela
+Área de Clientes, numa data livre dos 20 dias seguintes à confirmação do pagamento, em
+dias úteis. Depois de agendar, você pode trocar a data pela Área de Clientes até 48 horas
+antes, dentro da mesma janela. A garantia é incondicional por 30 dias a partir do
+pagamento, com reembolso integral pelo botão da Área de Clientes, antes ou depois da
+implantação. A Gestão WP tem regra própria, com 7 dias. O que o reembolso encerra e os demais detalhes estão em
 [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/#como-funcionam-cancelamento-e-reembolso).
 
 ## A Área de Clientes mostrará qual serviço contratei?
