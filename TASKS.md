@@ -2372,5 +2372,6 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   janela conta da confirmação do pagamento, como o FAQ já diz. A frase dos 20
   dias não muda.
 - A mesma decisão criou a cláusula 5.5 dos termos (sem agendamento até o 20º
-  dia, reembolso integral automático), que o FAQ ainda não menciona. Vira o
-  `DOCS-27`.
+  dia, reembolso integral automático), que a resposta sobre garantia e
+  agendamento ainda não menciona. Vira o `DOCS-28` (o `DOCS-27` foi usado
+  pelas respostas do owner de 23/11, PR #21).

@@ -599,12 +599,18 @@
 - Os termos ainda não estão publicados (`epico.site/termos/site-horizonte-e-site-nucleo`
   responde 404). Referência usada: `Brain/06-Product/termos-site-horizonte-nucleo-rascunho.md`
   no `main` do Brain.
+- `DOCS-27` (outra sessão, PR #21, merge `94fbe8a`): o FAQ ganhou as respostas do owner de
+  23/11 (preço e serviços com o Site Fronteira, custo do site final R$ 0, plugin específico
+  com reembolso solicitado e não automático, templates). Falta conferir em produção.
 
 **Falta, em ordem:**
 
-1. **Sessão D:** `DOCS-27`, a cláusula 5.5 dos termos (sem agendamento até o 20º dia corrido,
-   reembolso integral automático) no FAQ, que hoje não a menciona.
-2. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
+1. **Sessão D:** conferir o `DOCS-27` em produção (`/perguntas-frequentes/` com "Quanto custa e
+   o que cada serviço faz?") e `probe-production.mjs` 16/16.
+2. **Sessão D:** `DOCS-28`, a cláusula 5.5 dos termos (sem agendamento até o 20º dia corrido,
+   reembolso integral automático) na resposta "Como funcionam a garantia e o agendamento?",
+   que hoje não a menciona.
+3. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
    diferença na garantia, no agendamento, nos efeitos do reembolso ou no suporte vira task
    novo da trilha D.
 
