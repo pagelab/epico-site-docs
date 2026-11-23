@@ -569,27 +569,19 @@
 
 ## ▶ Próxima ação
 
-**Garantia de 30 dias (Brain #41, Emenda I): `DOCS-25` escrito em 22/11/2026, aguardando o owner.**
+**Garantia de 30 dias (Brain #41, Emenda I): `DOCS-25` concluído em 22/11/2026.**
 
-> **Master plan:** `Brain/00-Chronology/44-master-plan-garantia-30-dias.md`, trilha **D**.
-> O critério do §3 e a evidência estão na descrição do PR #15.
+- PR #15 mergeado no `main` (`6687c55`). Em produção,
+  `/servicos-e-suporte/suporte-e-propriedade/` mostra "garantia incondicional de 30 dias"
+  e os 100 dias de suporte do Site Núcleo e do Site Horizonte. O FAQ mostra "Como funcionam
+  a garantia e o agendamento?". `probe-production.mjs` 16/16.
+- Vigilância: se a versão publicada dos termos (`epico.site/termos/site-horizonte-e-site-nucleo`)
+  mudar algo da garantia, do agendamento, dos efeitos do reembolso ou do suporte, abrir um
+  task novo para alinhar os dois artigos.
+- A linha D do §6 do Brain #44 fica para a sessão do Brain, porque este repositório não
+  escreve no Brain.
 
-- Feito na branch `claude/garantia-30-dias-state`, a partir dos termos do Site Horizonte e
-  do Site Núcleo revisados pelo advogado: seção "Como funcionam cancelamento e reembolso?"
-  de `servicos-e-suporte/suporte-e-propriedade.md` e pergunta "Como funcionam a garantia e o
-  agendamento?" no FAQ. A seção "Vocês oferecem suporte?" cita os 100 dias de suporte e
-  atualizações do Site Núcleo e do Site Horizonte (cláusula 10, confirmada pelo owner).
-  `npm run verify` exit 0.
-- **Próxima ação, do owner:** revisar e fazer o merge do PR #15. Depois do merge, conferir
-  em produção que `/servicos-e-suporte/suporte-e-propriedade/` mostra "garantia
-  incondicional de 30 dias" e que a sonda `probe-production.mjs` passa 16/16.
-- Se a versão publicada dos termos (`epico.site/termos/site-horizonte-e-site-nucleo`) mudar
-  algo da garantia, do agendamento, dos efeitos do reembolso ou do suporte, reabrir o
-  `DOCS-25` antes do merge.
-- A linha D do §6 do #44 fica para a sessão do Brain, porque este repositório não escreve no
-  Brain.
-
-Depois disso, a fila anterior:
+Fila corrente:
 
 Próxima ação deste acervo: decidir a área e o slug de um tutorial público para
 a verificação em duas etapas do Perfil da Área de Clientes e, se aprovado,

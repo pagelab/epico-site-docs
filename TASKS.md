@@ -41,7 +41,7 @@
 | 31 | `DOCS-22` | P1 | P | Guia de resolução de problemas: publicação falha com 403 por causa da CDN da Hostinger | concluído em 2026-11-07 (PR #9, merge `e7ccdb2`, produção 16/16) | pedido da sessão do kit `epico-base` (releases 2.0.38 a 2.0.41, classificação `host-cdn-block`) |
 | 32 | `DOCS-23` | P1 | P | Filtro da imagem do hero no light mode e pergunta do 403 da Hostinger no FAQ | concluído em 2026-11-07 (PR #10, merge `9606b47`, produção 16/16) | ordem direta do owner de 2026-11-07 |
 | 33 | `DOCS-24` | P1 | P | Hover e foco dos links da sidebar na cor de destaque | concluído em 2026-11-07 (PR #12, merge `b1e4444`, produção 16/16) | QA do owner de 2026-11-07 |
-| 34 | `DOCS-25` | P1 | P | Garantia de 30 dias em Suporte e propriedade e no FAQ (trilha D do Brain #44) | texto escrito, `npm run verify` exit 0, aguardando merge do owner no PR #15 | Brain #41, Emenda I, e termos revisados pelo advogado (owner, 2026-11-22) |
+| 34 | `DOCS-25` | P1 | P | Garantia de 30 dias em Suporte e propriedade e no FAQ (trilha D do Brain #44) | concluído em 2026-11-22 (PR #15, merge `6687c55`, produção 16/16) | Brain #41, Emenda I, e termos revisados pelo advogado (owner, 2026-11-22) |
 
 ## Critérios por task
 
@@ -2341,3 +2341,7 @@ o lado do acervo: o vocabulário de cada guia e o índice versão 2.
   atendimento de chamados abertos no prazo e a renovação. O FAQ só remete à
   página, sem nomear serviço, e não mudou. `npm run verify` exit 0 (350
   testes).
+- Publicado pelo PR #15 (merge `6687c55`). `probe-production.mjs` 16/16. Em
+  produção, a página de suporte mostra "garantia incondicional de 30 dias" e
+  os 100 dias do Site Núcleo e do Site Horizonte, e o FAQ mostra a pergunta
+  nova.
