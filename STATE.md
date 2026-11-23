@@ -573,7 +573,7 @@
 
 > Este bloco é a **trilha D** do master plan
 > `Brain/00-Chronology/44-master-plan-garantia-30-dias.md`. Retome-o numa **sessão própria**,
-> só da trilha D, na branch `claude/agendamento-pos-compra`. Não misture com a fila corrente
+> só da trilha D, a partir do `main`. Não misture com a fila corrente
 > abaixo nem com as outras trilhas (A, L, F e E têm sessões e repositórios próprios). Esta
 > sessão não escreve no Brain: o quadro de estado (§6 do #44) é atualizado pela sessão do
 > Brain, avisada por mensagem.
@@ -588,24 +588,23 @@
 - `DOCS-26`: Emenda I8, a compra não tem mais data. O FAQ diz que, depois do pagamento, o
   cliente agenda a implantação pela Área de Clientes, numa data livre dos 20 dias seguintes
   à confirmação do pagamento, em dias úteis, com troca até 48 horas antes. Texto conferido
-  pela sessão do Brain contra a cláusula 5 dos termos. PR #17 aberto, `npm run verify`
-  exit 0, sem merge.
+  pela sessão do Brain contra a cláusula 5 dos termos.
+
+**Feito (23/11/2026):**
+
+- `DOCS-26` concluído: PR #17 mergeado (`021a9fa`), `/perguntas-frequentes/` em produção diz
+  "você agenda a implantação pela Área de Clientes" e `probe-production.mjs` passa 16/16.
+- Ponto aberto da I8 decidido pelo owner (Brain `31a9356`): a janela conta da confirmação do
+  pagamento. A frase dos 20 dias do FAQ continua certa.
+- Os termos ainda não estão publicados (`epico.site/termos/site-horizonte-e-site-nucleo`
+  responde 404). Referência usada: `Brain/06-Product/termos-site-horizonte-nucleo-rascunho.md`
+  no `main` do Brain.
 
 **Falta, em ordem:**
 
-1. **Owner:** fazer o merge de brain#11 (Emenda I8 no `main` do Brain, cherry-pick de
-   `5be6592`).
-2. **Owner:** decidir o ponto aberto da I8: a janela de 20 dias conta do pagamento (como hoje
-   na cláusula 5 e no FAQ) ou do agendamento (como o Cal.com faz). Se contar do agendamento,
-   reescrever a frase dos 20 dias no FAQ no PR #17, rodar `npm run verify` e atualizar a
-   descrição do PR antes do merge.
-3. **Owner:** fazer o merge do PR #17.
-4. **Sessão D:** depois do merge, conferir em produção que `/perguntas-frequentes/` diz "você
-   agenda a implantação pela Área de Clientes" e que `probe-production.mjs` passa 16/16
-   (Node 24.20.0 do `.nvmrc`). Marcar `DOCS-26` como concluído no `TASKS.md` e neste bloco,
-   e pedir à sessão do Brain que atualize a linha D do #44.
-5. **Vigilância:** quando os termos forem publicados em
-   `epico.site/termos/site-horizonte-e-site-nucleo`, comparar com os dois artigos. Qualquer
+1. **Sessão D:** `DOCS-27`, a cláusula 5.5 dos termos (sem agendamento até o 20º dia corrido,
+   reembolso integral automático) no FAQ, que hoje não a menciona.
+2. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
    diferença na garantia, no agendamento, nos efeitos do reembolso ou no suporte vira task
    novo da trilha D.
 
