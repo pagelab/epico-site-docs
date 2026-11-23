@@ -602,9 +602,13 @@
 
 **Falta, em ordem:**
 
-1. **Sessão D:** `DOCS-27`, a cláusula 5.5 dos termos (sem agendamento até o 20º dia corrido,
-   reembolso integral automático) no FAQ, que hoje não a menciona.
-2. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
+1. **Owner:** revisar e fazer o merge do PR do `DOCS-27` (cláusula 5.5 dos termos no FAQ, sem
+   agendamento até o 20º dia corrido, reembolso integral automático), empilhado sobre o PR da
+   retomada. `npm run verify` exit 0.
+2. **Sessão D:** depois do merge, conferir que `/perguntas-frequentes/` em produção diz "o
+   pedido é reembolsado integralmente, de forma automática" e que `probe-production.mjs` passa
+   16/16. Marcar `DOCS-27` como concluído e pedir à sessão do Brain que atualize a linha D.
+3. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
    diferença na garantia, no agendamento, nos efeitos do reembolso ou no suporte vira task
    novo da trilha D.
 

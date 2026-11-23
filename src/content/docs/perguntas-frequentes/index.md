@@ -3,7 +3,7 @@ title: Perguntas frequentes
 description: Respostas diretas sobre o andamento do serviço, posts, e-commerce, acessos e o acompanhamento na Área de Clientes.
 topic: perguntas-frequentes
 draft: false
-lastReviewed: 2026-11-22
+lastReviewed: 2026-11-23
 keywords:
   - "dúvidas"
   - "perguntas"
@@ -67,9 +67,11 @@ ao final do serviço está respondido em
 No Site Núcleo e no Site Horizonte, depois do pagamento, você agenda a implantação pela
 Área de Clientes, numa data livre dos 20 dias seguintes à confirmação do pagamento, em
 dias úteis. Depois de agendar, você pode trocar a data pela Área de Clientes até 48 horas
-antes, dentro da mesma janela. A garantia é incondicional por 30 dias a partir do
-pagamento, com reembolso integral pelo botão da Área de Clientes, antes ou depois da
-implantação. A Gestão WP tem regra própria, com 7 dias. O que o reembolso encerra e os demais detalhes estão em
+antes, dentro da mesma janela. Se você não agendar até o 20º dia depois da confirmação do
+pagamento, o pedido é reembolsado integralmente, de forma automática. A garantia é
+incondicional por 30 dias a partir do pagamento, com reembolso integral pelo botão da
+Área de Clientes, antes ou depois da implantação. A Gestão WP tem regra própria, com 7
+dias. O que o reembolso encerra e os demais detalhes estão em
 [Suporte, garantias e propriedade do site](/servicos-e-suporte/suporte-e-propriedade/#como-funcionam-cancelamento-e-reembolso).
 
 ## A Área de Clientes mostrará qual serviço contratei?
