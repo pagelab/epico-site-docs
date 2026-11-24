@@ -632,9 +632,12 @@ próprio; (2) cache longo das fontes, que exigiria nomes versionados.
 1. **Sessão D:** conferir o `DOCS-27` em produção (`/perguntas-frequentes/` com "Quanto custa e
    o que cada serviço faz?") e `probe-production.mjs` 19/19
    (Node 24.20.0 do `.nvmrc`, checkout limpo do commit servido).
-2. **Sessão D:** `DOCS-28`, a cláusula 5.5 dos termos (sem agendamento até o 20º dia corrido,
-   reembolso integral automático) na resposta "Como funcionam a garantia e o agendamento?",
-   que hoje não a menciona.
+2. **Owner:** revisar e fazer o merge do PR do `DOCS-28` (cláusula 5.5 dos termos na resposta
+   "Como funcionam a garantia e o agendamento?", sem agendamento até o 20º dia corrido,
+   reembolso integral automático), PR #19 (a retomada, PR #18, já está no `main`). `npm run verify` exit 0.
+   Depois do merge, a sessão D confere que a página em produção diz "o pedido é reembolsado
+   integralmente, de forma automática", `probe-production.mjs` 19/19, marca `DOCS-28` como
+   concluído e pede à sessão do Brain que atualize a linha D.
 3. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
    diferença na garantia, no agendamento, nos efeitos do reembolso ou no suporte vira task
    novo da trilha D.
