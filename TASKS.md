@@ -43,8 +43,8 @@
 | 33 | `DOCS-24` | P1 | P | Hover e foco dos links da sidebar na cor de destaque | concluído em 2026-11-07 (PR #12, merge `b1e4444`, produção 16/16) | QA do owner de 2026-11-07 |
 | 34 | `DOCS-25` | P1 | P | Garantia de 30 dias em Suporte e propriedade e no FAQ (trilha D do Brain #44) | concluído em 2026-11-22 (PR #15, merge `6687c55`, produção 16/16) | Brain #41, Emenda I, e termos revisados pelo advogado (owner, 2026-11-22) |
 | 35 | `DOCS-26` | P1 | P | FAQ: agendamento depois da compra, pela Área de Clientes (Brain #41, Emenda I8) | concluído em 2026-11-23 (PR #17, merge `021a9fa`, produção 16/16) | Emenda I8 do owner (2026-11-22) e cláusula 5 dos termos |
-| 36 | `DOCS-27` | P1 | P | FAQ: respostas do owner de 23/11 (preço e serviços, custo do site final, plugin específico, templates) | mergeado (PR #21, `94fbe8a`), conferência em produção pendente | respostas do owner de 2026-11-23 (Brain #44) |
-| 37 | `DOCS-28` | P1 | P | FAQ: reembolso automático sem agendamento até o 20º dia (Brain #41, I8, cláusula 5.5 dos termos) | texto escrito, `npm run verify` exit 0, aguardando merge do owner | decisão do owner de 2026-11-23 (Brain `31a9356`) e cláusula 5.5 dos termos |
+| 36 | `DOCS-27` | P1 | P | FAQ: respostas do owner de 23/11 (preço e serviços, custo do site final, plugin específico, templates) | concluído em 2026-11-24 (PR #21, merge `94fbe8a`, produção 19/19) | respostas do owner de 2026-11-23 (Brain #44) |
+| 37 | `DOCS-28` | P1 | P | FAQ: reembolso automático sem agendamento até o 20º dia (Brain #41, I8, cláusula 5.5 dos termos) | concluído em 2026-11-24 (PR #19, merge `9f0d465`, produção 19/19) | decisão do owner de 2026-11-23 (Brain `31a9356`) e cláusula 5.5 dos termos |
 
 ## Critérios por task
 
