@@ -596,6 +596,16 @@ respostas do owner de 23/11 (preço e serviços com o Site Fronteira, custo do s
 plugin específico com reembolso solicitado e não automático, templates). PR próprio, sem merge
 sem ordem do owner. Depois do merge, conferir em produção e `probe-production.mjs` 16/16.
 
+**Auditoria de código (23/11/2026, branch `claude/auditoria-codigo-c7c603`):** a sonda
+`probe-production.mjs` escondia divergência de bytes (o `catch` engolia o assert e reportava
+"dist local indisponível") e comparava com o `dist` do worktree, não com a versão servida. Agora
+o build publica `/build-info.json` (commit do Workers Builds) e a sonda exige que a produção
+sirva o `main` do remoto (ou `--commit=<sha>`). Ela só compara bytes com um `dist` do mesmo
+commit, sem mudança local (`--sem-dist` pula, como SKIP). São 19 verificações, não mais 16.
+Astro 7.4.13, vitest 5.1.1, `smol-toml` 1.9.1: zero advisories moderate ou acima. Sobram 4 low
+do `katex` dentro do markdownlint (ferramenta de lint local). PR próprio, sem merge sem ordem do
+owner. Até o deploy desse PR, a verificação "Versão" falha com 404, o que é esperado.
+
 **Falta, em ordem:**
 
 1. **Owner:** fazer o merge de brain#11 (Emenda I8 no `main` do Brain, cherry-pick de
@@ -606,7 +616,7 @@ sem ordem do owner. Depois do merge, conferir em produção e `probe-production.
    descrição do PR antes do merge.
 3. **Owner:** fazer o merge do PR #17.
 4. **Sessão D:** depois do merge, conferir em produção que `/perguntas-frequentes/` diz "você
-   agenda a implantação pela Área de Clientes" e que `probe-production.mjs` passa 16/16
+   agenda a implantação pela Área de Clientes" e que `probe-production.mjs` passa 19/19 (16/16 antes do deploy da auditoria)
    (Node 24.20.0 do `.nvmrc`). Marcar `DOCS-26` como concluído no `TASKS.md` e neste bloco,
    e pedir à sessão do Brain que atualize a linha D do #44.
 5. **Vigilância:** quando os termos forem publicados em
