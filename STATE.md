@@ -601,7 +601,7 @@
   no `main` do Brain.
 - `DOCS-27` (outra sessão, PR #21, merge `94fbe8a`): o FAQ ganhou as respostas do owner de
   23/11 (preço e serviços com o Site Fronteira, custo do site final R$ 0, plugin específico
-  com reembolso solicitado e não automático, templates). Falta conferir em produção.
+  com reembolso solicitado e não automático, templates). Conferido em produção em 24/11.
 
 **Auditoria de código (23 e 24/11/2026, PR #22, concluída):** a sonda
 `probe-production.mjs` escondia divergência de bytes (o `catch` engolia o assert e reportava
@@ -627,20 +627,24 @@ low do katex".
 Decisões do owner ainda pendentes: (1) Starlight 0.43.1 e `starlight-llms-txt` 0.12 num task
 próprio; (2) cache longo das fontes, que exigiria nomes versionados.
 
-**Falta, em ordem:**
+**Feito (24/11/2026):** `DOCS-27` e `DOCS-28` concluídos e conferidos em produção.
 
-1. **Sessão D:** conferir o `DOCS-27` em produção (`/perguntas-frequentes/` com "Quanto custa e
-   o que cada serviço faz?") e `probe-production.mjs` 19/19
-   (Node 24.20.0 do `.nvmrc`, checkout limpo do commit servido).
-2. **Owner:** revisar e fazer o merge do PR do `DOCS-28` (cláusula 5.5 dos termos na resposta
-   "Como funcionam a garantia e o agendamento?", sem agendamento até o 20º dia corrido,
-   reembolso integral automático), PR #19 (a retomada, PR #18, já está no `main`). `npm run verify` exit 0.
-   Depois do merge, a sessão D confere que a página em produção diz "o pedido é reembolsado
-   integralmente, de forma automática", `probe-production.mjs` 19/19, marca `DOCS-28` como
-   concluído e pede à sessão do Brain que atualize a linha D.
-3. **Vigilância:** quando os termos forem publicados, comparar com os dois artigos. Qualquer
+- `DOCS-28`: PR #19 mergeado por ordem do owner (`9f0d465`). A resposta "Como funcionam a
+  garantia e o agendamento?" diz que, sem agendamento até o 20º dia depois da confirmação do
+  pagamento, "o pedido é reembolsado integralmente, de forma automática" (cláusula 5.5).
+- `DOCS-27` (PR #21): "Quanto custa e o que cada serviço faz?", custo do site final, plugin
+  específico e templates estão no ar.
+- `probe-production.mjs` **19/19** num checkout limpo de `9f0d465`, depois de `npm ci` e
+  `npm run build`: produção serve `9f0d465` = `origin/main`, sitemap e `search-index.json` 1:1
+  com o dist do mesmo commit.
+
+**Falta:**
+
+1. **Vigilância:** quando os termos forem publicados em
+   `epico.site/termos/site-horizonte-e-site-nucleo`, comparar com os dois artigos. Qualquer
    diferença na garantia, no agendamento, nos efeitos do reembolso ou no suporte vira task
-   novo da trilha D.
+   novo da trilha D. A falta na data marcada (cláusula 5.6) segue fora do FAQ, como antes da
+   I8, e só entra por decisão do owner.
 
 Fila corrente:
 
