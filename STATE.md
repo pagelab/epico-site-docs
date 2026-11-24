@@ -603,23 +603,38 @@
   23/11 (preço e serviços com o Site Fronteira, custo do site final R$ 0, plugin específico
   com reembolso solicitado e não automático, templates). Falta conferir em produção.
 
-**Auditoria de código (23/11/2026, branch `claude/auditoria-codigo-c7c603`):** a sonda
+**Auditoria de código (23 e 24/11/2026, PR #22, concluída):** a sonda
 `probe-production.mjs` escondia divergência de bytes (o `catch` engolia o assert e reportava
 "dist local indisponível") e comparava com o `dist` do worktree, não com a versão servida. Agora
 o build publica `/build-info.json` (commit do Workers Builds) e a sonda exige que a produção
 sirva o `main` do remoto (ou `--commit=<sha>`). Ela só compara bytes com um `dist` do mesmo
 commit, sem mudança local (`--sem-dist` pula, como SKIP). São 19 verificações, não mais 16.
 Astro 7.4.13, vitest 5.1.1, `smol-toml` 1.9.1: zero advisories moderate ou acima. Sobram 4 low
-do `katex` dentro do markdownlint (ferramenta de lint local). PR próprio, sem merge sem ordem do
-owner. Até o deploy desse PR, a verificação "Versão" falha com 404, o que é esperado.
+do `katex` dentro do markdownlint (ferramenta de lint local). `npm run verify` exit 0 antes (349
+testes) e depois (367). PR #22 integrado por ordem do owner em 24/11/2026 (merge `90e20b06`),
+Workers Build de produção verde e `probe-production.mjs` **19/19**: produção serve `90e20b06` =
+`origin/main`, construído pelo Workers Builds, sitemap (32 URLs) e `search-index.json` (18.281
+bytes) 1:1 com o build limpo do mesmo commit. Sessão mestre avisada.
+
+Para conferir a produção daqui em diante, rode a sonda num checkout limpo do commit servido,
+depois de `npm run build`. Num worktree de outro commit, as duas comparações de bytes falham com
+a instrução. `--sem-dist` pula as duas, que aparecem como SKIP.
+
+Decidido pelo owner em 24/11/2026: os 4 advisories low do `katex` (GHSA-238p-pmpm-9mq7, só
+dentro do markdownlint, no lint local) estão aceitos, nas palavras dele "aceito os 4 advisories
+low do katex".
+
+Decisões do owner ainda pendentes: (1) Starlight 0.43.1 e `starlight-llms-txt` 0.12 num task
+próprio; (2) cache longo das fontes, que exigiria nomes versionados.
 
 **Falta, em ordem:**
 
 1. **Sessão D:** conferir o `DOCS-27` em produção (`/perguntas-frequentes/` com "Quanto custa e
-   o que cada serviço faz?") e `probe-production.mjs` 19/19.
+   o que cada serviço faz?") e `probe-production.mjs` 19/19
+   (Node 24.20.0 do `.nvmrc`, checkout limpo do commit servido).
 2. **Owner:** revisar e fazer o merge do PR do `DOCS-28` (cláusula 5.5 dos termos na resposta
    "Como funcionam a garantia e o agendamento?", sem agendamento até o 20º dia corrido,
-   reembolso integral automático), empilhado sobre o PR da retomada. `npm run verify` exit 0.
+   reembolso integral automático), PR #19 (a retomada, PR #18, já está no `main`). `npm run verify` exit 0.
    Depois do merge, a sessão D confere que a página em produção diz "o pedido é reembolsado
    integralmente, de forma automática", `probe-production.mjs` 19/19, marca `DOCS-28` como
    concluído e pede à sessão do Brain que atualize a linha D.
