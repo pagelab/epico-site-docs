@@ -603,10 +603,20 @@
   23/11 (preço e serviços com o Site Fronteira, custo do site final R$ 0, plugin específico
   com reembolso solicitado e não automático, templates). Falta conferir em produção.
 
+**Auditoria de código (23/11/2026, branch `claude/auditoria-codigo-c7c603`):** a sonda
+`probe-production.mjs` escondia divergência de bytes (o `catch` engolia o assert e reportava
+"dist local indisponível") e comparava com o `dist` do worktree, não com a versão servida. Agora
+o build publica `/build-info.json` (commit do Workers Builds) e a sonda exige que a produção
+sirva o `main` do remoto (ou `--commit=<sha>`). Ela só compara bytes com um `dist` do mesmo
+commit, sem mudança local (`--sem-dist` pula, como SKIP). São 19 verificações, não mais 16.
+Astro 7.4.13, vitest 5.1.1, `smol-toml` 1.9.1: zero advisories moderate ou acima. Sobram 4 low
+do `katex` dentro do markdownlint (ferramenta de lint local). PR próprio, sem merge sem ordem do
+owner. Até o deploy desse PR, a verificação "Versão" falha com 404, o que é esperado.
+
 **Falta, em ordem:**
 
 1. **Sessão D:** conferir o `DOCS-27` em produção (`/perguntas-frequentes/` com "Quanto custa e
-   o que cada serviço faz?") e `probe-production.mjs` 16/16.
+   o que cada serviço faz?") e `probe-production.mjs` 19/19 (a sonda da auditoria de código, depois do deploy dela).
 2. **Sessão D:** `DOCS-28`, a cláusula 5.5 dos termos (sem agendamento até o 20º dia corrido,
    reembolso integral automático) na resposta "Como funcionam a garantia e o agendamento?",
    que hoje não a menciona.
