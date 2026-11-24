@@ -596,15 +596,29 @@ respostas do owner de 23/11 (preço e serviços com o Site Fronteira, custo do s
 plugin específico com reembolso solicitado e não automático, templates). PR próprio, sem merge
 sem ordem do owner. Depois do merge, conferir em produção e `probe-production.mjs` 16/16.
 
-**Auditoria de código (23/11/2026, branch `claude/auditoria-codigo-c7c603`):** a sonda
+**Auditoria de código (23 e 24/11/2026, PR #22, concluída):** a sonda
 `probe-production.mjs` escondia divergência de bytes (o `catch` engolia o assert e reportava
 "dist local indisponível") e comparava com o `dist` do worktree, não com a versão servida. Agora
 o build publica `/build-info.json` (commit do Workers Builds) e a sonda exige que a produção
 sirva o `main` do remoto (ou `--commit=<sha>`). Ela só compara bytes com um `dist` do mesmo
 commit, sem mudança local (`--sem-dist` pula, como SKIP). São 19 verificações, não mais 16.
 Astro 7.4.13, vitest 5.1.1, `smol-toml` 1.9.1: zero advisories moderate ou acima. Sobram 4 low
-do `katex` dentro do markdownlint (ferramenta de lint local). PR próprio, sem merge sem ordem do
-owner. Até o deploy desse PR, a verificação "Versão" falha com 404, o que é esperado.
+do `katex` dentro do markdownlint (ferramenta de lint local). `npm run verify` exit 0 antes (349
+testes) e depois (367). PR #22 integrado por ordem do owner em 24/11/2026 (merge `90e20b06`),
+Workers Build de produção verde e `probe-production.mjs` **19/19**: produção serve `90e20b06` =
+`origin/main`, construído pelo Workers Builds, sitemap (32 URLs) e `search-index.json` (18.281
+bytes) 1:1 com o build limpo do mesmo commit. Sessão mestre avisada.
+
+Para conferir a produção daqui em diante, rode a sonda num checkout limpo do commit servido,
+depois de `npm run build`. Num worktree de outro commit, as duas comparações de bytes falham com
+a instrução. `--sem-dist` pula as duas, que aparecem como SKIP.
+
+Decidido pelo owner em 24/11/2026: os 4 advisories low do `katex` (GHSA-238p-pmpm-9mq7, só
+dentro do markdownlint, no lint local) estão aceitos, nas palavras dele "aceito os 4 advisories
+low do katex".
+
+Decisões do owner ainda pendentes: (1) Starlight 0.43.1 e `starlight-llms-txt` 0.12 num task
+próprio; (2) cache longo das fontes, que exigiria nomes versionados.
 
 **Falta, em ordem:**
 
@@ -616,8 +630,8 @@ owner. Até o deploy desse PR, a verificação "Versão" falha com 404, o que é
    descrição do PR antes do merge.
 3. **Owner:** fazer o merge do PR #17.
 4. **Sessão D:** depois do merge, conferir em produção que `/perguntas-frequentes/` diz "você
-   agenda a implantação pela Área de Clientes" e que `probe-production.mjs` passa 19/19 (16/16 antes do deploy da auditoria)
-   (Node 24.20.0 do `.nvmrc`). Marcar `DOCS-26` como concluído no `TASKS.md` e neste bloco,
+   agenda a implantação pela Área de Clientes" e que `probe-production.mjs` passa 19/19
+   (Node 24.20.0 do `.nvmrc`, checkout limpo do commit servido). Marcar `DOCS-26` como concluído no `TASKS.md` e neste bloco,
    e pedir à sessão do Brain que atualize a linha D do #44.
 5. **Vigilância:** quando os termos forem publicados em
    `epico.site/termos/site-horizonte-e-site-nucleo`, comparar com os dois artigos. Qualquer
