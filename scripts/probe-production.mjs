@@ -4,12 +4,22 @@
 // probe-csp e o measure-theme: depende de rede e de deploy vivo, por isso não
 // faz parte do `verify`. Uso:
 //   node scripts/probe-production.mjs [origem] [origemWorkersDev]
-// Exit 0 somente com todas as verificações em verde.
+//   node scripts/probe-production.mjs --commit=<sha>   (commit esperado)
+//   node scripts/probe-production.mjs --sem-dist       (pula a comparação)
+// Exit 0 somente com todas as verificações em verde (SKIP explícito não é
+// falha, mas aparece no resumo).
 //
 // Cobertura exigida pelo DOCS-08, cada uma em verificação própria: DNS/TLS,
-// HTTP, CORS, cache, ETag, sitemap, robots, llms e CSP. Os bytes servidos
-// (search-index.json, sitemap, llms) são comparados com o `dist/` local quando
-// disponível, provando que a produção serve exatamente a árvore construída.
+// HTTP, CORS, cache, ETag, sitemap, robots, llms e CSP.
+//
+// Versão servida (auditoria de 2026-11-23, Brain #44 §7): a sonda lê
+// `/build-info.json` e exige que a produção sirva o commit esperado (por
+// padrão o `main` do remoto `origin`, via `git ls-remote`). A comparação de
+// bytes com o `dist/` local só roda quando `dist/build-info.json` é do MESMO
+// commit servido e sem mudança local. Caso contrário a verificação FALHA com
+// instrução, em vez de comparar com um build de outro commit. Divergência de
+// bytes sempre falha: nunca é reportada como "dist indisponível".
+import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { lookup } from 'node:dns/promises';
 import { connect as tlsConnect } from 'node:tls';
@@ -17,23 +27,69 @@ import {
 	SEARCH_INDEX_VERSION,
 	validateSearchIndexPayload,
 } from '../src/lib/search-index.mjs';
+import { validateBuildInfo } from '../src/lib/build-info.mjs';
 
-const ORIGIN = process.argv[2] ?? 'https://tutoriais.epico.site';
+const args = process.argv.slice(2);
+const positional = args.filter((arg) => !arg.startsWith('--'));
+const flag = (name) => args.find((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`));
+const SKIP_DIST = flag('sem-dist') !== undefined;
+const EXPECTED_COMMIT_ARG = flag('commit')?.split('=')[1]?.trim().toLowerCase();
+
+const ORIGIN = positional[0] ?? 'https://tutoriais.epico.site';
 // Subdomínio workers.dev real da conta, confirmado via API em 2026-09-10 (o
 // palpite `pagelab` do DOCS-06 estava errado; os placeholders `:script`/
 // `:account` do `_headers` sempre casaram a origem correta).
 const WORKERS_ORIGIN =
-	process.argv[3] ?? 'https://epico-site-docs.epico.workers.dev';
+	positional[1] ?? 'https://epico-site-docs.epico.workers.dev';
 const HOST = new URL(ORIGIN).hostname;
+
+// Toda requisição tem teto de tempo: sem ele, uma origem pendurada trava a
+// sonda indefinidamente em vez de falhar.
+const FETCH_TIMEOUT_MS = 15_000;
+function probeFetch(url, init = {}) {
+	return fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS), ...init });
+}
+
+class Skip extends Error {}
 
 const results = [];
 async function check(name, fn) {
 	try {
 		const detail = await fn();
-		results.push({ name, ok: true, detail });
+		results.push({ name, status: 'PASS', detail });
 	} catch (error) {
-		results.push({ name, ok: false, detail: error.message });
+		results.push({
+			name,
+			status: error instanceof Skip ? 'SKIP' : 'FAIL',
+			detail: error.message,
+		});
 	}
+}
+
+// Lê um arquivo do dist local; só a ausência do arquivo vira `null`. Qualquer
+// outro erro sobe e derruba a verificação.
+async function readDist(relative) {
+	try {
+		return await readFile(`dist/${relative}`, 'utf8');
+	} catch (error) {
+		if (error?.code === 'ENOENT') return null;
+		throw error;
+	}
+}
+
+function expectedCommit() {
+	if (EXPECTED_COMMIT_ARG !== undefined) {
+		assert(/^[0-9a-f]{40}$/u.test(EXPECTED_COMMIT_ARG), `--commit inválido: ${EXPECTED_COMMIT_ARG}`);
+		return { sha: EXPECTED_COMMIT_ARG, from: '--commit' };
+	}
+	const output = execFileSync('git', ['ls-remote', 'origin', 'refs/heads/main'], {
+		encoding: 'utf8',
+		timeout: FETCH_TIMEOUT_MS,
+		stdio: ['ignore', 'pipe', 'pipe'],
+	});
+	const sha = output.split(/\s+/u)[0];
+	assert(/^[0-9a-f]{40}$/u.test(sha ?? ''), `git ls-remote sem SHA do main: "${output.trim()}"`);
+	return { sha, from: 'origin/main' };
 }
 function assert(condition, message) {
 	if (!condition) throw new Error(message);
@@ -59,12 +115,52 @@ function sanCoversHost(san, host) {
 }
 
 async function get(path, origin = ORIGIN, redirect = 'follow') {
-	return fetch(`${origin}${path}`, { redirect });
+	return probeFetch(`${origin}${path}`, { redirect });
 }
 
 async function main() {
 	const home = await get('/');
 	const homeHtml = await home.clone().text();
+
+	// Identidade da versão servida. `liveCommit` decide se o dist local pode
+	// servir de referência para as comparações de bytes abaixo.
+	let liveCommit = null;
+	await check('Versão: produção serve o commit esperado', async () => {
+		const response = await get('/build-info.json');
+		assert(response.status === 200, `/build-info.json status ${response.status}`);
+		const validated = validateBuildInfo(await response.json());
+		assert(validated.ok, `/build-info.json fora do contrato: ${validated.ok ? '' : validated.reason}`);
+		const { info } = validated;
+		assert(info.commit !== null, '/build-info.json sem commit (build fora do Workers Builds?)');
+		liveCommit = info.commit;
+		assert(info.source === 'workers-ci', `produção construída fora do Workers Builds (source ${info.source})`);
+		const expected = expectedCommit();
+		assert(
+			info.commit === expected.sha,
+			`produção serve ${info.commit.slice(0, 12)}, ${expected.from} é ${expected.sha.slice(0, 12)} (deploy pendente ou falho)`,
+		);
+		return `commit ${info.commit.slice(0, 12)} = ${expected.from}, build do Workers Builds`;
+	});
+
+	// O dist local só é referência se for do commit servido e sem mudança
+	// local. Devolve o conteúdo pedido ou lança (FAIL com instrução, ou SKIP
+	// explícito com --sem-dist).
+	async function distReference(relative) {
+		if (SKIP_DIST) throw new Skip('comparação com o dist pulada por --sem-dist');
+		assert(liveCommit !== null, 'versão servida desconhecida, sem referência para comparar');
+		const raw = await readDist('build-info.json');
+		const instruction = `construa o commit servido (git checkout ${liveCommit.slice(0, 12)} && npm run build) ou use --sem-dist`;
+		assert(raw !== null, `dist/build-info.json ausente: ${instruction}`);
+		const local = validateBuildInfo(JSON.parse(raw));
+		assert(local.ok, `dist/build-info.json fora do contrato: ${local.ok ? '' : local.reason}`);
+		assert(
+			local.info.commit === liveCommit && !local.info.dirty,
+			`dist local é de ${local.info.commit?.slice(0, 12) ?? 'commit desconhecido'}${local.info.dirty ? ' com mudança local' : ''}, produção serve ${liveCommit.slice(0, 12)}: ${instruction}`,
+		);
+		const content = await readDist(relative);
+		assert(content !== null, `dist/${relative} ausente no build do commit servido`);
+		return content;
+	}
 
 	await check(`DNS: ${HOST} resolve`, async () => {
 		const addresses = await lookup(HOST, { all: true });
@@ -104,7 +200,7 @@ async function main() {
 	});
 
 	await check('HTTP: http:// redireciona para https://', async () => {
-		const response = await fetch(`http://${HOST}/`, { redirect: 'manual' });
+		const response = await probeFetch(`http://${HOST}/`, { redirect: 'manual' });
 		assert(
 			[301, 308].includes(response.status),
 			`status ${response.status} em vez de redirect permanente`,
@@ -197,7 +293,7 @@ async function main() {
 					`${path} responde ACAO ${header(response.headers, 'access-control-allow-origin')}`,
 				);
 			}
-			const index = await fetch(`${ORIGIN}/search-index.json`, {
+			const index = await probeFetch(`${ORIGIN}/search-index.json`, {
 				headers: { origin: CORS_PANEL_ORIGIN },
 			});
 			assert(index.status === 200, `/search-index.json status ${index.status}`);
@@ -210,7 +306,7 @@ async function main() {
 				!index.headers.has('access-control-allow-credentials'),
 				'/search-index.json responde Access-Control-Allow-Credentials',
 			);
-			const foreign = await fetch(`${ORIGIN}/search-index.json`, {
+			const foreign = await probeFetch(`${ORIGIN}/search-index.json`, {
 				headers: { origin: 'https://example.com' },
 			});
 			assert(
@@ -260,7 +356,7 @@ async function main() {
 			assert(/immutable/u.test(cache), `cache-control "${cache}"`);
 			const etag = header(asset.headers, 'etag');
 			assert(etag.length > 0, 'asset sem ETag');
-			const conditional = await fetch(`${ORIGIN}${match[0]}`, {
+			const conditional = await probeFetch(`${ORIGIN}${match[0]}`, {
 				redirect: 'manual',
 				headers: { 'if-none-match': etag },
 			});
@@ -275,13 +371,17 @@ async function main() {
 	await check('Cache/ETag: HTML com ETag', async () => {
 		const etag = header(home.headers, 'etag');
 		assert(etag.length > 0, 'home sem ETag');
-		const conditional = await fetch(`${ORIGIN}/`, {
+		const conditional = await probeFetch(`${ORIGIN}/`, {
 			headers: { 'if-none-match': etag },
 		});
+		assert(
+			[200, 304].includes(conditional.status),
+			`If-None-Match respondeu ${conditional.status}`,
+		);
 		return `etag presente, If-None-Match respondeu ${conditional.status}`;
 	});
 
-	await check('Sitemap: produção idêntica ao dist local', async () => {
+	await check('Sitemap: índice e URLs servidos', async () => {
 		const index = await get('/sitemap-index.xml');
 		assert(index.status === 200, `sitemap-index status ${index.status}`);
 		const indexBody = await index.text();
@@ -294,33 +394,35 @@ async function main() {
 		const liveUrls = [...(await live.text()).matchAll(/<loc>([^<]+)<\/loc>/gu)]
 			.map((entry) => entry[1])
 			.sort();
-		let detail = `${liveUrls.length} URLs ao vivo`;
-		try {
-			const local = (await readFile('dist/sitemap-0.xml', 'utf8'))
-				.match(/<loc>([^<]+)<\/loc>/gu)
-				?.map((entry) => entry.replace(/<\/?loc>/gu, ''))
-				.sort();
-			assert(local, 'dist/sitemap-0.xml sem URLs');
-			assert(
-				JSON.stringify(local) === JSON.stringify(liveUrls),
-				`conjunto divergente do dist: ${local?.length} locais, ${liveUrls.length} ao vivo`,
-			);
-			detail += ', 1:1 com o dist';
-		} catch {
-			detail += ' (dist local indisponível para comparação)';
-		}
 		for (const url of liveUrls) {
 			assert(
 				url.startsWith(`${ORIGIN}/`),
 				`URL fora da origem canônica: ${url}`,
 			);
-			const response = await fetch(url, { method: 'HEAD' });
+			const response = await probeFetch(url, { method: 'HEAD' });
 			assert(
 				response.status === 200,
 				`${url} respondeu ${response.status} no HEAD`,
 			);
 		}
-		return detail;
+		return `${liveUrls.length} URLs ao vivo, todas 200 na origem canônica`;
+	});
+
+	await check('Sitemap: 1:1 com o dist do commit servido', async () => {
+		const live = await get('/sitemap-0.xml');
+		assert(live.status === 200, `sitemap-0 status ${live.status}`);
+		const liveUrls = [...(await live.text()).matchAll(/<loc>([^<]+)<\/loc>/gu)]
+			.map((entry) => entry[1])
+			.sort();
+		const local = [...(await distReference('sitemap-0.xml')).matchAll(/<loc>([^<]+)<\/loc>/gu)]
+			.map((entry) => entry[1])
+			.sort();
+		assert(local.length > 0, 'dist/sitemap-0.xml sem URLs');
+		assert(
+			JSON.stringify(local) === JSON.stringify(liveUrls),
+			`conjunto divergente do dist: ${local.length} locais, ${liveUrls.length} ao vivo`,
+		);
+		return `${local.length} URLs, 1:1 com o dist`;
 	});
 
 	await check('Robots: Allow com Sitemap canônico', async () => {
@@ -354,7 +456,7 @@ async function main() {
 		return 'llms, llms-full e llms-small servidos; política no llms.txt';
 	});
 
-	await check('search-index.json: bytes idênticos ao dist', async () => {
+	await check('search-index.json: contrato do consumidor', async () => {
 		const response = await get('/search-index.json');
 		assert(response.status === 200, `status ${response.status}`);
 		assert(
@@ -373,22 +475,20 @@ async function main() {
 		assert(validated.ok, `fora do contrato: ${validated.ok ? '' : validated.reason}`);
 		assert(validated.discarded === 0, `${validated.discarded} entradas descartadas pelo validador`);
 		const withKeywords = payload.entries.filter((entry) => entry.keywords.length > 0).length;
-		let detail = `versão ${payload.version}, ${payload.entries.length} entradas, ${withKeywords} com keywords`;
-		try {
-			const local = await readFile('dist/search-index.json', 'utf8');
-			assert(
-				local === live,
-				'bytes ao vivo divergem do dist local (build fora de sincronia)',
-			);
-			detail += ', bytes 1:1 com o dist';
-		} catch {
-			detail += ' (dist local indisponível para comparação)';
-		}
-		return detail;
+		return `versão ${payload.version}, ${payload.entries.length} entradas, ${withKeywords} com keywords`;
+	});
+
+	await check('search-index.json: bytes 1:1 com o dist do commit servido', async () => {
+		const response = await get('/search-index.json');
+		assert(response.status === 200, `status ${response.status}`);
+		const live = await response.text();
+		const local = await distReference('search-index.json');
+		assert(local === live, 'bytes ao vivo divergem do dist do commit servido');
+		return `${live.length} bytes idênticos`;
 	});
 
 	await check('workers.dev: canary 200 com noindex', async () => {
-		const response = await fetch(WORKERS_ORIGIN, { redirect: 'manual' });
+		const response = await probeFetch(WORKERS_ORIGIN, { redirect: 'manual' });
 		assert(
 			response.status === 200,
 			`status ${response.status} em ${WORKERS_ORIGIN}`,
@@ -402,18 +502,19 @@ async function main() {
 		return `${WORKERS_ORIGIN} com noindex e CSP`;
 	});
 
-	let failed = 0;
+	const count = (status) => results.filter((result) => result.status === status).length;
 	for (const result of results) {
 		console.log(
-			`${result.ok ? 'PASS' : 'FAIL'}  ${result.name}${result.ok ? '' : ` — ${result.detail}`}`,
+			result.status === 'PASS'
+				? `PASS  ${result.name}\n      ${result.detail}`
+				: `${result.status}  ${result.name} — ${result.detail}`,
 		);
-		if (result.ok) console.log(`      ${result.detail}`);
-		else failed += 1;
 	}
+	const skipped = count('SKIP');
 	console.log(
-		`\n${results.length - failed}/${results.length} verificações em verde`,
+		`\n${count('PASS')}/${results.length} verificações em verde${skipped > 0 ? `, ${skipped} pulada(s)` : ''}`,
 	);
-	if (failed > 0) process.exit(1);
+	if (count('FAIL') > 0) process.exit(1);
 }
 
 main().catch((error) => {

@@ -24,7 +24,7 @@ describe('reproducible scaffold', () => {
 		expect(version).toMatch(/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u);
 	}
 
-	expect(packageJson.overrides?.['smol-toml']).toBe('1.8.0');
+	expect(packageJson.overrides?.['smol-toml']).toBe('1.9.1');
 });
 
 it('covers dependency install scripts with explicit approvals only', async () => {

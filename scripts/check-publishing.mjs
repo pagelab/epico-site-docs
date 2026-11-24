@@ -12,6 +12,7 @@
 // - `robots.txt`: permite o rastreamento e aponta o sitemap canônico;
 // - sitemap: toda URL listada é uma página real do `dist`;
 // - 404 custom servido e fora do índice de busca;
+// - `build-info.json` servido no contrato lido pela sonda de produção;
 // - `llms*.txt` servidos com a política pública de uso do acervo;
 // - `wrangler.jsonc`: static assets com 404 real, sem SPA fallback, sem
 //   script de Worker (respostas de Worker não recebem os `_headers`).
@@ -19,6 +20,7 @@ import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { validateBuildInfo } from '../src/lib/build-info.mjs';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 
@@ -516,6 +518,21 @@ export async function checkPublishing(root = repoRoot) {
 			}
 		} catch {
 			violations.push('404: dist/search-index.json não parseia');
+		}
+	}
+
+	// --- build-info.json: identidade do build lida pela sonda de produção ---
+	const buildInfo = await readRequired('dist/build-info.json', 'build-info');
+
+	if (buildInfo !== null) {
+		try {
+			const validated = validateBuildInfo(JSON.parse(buildInfo));
+
+			if (!validated.ok) {
+				violations.push(`build-info: dist/build-info.json fora do contrato (${validated.reason})`);
+			}
+		} catch {
+			violations.push('build-info: dist/build-info.json não parseia');
 		}
 	}
 
