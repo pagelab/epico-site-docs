@@ -613,9 +613,12 @@ Para conferir a produção daqui em diante, rode a sonda num checkout limpo do c
 depois de `npm run build`. Num worktree de outro commit, as duas comparações de bytes falham com
 a instrução. `--sem-dist` pula as duas, que aparecem como SKIP.
 
-Decisões do owner abertas pela auditoria: (1) aceitar os 4 advisories low do `katex`; (2)
-Starlight 0.43.1 e `starlight-llms-txt` 0.12 num task próprio; (3) cache longo das fontes, que
-exigiria nomes versionados.
+Decidido pelo owner em 24/11/2026: os 4 advisories low do `katex` (GHSA-238p-pmpm-9mq7, só
+dentro do markdownlint, no lint local) estão aceitos, nas palavras dele "aceito os 4 advisories
+low do katex".
+
+Decisões do owner ainda pendentes: (1) Starlight 0.43.1 e `starlight-llms-txt` 0.12 num task
+próprio; (2) cache longo das fontes, que exigiria nomes versionados.
 
 **Falta, em ordem:**
 
