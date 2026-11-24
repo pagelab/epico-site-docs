@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -123,6 +123,11 @@ async function makeFixture() {
 	await writeFile(
 		join(root, 'dist/search-index.json'),
 		JSON.stringify({ version: 2, entries: [{ url: '/', title: 'Início', description: 'd', topic: 'x', lastReviewed: '2026-09-08', keywords: [] }] }),
+	);
+
+	await writeFile(
+		join(root, 'dist/build-info.json'),
+		`${JSON.stringify({ version: 1, commit: 'a'.repeat(40), source: 'git', dirty: false })}\n`,
 	);
 
 	return root;
@@ -524,6 +529,22 @@ describe('publishing: gate sobre fixture válida e mutações', () => {
 
 		expect(await checkPublishing(root)).toContainEqual(
 			expect.stringMatching(/difere de public\/_headers/),
+		);
+	});
+
+	it('dist/build-info.json ausente deixa a sonda sem versão servida', async () => {
+		const root = await makeFixture();
+		await rm(join(root, 'dist/build-info.json'));
+
+		expect(await checkPublishing(root)).toContainEqual(expect.stringMatching(/build-info/));
+	});
+
+	it('dist/build-info.json fora do contrato falha', async () => {
+		const root = await makeFixture();
+		await writeFile(join(root, 'dist/build-info.json'), JSON.stringify({ version: 1, commit: 'x', source: 'git', dirty: false }));
+
+		expect(await checkPublishing(root)).toContainEqual(
+			expect.stringMatching(/build-info: dist\/build-info\.json fora do contrato/),
 		);
 	});
 });
