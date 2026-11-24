@@ -28,7 +28,7 @@ hero:
       link: /primeiros-passos/
       icon: right-arrow
     - text: Área de clientes
-      link: https://app.epico.site/painel
+      link: https://app.epico.site/
       icon: external
       variant: minimal
 ---

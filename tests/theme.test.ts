@@ -233,7 +233,7 @@ describe('fiação do tema no config', () => {
 		expect(logo.match(/<path/g)).toHaveLength(2);
 		expect(logo).toContain('class="sr-only"');
 		expect(logo).toContain('{siteTitle}');
-		expect(socialIcons).toContain('href="https://app.epico.site/painel"');
+		expect(socialIcons).toContain('href="https://app.epico.site/"');
 		expect(socialIcons).toContain('href="https://epico.site"');
 		expect(socialIcons).toContain('Área de clientes');
 		expect(socialIcons).toContain('Épico Site');

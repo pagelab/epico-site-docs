@@ -174,7 +174,7 @@
   mesmo padding por breakpoint. Dois `summary-card` derivados da página
   Início do painel aparecem após o parágrafo da home, com tokens próprios
   light/dark e hover real conferido. O override público `SocialIcons` serve
-  os links Área de clientes (`https://app.epico.site/painel`) e Épico Site no
+  os links Área de clientes (`https://app.epico.site/`) e Épico Site no
   header e menu móvel com os SVGs fornecidos, `currentColor` e
   `--sl-icon-size: 1.2em`. Ao fim da primeira rodada de revisão, o owner
   autorizou commit e push: `npm run verify` exit 0 na sessão (173 testes) e
